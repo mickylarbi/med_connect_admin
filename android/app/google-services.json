@@ -1,0 +1,90 @@
+{
+  "project_info": {
+    "project_number": "224473311778",
+    "project_id": "medconnect-85d3b",
+    "storage_bucket": "medconnect-85d3b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:224473311778:android:ede4794c6f4c4244b2387b",
+        "android_client_info": {
+          "package_name": "com.example.med_connect"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "224473311778-b03oef3gaq2gnno9clmtv496re7m4asu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.med_connect",
+            "certificate_hash": "1cc93fdb9dbad6994078ae2589d9f509232f33fe"
+          }
+        },
+        {
+          "client_id": "224473311778-rgssl03af6tvjiam1lrit3r08ocb86rh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_bCzLENPZxixTROIVZ4rvT0ZRr_pAgC0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "224473311778-rgssl03af6tvjiam1lrit3r08ocb86rh.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "224473311778-e3sq402icp2fl7m5i9liitnngf4ic9uf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.medConnect"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:224473311778:android:482509eb8291bec4b2387b",
+        "android_client_info": {
+          "package_name": "com.example.med_connect_admin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "224473311778-rgssl03af6tvjiam1lrit3r08ocb86rh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_bCzLENPZxixTROIVZ4rvT0ZRr_pAgC0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "224473311778-rgssl03af6tvjiam1lrit3r08ocb86rh.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "224473311778-e3sq402icp2fl7m5i9liitnngf4ic9uf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.medConnect"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
