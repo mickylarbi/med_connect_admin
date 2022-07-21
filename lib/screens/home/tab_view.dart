@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:med_connect_admin/screens/home/home_page/home_page.dart';
 
 class TabView extends StatefulWidget {
   const TabView({Key? key}) : super(key: key);
@@ -19,11 +20,16 @@ class _TabViewState extends State<TabView> {
         child: PageView(
             controller: _pageController,
             physics: const NeverScrollableScrollPhysics(),
-            children: const [
-             
+            children: [
+              HomePage(),
+              Container(
+                padding: const EdgeInsets.all(36),
+                color: Colors.blue,
+              ),
             ]),
       ),
       bottomNavigationBar: ValueListenableBuilder<int>(
+          //TODO: create custom
           valueListenable: _currentIndex,
           builder: (context, value, child) {
             return BottomNavigationBar(
@@ -36,9 +42,9 @@ class _TabViewState extends State<TabView> {
                 }
               },
               items: const [
-                // BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
-                // BottomNavigationBarItem(
-                //     icon: Icon(Icons.calendar_month), label: ''),
+                BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.calendar_month), label: ''),
                 // BottomNavigationBarItem(
                 //     icon: Icon(Icons.person_search), label: ''),
                 // BottomNavigationBarItem(
