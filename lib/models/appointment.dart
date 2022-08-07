@@ -7,9 +7,18 @@ class Appointment {
   String? patientId;
   String? service;
   DateTime? dateTime;
+  String? symptom;
+  String? condition;
 
   Appointment(
-      {this.id, this.location, this.doctorId, this.dateTime, this.service});
+      {this.id,
+      this.location,
+      this.doctorId,
+      this.patientId,
+      this.dateTime,
+      this.service,
+      this.condition,
+      this.symptom});
 
   Appointment.fromFirestore(Map<String, dynamic> map, String aId) {
     id = aId;
@@ -19,6 +28,8 @@ class Appointment {
     service = map['service'] as String?;
     dateTime = DateTime.fromMillisecondsSinceEpoch(
         (map['dateTime'] as Timestamp).millisecondsSinceEpoch);
+    symptom = map['symptom'] as String?;
+    condition = map['condition'] as String?;
   }
 
   Map<String, dynamic> toMap() {
@@ -28,6 +39,8 @@ class Appointment {
       'patientId': patientId,
       'service': service,
       'dateTime': dateTime,
+      'symptom': symptom,
+      'condition': condition,
     };
   }
 }

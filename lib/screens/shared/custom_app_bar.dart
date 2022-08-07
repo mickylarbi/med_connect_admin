@@ -18,7 +18,7 @@ class CustomAppBar extends StatelessWidget {
       alignment: Alignment.center,
       padding: const EdgeInsets.symmetric(horizontal: 36),
       child: Stack(children: [
-        if (leading != null)
+        if (leading != null)//TODO: do am better
           Align(
             alignment: Alignment.centerLeft,
             child: OutlineIconButton(
@@ -108,12 +108,7 @@ List<Widget> fancyAppBar(BuildContext context,
         alignment: Alignment.center,
         child: Row(
           mainAxisSize: MainAxisSize.min,
-          children: [
-            OutlineIconButton(
-              iconData: Icons.filter_list_alt,
-              onPressed: () {},
-            )
-          ],
+          children: actions,
         ),
       ),
     )

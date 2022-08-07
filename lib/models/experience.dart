@@ -1,31 +1,32 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class Experience {
   String? location;
-  DateTime? startDate;
-  DateTime? endDate;
+  DateTimeRange? dateTimeRange;
 
-  Experience(this.location, this.startDate, this.endDate);
+  Experience({this.location, this.dateTimeRange});
 
   Experience.fromFirestore(Map<String, dynamic> map) {
     location = map['location'];
-    startDate = DateTime.fromMillisecondsSinceEpoch(
-        (map['startDate'] as Timestamp).millisecondsSinceEpoch);
-    endDate = DateTime.fromMillisecondsSinceEpoch(
-        (map['endDate'] as Timestamp).millisecondsSinceEpoch);
+    dateTimeRange = DateTimeRange(
+        start: DateTime.fromMillisecondsSinceEpoch(
+            (map['startDate'] as Timestamp).millisecondsSinceEpoch),
+        end: DateTime.fromMillisecondsSinceEpoch(
+            (map['endDate'] as Timestamp).millisecondsSinceEpoch));
   }
 
   Map<String, dynamic> toMap() {
     return {
       'location': location,
-      'startDate': startDate,
-      'endDate': endDate,
+      'startDate': dateTimeRange!.start,
+      'endDate': dateTimeRange!.end,
     };
   }
 
   @override
   String toString() {
-    return '$location (${DateFormat.yMMMd().format(startDate ?? DateTime(1))} - ${DateFormat.yMMMd().format(endDate ?? DateTime(1))})';
+    return '$location\n(${DateFormat.yMMMd().format(dateTimeRange!.start)} - ${DateFormat.yMMMd().format(dateTimeRange!.end)})';
   }
 }

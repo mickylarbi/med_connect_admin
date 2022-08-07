@@ -93,7 +93,7 @@ class _AuthScreenState extends State<AuthScreen> {
                             password: _passwordController.text,
                           );
                         } else {
-                          _auth.signIn(context,
+                          _auth.signUp(context,
                               email: _emailController.text.trim(),
                               password: _passwordController.text);
                         }
