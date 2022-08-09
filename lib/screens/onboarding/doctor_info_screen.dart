@@ -24,8 +24,7 @@ class DoctorInfoScreen extends StatefulWidget {
 
 class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
   final PageController _pageController = PageController();
-  final ValueNotifier<bool> canGoNext = ValueNotifier<bool>(false);
-  final ValueNotifier<bool> isDone = ValueNotifier<bool>(false);
+  late final ValueNotifier<bool> canGoNext;
 
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _surnameController = TextEditingController();
@@ -68,14 +67,18 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
   void initState() {
     super.initState();
 
+    canGoNext = ValueNotifier<bool>(!(widget.doctor == null));
+
     if (widget.doctor != null) {
       _firstNameController.text = widget.doctor!.firstName!;
       _surnameController.text = widget.doctor!.surname!;
 
-      _currentLocationController.text =
-          widget.doctor!.currentLocation!.location!;
-      _currentLocationStartDateNotifier.value =
-          widget.doctor!.currentLocation!.dateTimeRange!.start;
+      if (widget.doctor!.currentLocation != null) {
+        _currentLocationController.text =
+            widget.doctor!.currentLocation!.location!;
+        _currentLocationStartDateNotifier.value =
+            widget.doctor!.currentLocation!.dateTimeRange!.start;
+      }
 
       _experiencesNotifier.value = widget.doctor!.experiences!;
 
@@ -85,28 +88,21 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
 
       _servicesNotifier.value = widget.doctor!.services!;
 
-      _availableHoursNotifier.value = widget.doctor!.availablehours!;
+      // _availableHoursNotifier.value = widget.doctor!.availablehours!;
+      //TODO:
     }
 
     _pageController.addListener(() {
-      if (_pageController.page == pagesList().length - 1) {
-        isDone.value == true;
-      } else if ((_pageController.page == 0 &&
+      // print(_pageController.page);
+
+      if ((_pageController.page == 0 &&
               (_firstNameController.text.trim().isEmpty ||
                   _surnameController.text.trim().isEmpty)) ||
-          (_pageController.page == 1 &&
-              (_currentLocationController.text.trim().isEmpty ||
-                  _currentLocationStartDateNotifier.value == null)) ||
-          (_pageController.page == 2 && _experiencesNotifier.value.isEmpty) ||
           (_pageController.page == 3 &&
               _mainSpecialtyController.text.trim().isEmpty) ||
-          (_pageController.page == 4 &&
-              _otherSpecialtiesNotifier.value.isEmpty) ||
           (_pageController.page == 5 && _servicesNotifier.value.isEmpty)) {
         canGoNext.value = false;
-        isDone.value = false;
       } else {
-        isDone.value = false;
         canGoNext.value = true;
       }
     });
@@ -132,32 +128,32 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
 
     ///current location page listeners
 
-    _currentLocationController.addListener(() {
-      if (_currentLocationController.text.trim().isEmpty ||
-          _currentLocationStartDateNotifier.value == null) {
-        canGoNext.value = false;
-      } else {
-        canGoNext.value = true;
-      }
-    });
-    _currentLocationStartDateNotifier.addListener(() {
-      if (_currentLocationController.text.trim().isEmpty ||
-          _currentLocationStartDateNotifier.value == null) {
-        canGoNext.value = false;
-      } else {
-        canGoNext.value = true;
-      }
-    });
+    // _currentLocationController.addListener(() {
+    //   if (_currentLocationController.text.trim().isEmpty ||
+    //       _currentLocationStartDateNotifier.value == null) {
+    //     canGoNext.value = false;
+    //   } else {
+    //     canGoNext.value = true;
+    //   }
+    // });
+    // _currentLocationStartDateNotifier.addListener(() {
+    //   if (_currentLocationController.text.trim().isEmpty ||
+    //       _currentLocationStartDateNotifier.value == null) {
+    //     canGoNext.value = false;
+    //   } else {
+    //     canGoNext.value = true;
+    //   }
+    // });
 
     ///experience page listeners
 
-    _experiencesNotifier.addListener(() {
-      if (_experiencesNotifier.value.isEmpty) {
-        canGoNext.value = false;
-      } else {
-        canGoNext.value = true;
-      }
-    });
+    // _experiencesNotifier.addListener(() {
+    //   if (_experiencesNotifier.value.isEmpty) {
+    //     canGoNext.value = false;
+    //   } else {
+    //     canGoNext.value = true;
+    //   }
+    // });
 
     ///main specialty page listeners
 
@@ -171,13 +167,13 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
 
     ///other specialties page listeners
 
-    _otherSpecialtiesNotifier.addListener(() {
-      if (_otherSpecialtiesNotifier.value.isEmpty) {
-        canGoNext.value = false;
-      } else {
-        canGoNext.value = true;
-      }
-    });
+    // _otherSpecialtiesNotifier.addListener(() {
+    //   if (_otherSpecialtiesNotifier.value.isEmpty) {
+    //     canGoNext.value = false;
+    //   } else {
+    //     canGoNext.value = true;
+    //   }
+    // });
 
     ///services page listeners
 
@@ -191,13 +187,13 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
 
     ///working hours page listeners
 
-    _availableHoursNotifier.addListener(() {
-      if (_availableHoursNotifier.value.isEmpty) {
-        canGoNext.value = false;
-      } else {
-        canGoNext.value = true;
-      }
-    });
+    // _availableHoursNotifier.addListener(() {
+    //   if (_availableHoursNotifier.value.isEmpty) {
+    //     canGoNext.value = false;
+    //   } else {
+    //     canGoNext.value = true;
+    //   }
+    // });
 
     //TODO: add listeners for all relevant pages
   }
@@ -212,11 +208,14 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
         child: SafeArea(
           child: Stack(
             children: [
-              Center(
-                child: PageView(
-                  controller: _pageController,
-                  physics: const NeverScrollableScrollPhysics(),
-                  children: pagesList().map((e) => _bluePrint(e)).toList(),
+              Padding(
+                padding: const EdgeInsets.only(top: 88, bottom: 120),
+                child: Center(
+                  child: PageView(
+                    controller: _pageController,
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: pagesList().map((e) => _bluePrint(e)).toList(),
+                  ),
                 ),
               ),
               const CustomAppBar(
@@ -242,7 +241,7 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
     return Center(
       child: SingleChildScrollView(
         // controller: controller,
-        padding: const EdgeInsets.fromLTRB(36, 88, 36, 120),
+        padding: const EdgeInsets.symmetric(horizontal: 36),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -334,7 +333,6 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
               );
             }),
         const SizedBox(height: 50),
-        skipButton()
       ];
 
   List<Widget> experiencesPage() => [
@@ -432,7 +430,6 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
           ),
         ),
         const SizedBox(height: 50),
-        skipButton()
       ];
 
   List<Widget> mainSpecialtyPage() => [
@@ -506,7 +503,6 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
           },
         ),
         const SizedBox(height: 50),
-        skipButton()
       ];
 
   List<Widget> servicesPage() => [
@@ -568,7 +564,6 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
           },
         ),
         const SizedBox(height: 50),
-        skipButton()
       ];
 
   List<Widget> availableHoursPage() => [
@@ -654,7 +649,6 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
           ),
         ),
         const SizedBox(height: 50),
-        skipButton()
       ];
 
   List<Widget> summaryPage() => [
@@ -725,12 +719,16 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
                       Navigator.pushAndRemoveUntil(
                           context,
                           CupertinoPageRoute(
-                              builder: (context) => SummaryScreen(
-                                    doctor: Doctor(
-                                        firstName:
-                                            _firstNameController.text.trim(),
-                                        surname: _surnameController.text.trim(),
-                                        currentLocation: Experience(
+                            builder: (context) => SummaryScreen(
+                              doctor: Doctor(
+                                  firstName: _firstNameController.text.trim(),
+                                  surname: _surnameController.text.trim(),
+                                  currentLocation: _currentLocationController
+                                          .text
+                                          .trim()
+                                          .isEmpty
+                                      ? null
+                                      : Experience(
                                           location: _currentLocationController
                                               .text
                                               .trim(),
@@ -738,18 +736,18 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
                                             start:
                                                 _currentLocationStartDateNotifier
                                                         .value ??
-                                                    DateTime.now(),
-                                            end: DateTime.now(),
+                                                    DateTime(0),
+                                            end: DateTime(5000),
                                           ),
                                         ),
-                                        experiences: _experiencesNotifier.value,
-                                        mainSpecialty: _mainSpecialtyController
-                                            .text
-                                            .trim(),
-                                        otherSpecialties:
-                                            _otherSpecialtiesNotifier.value,
-                                        services: _servicesNotifier.value),
-                                  )),
+                                  experiences: _experiencesNotifier.value,
+                                  mainSpecialty:
+                                      _mainSpecialtyController.text.trim(),
+                                  otherSpecialties:
+                                      _otherSpecialtiesNotifier.value,
+                                  services: _servicesNotifier.value),
+                            ),
+                          ),
                           (route) => false);
                     } else {
                       _pageController.nextPage(
@@ -758,63 +756,25 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
                     }
                   }
                 : null,
-            child: ValueListenableBuilder<bool>(
-                valueListenable: isDone,
-                builder: (context, value, child) {
-                  return value
-                      ? const Text('Done')
-                      : Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: const [
-                            Text('Next'),
-                            SizedBox(width: 10),
-                            Icon(Icons.arrow_right_alt_rounded, size: 20),
-                          ],
-                        );
-                }),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: const [
+                Text('Next'),
+                SizedBox(width: 10),
+                Icon(Icons.arrow_right_alt_rounded, size: 20),
+              ],
+            ),
           );
         });
   }
 
   //TODO: profile image
 
-  Widget skipButton() {
-    return ValueListenableBuilder<bool>(
-        valueListenable: canGoNext,
-        builder: (context, value, child) {
-          return value
-              ? const SizedBox()
-              : Align(
-                  alignment: Alignment.centerRight,
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(20),
-                    onTap: () {
-                      _pageController.nextPage(
-                          duration: const Duration(seconds: 1),
-                          curve: Curves.easeOutQuint);
-                    },
-                    child: const Padding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 16.0, horizontal: 24),
-                      child: Text(
-                        'Skip',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-        });
-  }
-
   @override
   void dispose() {
     _pageController.dispose();
     canGoNext.dispose();
-    isDone.dispose();
 
     _firstNameController.dispose();
     _surnameController.dispose();

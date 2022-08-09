@@ -10,8 +10,7 @@ class Src extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      // home: AuthWidget(),
-      home: DoctorInfoScreen(),
+      home: AuthWidget(),
       theme: ThemeData(
         primaryColor: Colors.blueGrey,
         primarySwatch: Colors.blueGrey,

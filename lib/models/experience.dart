@@ -29,4 +29,14 @@ class Experience {
   String toString() {
     return '$location\n(${DateFormat.yMMMd().format(dateTimeRange!.start)} - ${DateFormat.yMMMd().format(dateTimeRange!.end)})';
   }
+
+  @override
+  bool operator ==(other) =>
+      other is Experience &&
+      location == other.location &&
+      dateTimeRange == other.dateTimeRange;
+
+  @override
+  // TODO: implement hashCode
+  int get hashCode => hashValues(location, dateTimeRange);
 }

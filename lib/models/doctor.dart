@@ -16,42 +16,58 @@ class Doctor {
   List<String>? services;
   List<DateTimeRange>? availablehours;
 
-  Doctor(
-      {this.id,
-      this.firstName,
-      this.surname,
-      this.mainSpecialty,
-      this.otherSpecialties,
-      this.experiences,
-      this.reviews,
-      this.bio,
-      this.currentLocation,
-      this.services,
-      this.availablehours});
+  Doctor({
+    this.id,
+    this.firstName,
+    this.surname,
+    this.bio,
+    this.mainSpecialty,
+    this.otherSpecialties,
+    this.experiences,
+    this.services,
+    this.currentLocation,
+    this.availablehours,
+    this.reviews,
+  });
 
   Doctor.fromFireStore(Map<String, dynamic> map, String dId) {
     id = dId;
     firstName = map['firstName'] as String?;
-    firstName = map['surname'] as String?;
+    surname = map['surname'] as String?;
+    bio = map['bio'] as String?;
+
     mainSpecialty = map['mainSpecialty'] as String?;
 
     otherSpecialties = [];
-    experiences = (map['experiences'] as List<dynamic>?)!
-        .map((e) => Experience.fromFirestore(e))
-        .toList();
-    reviews = (map['reviews'] as List<dynamic>?)!
-        .map((e) => Review.fromFirestore(e))
-        .toList();
-    bio = map['bio'] as String?;
-    currentLocation = Experience.fromFirestore(
-        map['currentLocation'] as Map<String, dynamic>);
+
+    List? tempList = map['experiences'] as List<dynamic>?;
+    if (tempList != null) {
+      experiences = [];
+      for (Map<String, dynamic> element in tempList) {
+        experiences!.add(Experience.fromFirestore(element));
+      }
+    }
+
     services =
         (map['services'] as List<dynamic>?)!.map((e) => e.toString()).toList();
 
+    currentLocation = Experience.fromFirestore(
+        map['currentLocation'] as Map<String, dynamic>);
+
     List<Map>? al = map['availableHours'] as List<Map>?;
-    for (Map element in al!) {
-      availablehours!.add(
-          DateTimeRange(start: element['startDate'], end: element['endDate']));
+    if (al != null) {
+      for (Map element in al) {
+        availablehours!.add(DateTimeRange(
+            start: element['startDate'], end: element['endDate']));
+      }
+    }
+
+    tempList = map['reviews'] as List<Map<String, dynamic>>?;
+    if (tempList != null) {
+      reviews = [];
+      for (Map<String, dynamic> element in tempList) {
+        reviews!.add(Review.fromFirestore(element));
+      }
     }
   }
 
@@ -59,18 +75,42 @@ class Doctor {
     return {
       'firstName': firstName,
       'surname': surname,
+      'bio': bio,
       'mainSpecialty': mainSpecialty,
       'otherSpecialties': otherSpecialties,
-      'experiences': experiences,
-      'reviews': reviews,
-      'bio': bio,
-      'currentLocation': currentLocation,
+      if (experiences != null)
+        'experiences': experiences!.map((e) => e.toMap()).toList(),
       'services': services,
-      'availableHours': availablehours!
-          .map((e) => {'startDate': e.start, 'endDate': e.end})
-          .toList()
+      if (currentLocation != null) 'currentLocation': currentLocation!.toMap(),
+      if (availablehours != null)
+        'availableHours': availablehours!
+            .map((e) => {'startDate': e.start, 'endDate': e.end})
+            .toList(),
+      'reviews': reviews,
     };
   }
 
   String get name => '$firstName $surname';
+
+  @override
+  bool operator ==(other) =>
+      other is Doctor &&
+      name == other.name &&
+      bio == other.bio &&
+      mainSpecialty == other.mainSpecialty &&
+      otherSpecialties == other.otherSpecialties &&
+      experiences == other.experiences &&
+      services == other.services &&
+      currentLocation == other.currentLocation;
+
+  @override
+  int get hashCode => hashValues(
+        name,
+        bio,
+        mainSpecialty,
+        hashList(otherSpecialties),
+        hashList(experiences),
+        hashList(services),
+        currentLocation,
+      );
 }

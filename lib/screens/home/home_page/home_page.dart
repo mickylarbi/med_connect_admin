@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:med_connect_admin/screens/home/profile/profile_details.dart';
+import 'package:med_connect_admin/screens/home/profile/doctor_profile_details_screen.dart';
 import 'package:med_connect_admin/screens/shared/custom_app_bar.dart';
 import 'package:med_connect_admin/screens/shared/header_text.dart';
 import 'package:med_connect_admin/utils/functions.dart';
@@ -94,7 +94,8 @@ class _HomePageState extends State<HomePage> {
                                   DateFormat.jm().format(
                                     DateTime.now(),
                                   ),
-                                  style: const TextStyle(fontWeight: FontWeight.bold),
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
                                 ),
                               ),
                             ],
@@ -140,7 +141,7 @@ class _HomePageState extends State<HomePage> {
               borderRadius: BorderRadius.circular(10),
               child: InkWell(
                 onTap: () {
-                  navigate(context, ProfileDetailsScreen());
+                  navigate(context, DoctorProfileDetailsScreen());
                 },
                 child: Image.asset(
                   'assets/images/bruno-rodrigues-279xIHymPYY-unsplash.jpg',
@@ -151,7 +152,6 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-
           ],
         )
       ],

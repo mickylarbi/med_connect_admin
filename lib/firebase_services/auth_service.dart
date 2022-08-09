@@ -7,7 +7,10 @@ import 'package:med_connect_admin/utils/dialogs.dart';
 class AuthService {
   FirebaseAuth instance = FirebaseAuth.instance;
 
+
+  
   User? get currentUser => instance.currentUser;
+  String get uid => currentUser!.uid;
 
   void signUp(BuildContext context,
       {required String email, required String password}) async {
