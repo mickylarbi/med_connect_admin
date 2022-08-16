@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>224473311778-m8pd61lvtpc39f8lpm7b35notegnan4l.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.224473311778-m8pd61lvtpc39f8lpm7b35notegnan4l</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>224473311778-b03oef3gaq2gnno9clmtv496re7m4asu.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAsMn3v5w_XDRdpITKUIaBld5N69cbfDog</string>
+	<key>GCM_SENDER_ID</key>
+	<string>224473311778</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.medConnectAdmin</string>
+	<key>PROJECT_ID</key>
+	<string>medconnect-85d3b</string>
+	<key>STORAGE_BUCKET</key>
+	<string>medconnect-85d3b.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:224473311778:ios:a803a5e3935fcc84b2387b</string>
+</dict>
+</plist>

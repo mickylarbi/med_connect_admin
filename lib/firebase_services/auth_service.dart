@@ -7,8 +7,6 @@ import 'package:med_connect_admin/utils/dialogs.dart';
 class AuthService {
   FirebaseAuth instance = FirebaseAuth.instance;
 
-
-  
   User? get currentUser => instance.currentUser;
   String get uid => currentUser!.uid;
 

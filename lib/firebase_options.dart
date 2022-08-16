@@ -26,10 +26,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
@@ -58,5 +55,18 @@ class DefaultFirebaseOptions {
     messagingSenderId: '224473311778',
     projectId: 'medconnect-85d3b',
     storageBucket: 'medconnect-85d3b.appspot.com',
+  );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyAsMn3v5w_XDRdpITKUIaBld5N69cbfDog',
+    appId: '1:224473311778:ios:a803a5e3935fcc84b2387b',
+    messagingSenderId: '224473311778',
+    projectId: 'medconnect-85d3b',
+    storageBucket: 'medconnect-85d3b.appspot.com',
+    androidClientId:
+        '224473311778-b03oef3gaq2gnno9clmtv496re7m4asu.apps.googleusercontent.com',
+    iosClientId:
+        '224473311778-m8pd61lvtpc39f8lpm7b35notegnan4l.apps.googleusercontent.com',
+    iosBundleId: 'com.example.medConnectAdmin',
   );
 }
