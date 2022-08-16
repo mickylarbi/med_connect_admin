@@ -104,3 +104,22 @@ void showConfirmationDialog(BuildContext context,
     ),
   );
 }
+
+void showCustomBottomSheet(BuildContext context, List<Widget> children) {
+  showModalBottomSheet(
+    backgroundColor: Colors.grey[50],
+    shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+    context: context,
+    builder: (context) => Padding(
+      padding: const EdgeInsets.all(36),
+      child: Material(
+        textStyle: const TextStyle(color: Colors.blueGrey),
+        child: IconTheme(
+          data: const IconThemeData(color: Colors.blueGrey),
+          child: Column(mainAxisSize: MainAxisSize.min, children: children),
+        ),
+      ),
+    ),
+  );
+}

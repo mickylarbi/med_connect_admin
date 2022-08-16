@@ -16,39 +16,50 @@ class FirestoreService {
 
   uploadDoctorInfo(BuildContext context, Doctor doctor) async {
     showLoadingDialog(context);
-    try {
-      await instance
-          .collection('doctors')
-          .doc(_auth.currentUser!.uid)
-          .set(doctor.toMap())
-          .timeout(const Duration(seconds: 30));
 
+    await instance
+        .collection('doctors')
+        .doc(_auth.currentUser!.uid)
+        .set(doctor.toMap())
+        .timeout(const Duration(seconds: 30))
+        .then((value) {
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => const TabView()),
           (route) => false);
-    } catch (e) {
+    }).onError((error, stackTrace) {
       Navigator.pop(context);
       showAlertDialog(context,
           message: 'Couldn\'t upload profile info. Try again');
-    }
+    });
   }
 
   editDoctorInfo(BuildContext context, Doctor doctor) async {
     showLoadingDialog(context);
-    try {
-      await instance
-          .collection('doctors')
-          .doc(_auth.currentUser!.uid)
-          .update(doctor.toMap())
-          .timeout(const Duration(seconds: 30));
 
+    await instance
+        .collection('doctors')
+        .doc(_auth.currentUser!.uid)
+        .update(doctor.toMap())
+        .timeout(const Duration(seconds: 30))
+        .then((value) {
       Navigator.pop(context);
       Navigator.pop(context, EditAction.edit);
-    } catch (e) {
+    }).onError((error, stackTrace) {
       Navigator.pop(context);
       showAlertDialog(context,
           message: 'Couldn\'t update profile info. Try again');
-    }
+    });
   }
+
+  Query<Map<String, dynamic>> get myAppointments => instance
+      .collection('appointments')
+      .where('doctorId', isEqualTo: _auth.uid);
+
+  DocumentReference<Map<String, dynamic>> getappointmentById(String id) =>
+      instance.collection('appointments').doc(id);
+
+DocumentReference<Map<String, dynamic>> getpatientById(String id) =>
+      instance.collection('patients').doc(id);
+
 }

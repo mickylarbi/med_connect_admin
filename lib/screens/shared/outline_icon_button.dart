@@ -3,8 +3,12 @@ import 'package:flutter/material.dart';
 class OutlineIconButton extends StatelessWidget {
   final IconData iconData;
   final void Function()? onPressed;
+  final Color? backgroundColor;
   const OutlineIconButton(
-      {Key? key, required this.iconData, required this.onPressed})
+      {Key? key,
+      required this.iconData,
+      required this.onPressed,
+      this.backgroundColor = Colors.transparent})
       : super(key: key);
 
   @override

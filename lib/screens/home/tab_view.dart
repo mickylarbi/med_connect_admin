@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:med_connect_admin/screens/home/appointments/appointment_list_page.dart';
 import 'package:med_connect_admin/screens/home/home_page/home_page.dart';
 
 class TabView extends StatefulWidget {
@@ -20,12 +21,9 @@ class _TabViewState extends State<TabView> {
         child: PageView(
             controller: _pageController,
             physics: const NeverScrollableScrollPhysics(),
-            children: [
+            children: const [
               HomePage(),
-              Container(
-                padding: const EdgeInsets.all(36),
-                color: Colors.blue,
-              ),
+              AppointmentsListPage(),
             ]),
       ),
       bottomNavigationBar: ValueListenableBuilder<int>(

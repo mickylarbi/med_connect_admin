@@ -5,27 +5,40 @@ import 'package:med_connect_admin/utils/constants.dart';
 
 class CustomAppBar extends StatelessWidget {
   final IconData? leading;
+  final void Function()? onPressedLeading;
   final String? title;
   final List<Widget>? actions;
-  const CustomAppBar({Key? key, this.leading, this.actions, this.title})
-      : super(key: key);
+  final Color? backgroundColor;
+  const CustomAppBar({
+    Key? key,
+    this.leading = Icons.arrow_back,
+    this.actions,
+    this.title,
+    this.onPressedLeading,
+    this.backgroundColor,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 88,
+      color: backgroundColor ?? Theme.of(context).scaffoldBackgroundColor,
       width: kScreenWidth(context),
       alignment: Alignment.center,
       padding: const EdgeInsets.symmetric(horizontal: 36),
       child: Stack(children: [
-        if (leading != null)//TODO: do am better
+        if (leading != null)
           Align(
             alignment: Alignment.centerLeft,
             child: OutlineIconButton(
               iconData: leading!,
-              onPressed: () {
-                Navigator.pop(context);
-              },
+              backgroundColor: backgroundColor == null
+                  ? Colors.transparent
+                  : Theme.of(context).scaffoldBackgroundColor,
+              onPressed: onPressedLeading ??
+                  () {
+                    Navigator.pop(context);
+                  },
             ),
           ),
         if (title != null)
