@@ -557,6 +557,11 @@ class _EditDoctorProfileScreenState extends State<EditDoctorProfileScreen> {
 
   @override
   void dispose() {
+    firstNameController.dispose();
+    surnameController.dispose();
+    bioController.dispose();
+    mainSpecialtyController.dispose();
+
     otherSpecialtiesNotifier.dispose();
     otherSpecialtiesController.dispose();
 
