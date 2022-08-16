@@ -139,7 +139,7 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                             EditObject(
                                 action: EditAction.edit,
                                 object: Experience(
-                                    location: _controller.text,
+                                    location: _controller.text.trim(),
                                     dateTimeRange: _notifier.value)));
                       }
                     },

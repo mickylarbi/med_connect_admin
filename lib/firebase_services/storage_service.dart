@@ -10,8 +10,7 @@ class StorageService {
   Reference storageRef = FirebaseStorage.instance.ref('profile_pictures');
 
   Future<String> get profileImageDownloadUrl => FirebaseStorage.instance
-      .ref()
-      .child('profile_pictures/${auth.uid}')
+      .ref('profile_pictures/${auth.uid}')
       .getDownloadURL();
 }
 

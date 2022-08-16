@@ -37,6 +37,5 @@ class Experience {
       dateTimeRange == other.dateTimeRange;
 
   @override
-  // TODO: implement hashCode
   int get hashCode => hashValues(location, dateTimeRange);
 }

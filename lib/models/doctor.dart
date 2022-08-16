@@ -15,20 +15,21 @@ class Doctor {
   Experience? currentLocation;
   List<String>? services;
   List<DateTimeRange>? availablehours;
+  bool? isAvailableForHomeCalls;
 
-  Doctor({
-    this.id,
-    this.firstName,
-    this.surname,
-    this.bio,
-    this.mainSpecialty,
-    this.otherSpecialties,
-    this.experiences,
-    this.services,
-    this.currentLocation,
-    this.availablehours,
-    this.reviews,
-  });
+  Doctor(
+      {this.id,
+      this.firstName,
+      this.surname,
+      this.bio,
+      this.mainSpecialty,
+      this.otherSpecialties,
+      this.experiences,
+      this.services,
+      this.currentLocation,
+      this.availablehours,
+      this.reviews,
+      this.isAvailableForHomeCalls});
 
   Doctor.fromFireStore(Map<String, dynamic> map, String dId) {
     id = dId;
@@ -38,7 +39,9 @@ class Doctor {
 
     mainSpecialty = map['mainSpecialty'] as String?;
 
-    otherSpecialties = [];
+    otherSpecialties = (map['otherSpecialties'] as List<dynamic>?)!
+        .map((e) => e.toString())
+        .toList();
 
     List? tempList = map['experiences'] as List<dynamic>?;
     if (tempList != null) {
@@ -69,6 +72,8 @@ class Doctor {
         reviews!.add(Review.fromFirestore(element));
       }
     }
+
+    isAvailableForHomeCalls = map['isAvailableForHomeCalls'] as bool?;
   }
 
   Map<String, dynamic> toMap() {
@@ -87,6 +92,7 @@ class Doctor {
             .map((e) => {'startDate': e.start, 'endDate': e.end})
             .toList(),
       'reviews': reviews,
+      'isAvailableForHomeCalls': isAvailableForHomeCalls,
     };
   }
 
@@ -101,7 +107,8 @@ class Doctor {
       otherSpecialties == other.otherSpecialties &&
       experiences == other.experiences &&
       services == other.services &&
-      currentLocation == other.currentLocation;
+      currentLocation == other.currentLocation &&
+      isAvailableForHomeCalls == other.isAvailableForHomeCalls;
 
   @override
   int get hashCode => hashValues(
@@ -112,5 +119,6 @@ class Doctor {
         hashList(experiences),
         hashList(services),
         currentLocation,
+        isAvailableForHomeCalls,
       );
 }
