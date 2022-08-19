@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:med_connect_admin/firebase_services/firestore_service.dart';
 import 'package:med_connect_admin/models/doctor.dart';
 import 'package:med_connect_admin/models/experience.dart';
-import 'package:med_connect_admin/screens/onboarding/edit_experience_screen.dart';
+import 'package:med_connect_admin/screens/onboarding/doctor/edit_experience_screen.dart';
 import 'package:med_connect_admin/screens/shared/custom_app_bar.dart';
 import 'package:med_connect_admin/screens/shared/custom_buttons.dart';
 import 'package:med_connect_admin/screens/shared/custom_textformfield.dart';

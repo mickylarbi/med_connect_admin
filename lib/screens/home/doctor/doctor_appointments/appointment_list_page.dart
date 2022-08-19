@@ -2,24 +2,26 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:med_connect_admin/firebase_services/firestore_service.dart';
 import 'package:med_connect_admin/models/appointment.dart';
-import 'package:med_connect_admin/models/doctor.dart';
-import 'package:med_connect_admin/screens/home/appointments/appointment_card.dart';
+import 'package:med_connect_admin/screens/home/doctor/doctor_appointments/doctor_appointment_card.dart';
 import 'package:med_connect_admin/screens/shared/custom_app_bar.dart';
 
-class AppointmentsListPage extends StatefulWidget {
-  const AppointmentsListPage({Key? key}) : super(key: key);
+class DoctorAppointmentsListPage extends StatefulWidget {
+  const DoctorAppointmentsListPage({Key? key}) : super(key: key);
 
   @override
-  State<AppointmentsListPage> createState() => _AppointmentsListPageState();
+  State<DoctorAppointmentsListPage> createState() =>
+      _DoctorAppointmentsListPageState();
 }
 
-class _AppointmentsListPageState extends State<AppointmentsListPage> {
+class _DoctorAppointmentsListPageState
+    extends State<DoctorAppointmentsListPage> {
   ScrollController scrollController = ScrollController();
 
   FirestoreService db = FirestoreService();
 
   @override
-  Widget build(BuildContext context) {//TODO: calendar
+  Widget build(BuildContext context) {
+    //TODO: calendar
     return Scaffold(
       body: SafeArea(
         child: Stack(
@@ -61,8 +63,8 @@ class _AppointmentsListPageState extends State<AppointmentsListPage> {
                       physics: const NeverScrollableScrollPhysics(),
                       primary: false,
                       itemCount: appointmentsList.length,
-                      itemBuilder: (context, index) =>
-                          AppointmentCard(appointment: appointmentsList[index]),
+                      itemBuilder: (context, index) => DoctorAppointmentCard(
+                          appointment: appointmentsList[index]),
                       separatorBuilder: (context, index) =>
                           const Divider(height: 30),
                     );

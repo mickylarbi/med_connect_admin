@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:med_connect_admin/firebase_services/auth_service.dart';
-import 'package:med_connect_admin/screens/home/tab_view.dart';
+import 'package:med_connect_admin/screens/home/doctor/doctor_tab_view.dart';
 import 'package:med_connect_admin/screens/shared/custom_buttons.dart';
 import 'package:med_connect_admin/screens/shared/custom_text_span.dart';
 import 'package:med_connect_admin/screens/shared/custom_textformfield.dart';
@@ -153,6 +153,6 @@ class AuthWidget extends StatelessWidget {
       return const AuthScreen(authType: AuthType.login);
     }
 
-    return const TabView();
+    return const DoctorTabView();
   }
 }

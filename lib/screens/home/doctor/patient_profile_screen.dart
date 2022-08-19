@@ -95,7 +95,7 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
                                       }
                                     },
                                     leading: const Icon(Icons.call),
-                                    title: const Text('Call doctor'),
+                                    title: const Text('Call patient'),
                                   ),
                                   ListTile(
                                     onTap: () async {

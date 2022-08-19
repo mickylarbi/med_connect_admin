@@ -1,25 +1,20 @@
-import 'dart:ui';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:med_connect_admin/firebase_services/firestore_service.dart';
 import 'package:med_connect_admin/models/appointment.dart';
-import 'package:med_connect_admin/models/doctor.dart';
-import 'package:med_connect_admin/screens/home/appointments/doctor_appointment_card.dart';
-import 'package:med_connect_admin/screens/home/home_page/profile/doctor_profile_details_screen.dart';
+import 'package:med_connect_admin/screens/home/doctor/doctor_appointments/doctor_appointment_card.dart';
+import 'package:med_connect_admin/screens/home/doctor/doctor_home_page/profile/doctor_profile_details_screen.dart';
 import 'package:med_connect_admin/screens/shared/custom_app_bar.dart';
-import 'package:med_connect_admin/screens/shared/header_text.dart';
 import 'package:med_connect_admin/utils/functions.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class DoctorHomePage extends StatefulWidget {
+  const DoctorHomePage({Key? key}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<DoctorHomePage> createState() => _DoctorHomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _DoctorHomePageState extends State<DoctorHomePage> {
   final ScrollController _scrollController = ScrollController();
 
   FirestoreService db = FirestoreService();

@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:med_connect_admin/models/doctor.dart';
 import 'package:med_connect_admin/models/experience.dart';
-import 'package:med_connect_admin/screens/onboarding/edit_available_hours_screen.dart';
-import 'package:med_connect_admin/screens/onboarding/edit_experience_screen.dart';
-import 'package:med_connect_admin/screens/onboarding/summary_screen.dart';
+import 'package:med_connect_admin/screens/onboarding/doctor/edit_experience_screen.dart';
+import 'package:med_connect_admin/screens/onboarding/doctor/doctor_summary_screen.dart';
 import 'package:med_connect_admin/screens/shared/custom_app_bar.dart';
 import 'package:med_connect_admin/screens/shared/custom_buttons.dart';
 import 'package:med_connect_admin/screens/shared/custom_textformfield.dart';
@@ -670,14 +669,14 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
         const Text('Name:'),
         Text(
           '${_firstNameController.text.trim()} ${_surnameController.text.trim()}',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 20),
         const Text('Current location:'),
         if (_currentLocationStartDateNotifier.value != null)
           Text(
             '${_currentLocationController.text.trim()} (since ${DateFormat.yMMMMd().format(_currentLocationStartDateNotifier.value!)})',
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         const SizedBox(height: 20),
         const Text('Experience:'),
@@ -690,8 +689,8 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
         const SizedBox(height: 20),
         const Text('Main Specialty:'),
         Text(
-          '${_mainSpecialtyController.text.trim()}',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          _mainSpecialtyController.text.trim(),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 20),
         const Text('Other specialties:'),
@@ -719,7 +718,7 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
                       Navigator.pushAndRemoveUntil(
                           context,
                           CupertinoPageRoute(
-                            builder: (context) => SummaryScreen(
+                            builder: (context) => DoctorSummaryScreen(
                               doctor: Doctor(
                                   firstName: _firstNameController.text.trim(),
                                   surname: _surnameController.text.trim(),

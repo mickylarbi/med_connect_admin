@@ -3,15 +3,15 @@ import 'package:intl/intl.dart';
 import 'package:med_connect_admin/firebase_services/auth_service.dart';
 import 'package:med_connect_admin/firebase_services/firestore_service.dart';
 import 'package:med_connect_admin/models/doctor.dart';
-import 'package:med_connect_admin/screens/onboarding/doctor_info_screen.dart';
+import 'package:med_connect_admin/screens/onboarding/doctor/doctor_info_screen.dart';
 import 'package:med_connect_admin/screens/shared/custom_app_bar.dart';
 import 'package:med_connect_admin/screens/shared/custom_buttons.dart';
 import 'package:med_connect_admin/screens/shared/outline_icon_button.dart';
 import 'package:med_connect_admin/utils/dialogs.dart';
 
-class SummaryScreen extends StatelessWidget {
+class DoctorSummaryScreen extends StatelessWidget {
   final Doctor doctor;
-  SummaryScreen({Key? key, required this.doctor}) : super(key: key);
+  DoctorSummaryScreen({Key? key, required this.doctor}) : super(key: key);
 
   ScrollController scrollController = ScrollController();
 

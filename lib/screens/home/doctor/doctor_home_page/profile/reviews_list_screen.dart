@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:med_connect_admin/models/review.dart';
-import 'package:med_connect_admin/screens/home/home_page/profile/review_card.dart';
 import 'package:med_connect_admin/screens/shared/custom_app_bar.dart';
 import 'package:med_connect_admin/screens/shared/outline_icon_button.dart';
 

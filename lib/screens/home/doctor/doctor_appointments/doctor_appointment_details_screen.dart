@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:med_connect_admin/firebase_services/firestore_service.dart';
 import 'package:med_connect_admin/models/appointment.dart';
-import 'package:med_connect_admin/screens/home/patient_profile_screen.dart';
+import 'package:med_connect_admin/screens/home/doctor/patient_profile_screen.dart';
 import 'package:med_connect_admin/screens/shared/custom_app_bar.dart';
 import 'package:med_connect_admin/screens/shared/custom_buttons.dart';
 import 'package:med_connect_admin/utils/dialogs.dart';

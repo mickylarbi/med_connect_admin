@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:med_connect_admin/screens/onboarding/doctor_info_screen.dart';
+import 'package:med_connect_admin/screens/onboarding/doctor/doctor_info_screen.dart';
+import 'package:med_connect_admin/screens/onboarding/pharmacy/pharmacy_info.dart';
 import 'package:med_connect_admin/utils/functions.dart';
 
 class SelectCategoryScreen extends StatefulWidget {
@@ -35,7 +36,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
                 SizedBox(height: 20),
                 CategoryTile(
                   text: 'Pharmacy',
-                  destination: DoctorInfoScreen(),
+                  destination: PharmacyInfoScreen(),
                 ),
                 SizedBox(height: 20),
                 CategoryTile(

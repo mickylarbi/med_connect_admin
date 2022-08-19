@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:med_connect_admin/models/appointment.dart';
-import 'package:med_connect_admin/screens/home/appointments/doctor_appointment_details_screen.dart';
+import 'package:med_connect_admin/screens/home/doctor/doctor_appointments/doctor_appointment_details_screen.dart';
 import 'package:med_connect_admin/screens/shared/header_text.dart';
 import 'package:med_connect_admin/utils/functions.dart';
 
@@ -104,10 +104,10 @@ class DoctorAppointmentTodayCard extends StatelessWidget {
   }
 }
 
-class AppointmentCard extends StatelessWidget {
+class DoctorAppointmentCard extends StatelessWidget {
   final DoctorAppointment appointment;
   final EdgeInsetsGeometry padding;
-  const AppointmentCard(
+  const DoctorAppointmentCard(
       {Key? key,
       required this.appointment,
       this.padding = const EdgeInsets.symmetric(horizontal: 36)})

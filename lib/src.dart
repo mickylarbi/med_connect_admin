@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:med_connect_admin/screens/auth/auth_screen.dart';
+import 'package:med_connect_admin/screens/onboarding/select_category_screen.dart';
 import 'package:med_connect_admin/screens/splash_screen.dart';
 
 class Src extends StatelessWidget {
@@ -8,7 +10,8 @@ class Src extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: const SplashScreen(),
+      home: AuthWidget(),
+      // home: const SelectCategoryScreen(),
       theme: ThemeData(
         primaryColor: Colors.blueGrey,
         primarySwatch: Colors.blueGrey,
