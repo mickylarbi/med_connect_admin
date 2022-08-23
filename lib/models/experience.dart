@@ -22,8 +22,8 @@ class Experience {
   Map<String, dynamic> toMap() {
     return {
       'location': location,
-      'startDate': dateTimeRange!.start,
-      'endDate': dateTimeRange!.end,
+      if (dateTimeRange != null) 'startDate': dateTimeRange!.start,
+      if (dateTimeRange != null) 'endDate': dateTimeRange!.end,
     };
   }
 

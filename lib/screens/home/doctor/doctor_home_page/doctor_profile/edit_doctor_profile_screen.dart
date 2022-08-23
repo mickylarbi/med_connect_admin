@@ -481,11 +481,15 @@ class _EditDoctorProfileScreenState extends State<EditDoctorProfileScreen> {
                           services: servicesNotifier.value,
                           currentLocation: Experience(
                               location: currentLocationController.text.trim(),
-                              dateTimeRange: DateTimeRange(
-                                  start:
-                                      currentLocationStartDateNotifier.value ??
-                                          DateTime(0),
-                                  end: DateTime(5000))),
+                              dateTimeRange:
+                                  currentLocationStartDateNotifier.value == null
+                                      ? null
+                                      : DateTimeRange(
+                                          start:
+                                              currentLocationStartDateNotifier
+                                                  .value!,
+                                          end: widget.doctor.currentLocation!
+                                              .dateTimeRange!.end)),
                         );
 
                         if (newDoctor == widget.doctor) {

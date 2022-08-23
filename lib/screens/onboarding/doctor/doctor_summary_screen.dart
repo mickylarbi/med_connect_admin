@@ -55,7 +55,7 @@ class DoctorSummaryScreen extends StatelessWidget {
                 if (doctor.currentLocation == null) const Text('-'),
                 if (doctor.currentLocation != null)
                   Text(
-                    doctor.currentLocation!.dateTimeRange!.start.year == 0
+                    doctor.currentLocation!.dateTimeRange == null
                         ? doctor.currentLocation!.location!
                         : '${doctor.currentLocation!.location!} (since ${DateFormat.yMMMMd().format(doctor.currentLocation!.dateTimeRange!.start)})',
                     style: const TextStyle(fontWeight: FontWeight.bold),

@@ -23,7 +23,10 @@ class FirestoreService {
   uploadDoctorInfo(BuildContext context, Doctor doctor, XFile picture) {
     showLoadingDialog(context);
 
-    _storageService.uploadProfileImage(picture).timeout(const Duration(minutes: 2)).then((p0) {
+    _storageService
+        .uploadProfileImage(picture)
+        .timeout(const Duration(minutes: 2))
+        .then((p0) {
       instance
           .collection('admins')
           .doc(_auth.currentUser!.uid)

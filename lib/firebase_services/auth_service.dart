@@ -56,10 +56,21 @@ class AuthService {
         .timeout(ktimeout)
         .then((value) {
       _db.getAdminInfo.get().timeout(ktimeout).then((value) {
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => const DoctorTabView()),
-            (route) => false);
+        // check if user is in firebase
+
+        if (value.data() == null) {
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const SelectCategoryScreen()));
+        }
+
+        if (value.data() != null && value.data()!['adminRole'] == 'doctor') {
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const DoctorTabView()),
+              (route) => false);
+        }
       }).onError((error, stackTrace) {
         if (error is FirebaseException && error.code == 'not-found') {
           // if user doesn't exist in firebase

@@ -104,7 +104,8 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
       if ((_pageController.page == 0 &&
               (_firstNameController.text.trim().isEmpty ||
                   _surnameController.text.trim().isEmpty)) ||
-                  (_pageController.page==1&&_currentLocationController.text.trim().isEmpty)||
+          (_pageController.page == 1 &&
+              _currentLocationController.text.trim().isEmpty) ||
           (_pageController.page == 3 &&
               _mainSpecialtyController.text.trim().isEmpty) ||
           (_pageController.page == 5 && _servicesNotifier.value.isEmpty) ||
@@ -137,7 +138,7 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
     //current location page listeners
 
     _currentLocationController.addListener(() {
-      if (_currentLocationController.text.trim().isEmpty  ) {
+      if (_currentLocationController.text.trim().isEmpty) {
         canGoNext.value = false;
       } else {
         canGoNext.value = true;
@@ -745,22 +746,20 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
                               doctor: Doctor(
                                 firstName: _firstNameController.text.trim(),
                                 surname: _surnameController.text.trim(),
-                                currentLocation: _currentLocationController.text
-                                        .trim()
-                                        .isEmpty
-                                    ? null
-                                    : Experience(
-                                        location: _currentLocationController
-                                            .text
-                                            .trim(),
-                                        dateTimeRange: DateTimeRange(
-                                          start:
-                                              _currentLocationStartDateNotifier
-                                                      .value ??
-                                                  DateTime(0),
-                                          end: DateTime(5000),
-                                        ),
-                                      ),
+                                currentLocation: Experience(
+                                  location:
+                                      _currentLocationController.text.trim(),
+                                  dateTimeRange:
+                                      _currentLocationStartDateNotifier.value ==
+                                              null
+                                          ? null
+                                          : DateTimeRange(
+                                              start:
+                                                  _currentLocationStartDateNotifier
+                                                      .value!,
+                                              end: DateTime(2100),
+                                            ),
+                                ),
                                 experiences: _experiencesNotifier.value,
                                 mainSpecialty:
                                     _mainSpecialtyController.text.trim(),

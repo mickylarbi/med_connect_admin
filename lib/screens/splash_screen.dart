@@ -33,11 +33,13 @@ class _SplashScreenState extends State<SplashScreen> {
         if (auth.currentUser == null) {
           // if user isn't signed in
 
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      const AuthScreen(authType: AuthType.signUp)));
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    const AuthScreen(authType: AuthType.signUp)),
+            (route) => false,
+          );
         } else {
           // if user is signed in
 
@@ -45,32 +47,40 @@ class _SplashScreenState extends State<SplashScreen> {
             // check if user is in firebase
 
             if (value.data() == null) {
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const SelectCategoryScreen()));
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const SelectCategoryScreen()),
+                (route) => false,
+              );
             }
 
             if (value.data() != null &&
                 value.data()!['adminRole'] == 'doctor') {
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const DoctorTabView()));
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const DoctorTabView()),
+                (route) => false,
+              );
             }
           }).onError((error, stackTrace) {
             if (error is FirebaseException && error.code == 'not-found') {
               // if user doesn't exist in firebase
 
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const SelectCategoryScreen()));
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const SelectCategoryScreen()),
+                (route) => false,
+              );
             } else {
               // can't check if user is in firebase
 
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => ErrorScreen()));
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => ErrorScreen()),
+                (route) => false,
+              );
             }
           });
         }
@@ -123,38 +133,45 @@ class ErrorScreen extends StatelessWidget {
                   // check if user is in firebase
 
                   if (value.data() == null) {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                const SelectCategoryScreen()));
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SelectCategoryScreen()),
+                      (route) => false,
+                    );
                   }
 
                   if (value.data() != null &&
                       value.data()!['adminRole'] == 'doctor') {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const DoctorTabView()));
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const DoctorTabView()),
+                      (route) => false,
+                    );
                   }
                 }).onError((error, stackTrace) {
                   if (error is FirebaseException && error.code == 'not-found') {
                     // if user doesn't exist in firebase
 
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                const SelectCategoryScreen()));
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SelectCategoryScreen()),
+                      (route) => false,
+                    );
                   } else {
                     // can't check if user is in firebase
 
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => ErrorScreen()));
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => ErrorScreen()),
+                      (route) => false,
+                    );
                   }
                 });
               },
-              child: const Text('Try again'),
+              child: const Text('Retry'),
             ),
           ],
         ),
