@@ -60,7 +60,7 @@ class CustomAppBar extends StatelessWidget {
 }
 
 List<Widget> fancyAppBar(BuildContext context,
-    ScrollController scrollController, String title, List<Widget> actions) {
+    ScrollController scrollController,String title, List<Widget> actions) {
   return [
     AnimatedBuilder(
       animation: scrollController,
@@ -79,16 +79,13 @@ List<Widget> fancyAppBar(BuildContext context,
                     ? (50 - scrollController.offset) / 50
                     : 1
                 : 0,
-            child: Text(
-              //TODO: add filter icon
-              title,
-              style: TextStyle(
-                fontSize: scrollController.offset < 0
-                    ? 30 + (scrollController.offset.abs() * 0.05)
-                    : 30,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            child: Text(title,
+                style: TextStyle(
+                  fontSize: scrollController.offset < 0
+                      ? 30 + (scrollController.offset.abs() * 0.05)
+                      : 30,
+                  fontWeight: FontWeight.bold,
+                ),) ,
           ),
         );
       },
@@ -107,9 +104,7 @@ List<Widget> fancyAppBar(BuildContext context,
               child: Container(
                 height: 88,
                 alignment: Alignment.center,
-                child: HeaderText(
-                  text: title,
-                ),
+                child: HeaderText(text: title),
               ),
             );
           }),

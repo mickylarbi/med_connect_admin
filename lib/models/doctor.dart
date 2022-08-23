@@ -14,22 +14,19 @@ class Doctor {
   String? bio;
   Experience? currentLocation;
   List<String>? services;
-  List<DateTimeRange>? availablehours;
-  bool? isAvailableForHomeCalls;
 
-  Doctor(
-      {this.id,
-      this.firstName,
-      this.surname,
-      this.bio,
-      this.mainSpecialty,
-      this.otherSpecialties,
-      this.experiences,
-      this.services,
-      this.currentLocation,
-      this.availablehours,
-      this.reviews,
-      this.isAvailableForHomeCalls});
+  Doctor({
+    this.id,
+    this.firstName,
+    this.surname,
+    this.bio,
+    this.mainSpecialty,
+    this.otherSpecialties,
+    this.experiences,
+    this.services,
+    this.currentLocation,
+    this.reviews,
+  });
 
   Doctor.fromFireStore(Map<String, dynamic> map, String dId) {
     id = dId;
@@ -57,14 +54,6 @@ class Doctor {
     currentLocation = Experience.fromFirestore(
         map['currentLocation'] as Map<String, dynamic>);
 
-    List<Map>? al = map['availableHours'] as List<Map>?;
-    if (al != null) {
-      for (Map element in al) {
-        availablehours!.add(DateTimeRange(
-            start: element['startDate'], end: element['endDate']));
-      }
-    }
-
     tempList = map['reviews'] as List<Map<String, dynamic>>?;
     if (tempList != null) {
       reviews = [];
@@ -72,8 +61,6 @@ class Doctor {
         reviews!.add(Review.fromFirestore(element));
       }
     }
-
-    isAvailableForHomeCalls = map['isAvailableForHomeCalls'] as bool?;
   }
 
   Map<String, dynamic> toMap() {
@@ -87,12 +74,8 @@ class Doctor {
         'experiences': experiences!.map((e) => e.toMap()).toList(),
       'services': services,
       if (currentLocation != null) 'currentLocation': currentLocation!.toMap(),
-      if (availablehours != null)
-        'availableHours': availablehours!
-            .map((e) => {'startDate': e.start, 'endDate': e.end})
-            .toList(),
       'reviews': reviews,
-      'isAvailableForHomeCalls': isAvailableForHomeCalls,
+      'adminRole': 'doctor'
     };
   }
 
@@ -107,8 +90,7 @@ class Doctor {
       otherSpecialties == other.otherSpecialties &&
       experiences == other.experiences &&
       services == other.services &&
-      currentLocation == other.currentLocation &&
-      isAvailableForHomeCalls == other.isAvailableForHomeCalls;
+      currentLocation == other.currentLocation;
 
   @override
   int get hashCode => hashValues(
@@ -119,6 +101,5 @@ class Doctor {
         hashList(experiences),
         hashList(services),
         currentLocation,
-        isAvailableForHomeCalls,
       );
 }

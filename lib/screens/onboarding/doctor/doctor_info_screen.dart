@@ -1,21 +1,28 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:med_connect_admin/models/doctor.dart';
 import 'package:med_connect_admin/models/experience.dart';
 import 'package:med_connect_admin/screens/onboarding/doctor/edit_experience_screen.dart';
 import 'package:med_connect_admin/screens/onboarding/doctor/doctor_summary_screen.dart';
+import 'package:med_connect_admin/screens/onboarding/pharmacy/pharmacy_info.dart';
 import 'package:med_connect_admin/screens/shared/custom_app_bar.dart';
 import 'package:med_connect_admin/screens/shared/custom_buttons.dart';
 import 'package:med_connect_admin/screens/shared/custom_textformfield.dart';
 import 'package:med_connect_admin/screens/shared/outline_icon_button.dart';
 import 'package:med_connect_admin/utils/constants.dart';
+import 'package:med_connect_admin/utils/dialogs.dart';
 import 'package:med_connect_admin/utils/functions.dart';
 import 'package:time_range_picker/time_range_picker.dart';
 
 class DoctorInfoScreen extends StatefulWidget {
   final Doctor? doctor;
-  const DoctorInfoScreen({Key? key, this.doctor}) : super(key: key);
+  final XFile? picture;
+  const DoctorInfoScreen({Key? key, this.doctor, this.picture})
+      : super(key: key);
 
   @override
   State<DoctorInfoScreen> createState() => _DoctorInfoScreenState();
@@ -27,6 +34,7 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
 
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _surnameController = TextEditingController();
+  final FocusNode _surnameNode = FocusNode();
 
   final TextEditingController _currentLocationController =
       TextEditingController();
@@ -43,13 +51,14 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
       ValueNotifier<List<String>>([]);
   final TextEditingController _otherSpecialtiesController =
       TextEditingController();
+  final FocusNode _otherSpecialtiesNode = FocusNode();
 
   final ValueNotifier<List<String>> _servicesNotifier =
       ValueNotifier<List<String>>([]);
   final TextEditingController _servicesController = TextEditingController();
+  final FocusNode _servicesNode = FocusNode();
 
-  final ValueNotifier<List<DateTimeRange>> _availableHoursNotifier =
-      ValueNotifier<List<DateTimeRange>>([]);
+  final ValueNotifier<XFile?> pictureNotifier = ValueNotifier<XFile?>(null);
 
   List pagesList() => [
         namePage(),
@@ -58,8 +67,7 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
         mainSpecialtyPage(),
         otherSpecialtiesPage(),
         servicesPage(),
-        // availableHoursPage(),
-        // summaryPage(),
+        photoPage(),
       ];
 
   @override
@@ -87,8 +95,7 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
 
       _servicesNotifier.value = widget.doctor!.services!;
 
-      // _availableHoursNotifier.value = widget.doctor!.availablehours!;
-      //TODO:
+      pictureNotifier.value = widget.picture;
     }
 
     _pageController.addListener(() {
@@ -97,9 +104,11 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
       if ((_pageController.page == 0 &&
               (_firstNameController.text.trim().isEmpty ||
                   _surnameController.text.trim().isEmpty)) ||
+                  (_pageController.page==1&&_currentLocationController.text.trim().isEmpty)||
           (_pageController.page == 3 &&
               _mainSpecialtyController.text.trim().isEmpty) ||
-          (_pageController.page == 5 && _servicesNotifier.value.isEmpty)) {
+          (_pageController.page == 5 && _servicesNotifier.value.isEmpty) ||
+          (_pageController.page == 6 && pictureNotifier.value == null)) {
         canGoNext.value = false;
       } else {
         canGoNext.value = true;
@@ -125,19 +134,17 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
       }
     });
 
-    ///current location page listeners
+    //current location page listeners
 
-    // _currentLocationController.addListener(() {
-    //   if (_currentLocationController.text.trim().isEmpty ||
-    //       _currentLocationStartDateNotifier.value == null) {
-    //     canGoNext.value = false;
-    //   } else {
-    //     canGoNext.value = true;
-    //   }
-    // });
+    _currentLocationController.addListener(() {
+      if (_currentLocationController.text.trim().isEmpty  ) {
+        canGoNext.value = false;
+      } else {
+        canGoNext.value = true;
+      }
+    });
     // _currentLocationStartDateNotifier.addListener(() {
-    //   if (_currentLocationController.text.trim().isEmpty ||
-    //       _currentLocationStartDateNotifier.value == null) {
+    //   if (_currentLocationController.text.trim().isEmpty ) {
     //     canGoNext.value = false;
     //   } else {
     //     canGoNext.value = true;
@@ -184,15 +191,15 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
       }
     });
 
-    ///working hours page listeners
+    // profile picture page listener
 
-    // _availableHoursNotifier.addListener(() {
-    //   if (_availableHoursNotifier.value.isEmpty) {
-    //     canGoNext.value = false;
-    //   } else {
-    //     canGoNext.value = true;
-    //   }
-    // });
+    pictureNotifier.addListener(() {
+      if (pictureNotifier.value == null) {
+        canGoNext.value = false;
+      } else {
+        canGoNext.value = true;
+      }
+    });
 
     //TODO: add listeners for all relevant pages
   }
@@ -202,7 +209,7 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
     return Scaffold(
       body: GestureDetector(
         onTap: () {
-          FocusScope.of(context).unfocus();
+          FocusManager.instance.primaryFocus?.unfocus();
         },
         child: SafeArea(
           child: Stack(
@@ -217,9 +224,10 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
                   ),
                 ),
               ),
-              const CustomAppBar(
-                leading: Icons.arrow_back,
-              ),
+              if (widget.doctor == null)
+                const CustomAppBar(
+                  leading: Icons.arrow_back,
+                ),
               Align(
                 alignment: Alignment.bottomCenter,
                 child: SizedBox(
@@ -235,26 +243,24 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
     );
   }
 
-  Center _bluePrint(List<Widget> children) {
+  Container _bluePrint(List<Widget> children) {
     //TODO: alternate pictures
-    return Center(
+    return Container(
+      alignment: Alignment.center,
+      padding: const EdgeInsets.symmetric(horizontal: 36),
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage(
+            'assets/images/undraw_doctors_hwty.png',
+          ),
+          fit: BoxFit.fitWidth,
+          opacity: .1,
+        ),
+      ),
       child: SingleChildScrollView(
-        // controller: controller,
-        padding: const EdgeInsets.symmetric(horizontal: 36),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Center(
-              child: Image.asset(
-                'assets/images/undraw_doctors_hwty.png',
-                width: kScreenWidth(context) - 72,
-                fit: BoxFit.fitWidth,
-              ),
-            ),
-            const SizedBox(height: 30),
-            ...children
-          ],
+          children: children,
         ),
       ),
     );
@@ -269,11 +275,20 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
         CustomTextFormField(
           hintText: 'First Name',
           controller: _firstNameController,
+          onFieldSubmitted: (value) {
+            _surnameNode.requestFocus();
+          },
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: 20),
         CustomTextFormField(
           hintText: 'Surname',
           controller: _surnameController,
+          focusNode: _surnameNode,
+          onFieldSubmitted: (value) {
+            _pageController.nextPage(
+                duration: const Duration(seconds: 1),
+                curve: Curves.easeOutQuint);
+          },
         ),
       ];
 
@@ -331,6 +346,19 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
                 ],
               );
             }),
+        const SizedBox(height: 12),
+        Align(
+          alignment: Alignment.centerRight,
+          child: TextButton(
+            onPressed: () {
+              _currentLocationStartDateNotifier.value = null;
+            },
+            child: const Text(
+              'Clear date',
+              style: TextStyle(decoration: TextDecoration.underline),
+            ),
+          ),
+        ),
         const SizedBox(height: 50),
       ];
 
@@ -440,6 +468,11 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
         CustomTextFormField(
           hintText: 'Main specialty',
           controller: _mainSpecialtyController,
+          onFieldSubmitted: (value) {
+            _pageController.nextPage(
+                duration: const Duration(seconds: 1),
+                curve: Curves.easeOutQuint);
+          },
         )
       ];
 
@@ -488,18 +521,41 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
           },
         ),
         const SizedBox(height: 20),
-        CustomTextFormField(
-          hintText: 'Enter specialty',
-          controller: _otherSpecialtiesController,
-          textInputAction: TextInputAction.done,
-          onFieldSubmitted: (value) {
-            if (!_otherSpecialtiesNotifier.value.contains(value)) {
-              _otherSpecialtiesController.clear();
-              List<String> temp = _otherSpecialtiesNotifier.value;
-              temp.add(value.trim());
-              _otherSpecialtiesNotifier.value = [...temp];
-            }
-          },
+        Row(
+          children: [
+            Expanded(
+              child: CustomTextFormField(
+                hintText: 'Enter specialty',
+                controller: _otherSpecialtiesController,
+                textInputAction: TextInputAction.done,
+                focusNode: _otherSpecialtiesNode,
+                onFieldSubmitted: (value) {
+                  onOtherSpecialtiesFieldSubmitted();
+                  _otherSpecialtiesNode.requestFocus();
+                },
+              ),
+            ),
+            const SizedBox(width: 10),
+            Material(
+              color: Colors.blueGrey[50],
+              borderRadius: BorderRadius.circular(14),
+              child: InkWell(
+                  borderRadius: BorderRadius.circular(14),
+                  onTap: () {
+                    onOtherSpecialtiesFieldSubmitted();
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                    child: Text(
+                      'Add',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  )),
+            ),
+          ],
         ),
         const SizedBox(height: 50),
       ];
@@ -549,163 +605,129 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
           },
         ),
         const SizedBox(height: 20),
-        CustomTextFormField(
-          hintText: 'Enter service',
-          controller: _servicesController,
-          textInputAction: TextInputAction.done,
-          onFieldSubmitted: (value) {
-            if (!_servicesNotifier.value.contains(value)) {
-              _servicesController.clear();
-              List<String> temp = _servicesNotifier.value;
-              temp.add(value.trim());
-              _servicesNotifier.value = [...temp];
-            }
-          },
-        ),
-        const SizedBox(height: 50),
-      ];
-
-  List<Widget> availableHoursPage() => [
-        const Text(
-          'What times work for you?',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-        ),
-        const SizedBox(height: 30),
-        ValueListenableBuilder(
-          valueListenable: _availableHoursNotifier,
-          builder:
-              (BuildContext context, List<DateTimeRange> value, Widget? child) {
-            return ListView.separated(
-              shrinkWrap: true,
-              primary: false,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: value.length,
-              separatorBuilder: (BuildContext context, int index) {
-                return const SizedBox(height: 10);
-              },
-              itemBuilder: (BuildContext context, int index) {
-                return Material(
-                  color: Colors.grey[100],
-                  borderRadius: BorderRadius.circular(14),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 36, vertical: 14),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                            '${value[index].start.hour}:${value[index].start.minute} - ${value[index].end.hour}:${value[index].end.minute}'),
-                        IconButton(
-                          onPressed: () {
-                            List<DateTimeRange> temp = value;
-                            temp.removeAt(index);
-                            _availableHoursNotifier.value = [...temp];
-                          },
-                          icon: const Icon(Icons.clear),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            );
-          },
-        ),
-        const SizedBox(height: 20),
-        Material(
-          color: Colors.grey[100],
-          borderRadius: BorderRadius.circular(14),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(14),
-            onTap: () async {
-              var result = await showTimeRangePicker(context: context);
-
-              print(result.toString());
-
-              // if (result != null && result.action == EditAction.edit) {
-              //   List<DateTimeRange> temp = _availableHoursNotifier.value;
-              //   temp.add(result.object);
-              //   _availableHoursNotifier.value = [...temp];
-              // }
-            },
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 14),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Text(
-                    'Edit available hours',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      decoration: TextDecoration.underline,
-                    ),
-                  ),
-                  SizedBox(width: 5),
-                  Icon(Icons.add),
-                ],
+        Row(
+          children: [
+            Expanded(
+              child: CustomTextFormField(
+                hintText: 'Enter service',
+                controller: _servicesController,
+                textInputAction: TextInputAction.done,
+                focusNode: _servicesNode,
+                onFieldSubmitted: (value) {
+                  onServicesFieldSubmitted();
+                  FocusScope.of(context).requestFocus(_servicesNode);
+                },
               ),
             ),
-          ),
+            const SizedBox(width: 10),
+            Material(
+              color: Colors.blueGrey[50],
+              borderRadius: BorderRadius.circular(14),
+              child: InkWell(
+                  borderRadius: BorderRadius.circular(14),
+                  onTap: () {
+                    onServicesFieldSubmitted();
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                    child: Text(
+                      'Add',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  )),
+            ),
+          ],
         ),
         const SizedBox(height: 50),
       ];
 
-  List<Widget> summaryPage() => [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text(
-              'Summary',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-            ),
-            OutlineIconButton(
-                iconData: Icons.edit,
-                onPressed: () {
-                  _pageController.jumpToPage(0);
-                })
-          ],
-        ),
-        const SizedBox(height: 30),
-        const Text('Name:'),
-        Text(
-          '${_firstNameController.text.trim()} ${_surnameController.text.trim()}',
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 20),
-        const Text('Current location:'),
-        if (_currentLocationStartDateNotifier.value != null)
-          Text(
-            '${_currentLocationController.text.trim()} (since ${DateFormat.yMMMMd().format(_currentLocationStartDateNotifier.value!)})',
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-        const SizedBox(height: 20),
-        const Text('Experience:'),
-        if (_experiencesNotifier.value.isEmpty) const Text('-'),
-        if (_experiencesNotifier.value.isNotEmpty)
-          Column(
-              children: _experiencesNotifier.value
-                  .map((e) => Text(e.toString()))
-                  .toList()),
-        const SizedBox(height: 20),
-        const Text('Main Specialty:'),
-        Text(
-          _mainSpecialtyController.text.trim(),
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 20),
-        const Text('Other specialties:'),
-        if (_otherSpecialtiesNotifier.value.isEmpty) const Text('-'),
-        if (_otherSpecialtiesNotifier.value.isNotEmpty)
-          Column(
-              children:
-                  _otherSpecialtiesNotifier.value.map((e) => Text(e)).toList()),
-        const SizedBox(height: 20),
-        const Text('Services provided:'),
-        if (_servicesNotifier.value.isEmpty) const Text('-'),
-        if (_servicesNotifier.value.isNotEmpty)
-          Column(
-              children: _servicesNotifier.value.map((e) => Text(e)).toList()),
-      ];
+  photoPage() {
+    return [
+      ValueListenableBuilder<XFile?>(
+          valueListenable: pictureNotifier,
+          builder: (context, value, child) {
+            final ImagePicker picker = ImagePicker();
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const PageViewHeaderText('Add a picture'),
+                const SizedBox(height: 20),
+                if (value != null)
+                  Center(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Image.file(
+                        File(value.path),
+                        height: 250,
+                        width: 250,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                const SizedBox(height: 20),
+                Center(
+                  child: TextButton(
+                    onPressed: () {
+                      showCustomBottomSheet(
+                        context,
+                        [
+                          ListTile(
+                            leading: const Icon(Icons.camera_alt),
+                            title: const Text('Take a photo'),
+                            onTap: () async {
+                              picker
+                                  .pickImage(source: ImageSource.camera)
+                                  .then((value) {
+                                Navigator.pop(context);
+                                if (value != null) {
+                                  pictureNotifier.value = value;
+                                }
+                              }).onError((error, stackTrace) {
+                                showAlertDialog(context);
+                              });
+                            },
+                          ),
+                          ListTile(
+                            leading: const Icon(Icons.photo),
+                            title: const Text('Choose from gallery'),
+                            onTap: () async {
+                              picker
+                                  .pickImage(source: ImageSource.gallery)
+                                  .then((value) {
+                                Navigator.pop(context);
+                                if (value != null) {
+                                  pictureNotifier.value = value;
+                                }
+                              }).onError((error, stackTrace) {
+                                showAlertDialog(context);
+                              });
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 14),
+                      backgroundColor: Colors.black54,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: Text(
+                      value == null ? 'Choose photo' : 'Change photo',
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          })
+    ];
+  }
 
   Widget nextButton() {
     return ValueListenableBuilder(
@@ -719,32 +741,33 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
                           context,
                           CupertinoPageRoute(
                             builder: (context) => DoctorSummaryScreen(
+                              picture: pictureNotifier.value!,
                               doctor: Doctor(
-                                  firstName: _firstNameController.text.trim(),
-                                  surname: _surnameController.text.trim(),
-                                  currentLocation: _currentLocationController
-                                          .text
-                                          .trim()
-                                          .isEmpty
-                                      ? null
-                                      : Experience(
-                                          location: _currentLocationController
-                                              .text
-                                              .trim(),
-                                          dateTimeRange: DateTimeRange(
-                                            start:
-                                                _currentLocationStartDateNotifier
-                                                        .value ??
-                                                    DateTime(0),
-                                            end: DateTime(5000),
-                                          ),
+                                firstName: _firstNameController.text.trim(),
+                                surname: _surnameController.text.trim(),
+                                currentLocation: _currentLocationController.text
+                                        .trim()
+                                        .isEmpty
+                                    ? null
+                                    : Experience(
+                                        location: _currentLocationController
+                                            .text
+                                            .trim(),
+                                        dateTimeRange: DateTimeRange(
+                                          start:
+                                              _currentLocationStartDateNotifier
+                                                      .value ??
+                                                  DateTime(0),
+                                          end: DateTime(5000),
                                         ),
-                                  experiences: _experiencesNotifier.value,
-                                  mainSpecialty:
-                                      _mainSpecialtyController.text.trim(),
-                                  otherSpecialties:
-                                      _otherSpecialtiesNotifier.value,
-                                  services: _servicesNotifier.value),
+                                      ),
+                                experiences: _experiencesNotifier.value,
+                                mainSpecialty:
+                                    _mainSpecialtyController.text.trim(),
+                                otherSpecialties:
+                                    _otherSpecialtiesNotifier.value,
+                                services: _servicesNotifier.value,
+                              ),
                             ),
                           ),
                           (route) => false);
@@ -768,6 +791,27 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
         });
   }
 
+  onOtherSpecialtiesFieldSubmitted() {
+    if (!_otherSpecialtiesNotifier.value
+            .contains(_otherSpecialtiesController.text.trim()) &&
+        _otherSpecialtiesController.text.trim().isNotEmpty) {
+      List<String> temp = _otherSpecialtiesNotifier.value;
+      temp.add(_otherSpecialtiesController.text.trim());
+      _otherSpecialtiesNotifier.value = [...temp];
+      _otherSpecialtiesController.clear();
+    }
+  }
+
+  onServicesFieldSubmitted() {
+    if (!_servicesNotifier.value.contains(_servicesController.text.trim()) &&
+        _servicesController.text.trim().isNotEmpty) {
+      List<String> temp = _servicesNotifier.value;
+      temp.add(_servicesController.text.trim());
+      _servicesNotifier.value = [...temp];
+      _servicesController.clear();
+    }
+  }
+
   //TODO: profile image
 
   @override
@@ -787,10 +831,13 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
 
     _otherSpecialtiesNotifier.dispose();
     _otherSpecialtiesController.dispose();
+    _otherSpecialtiesNode.dispose();
 
     _servicesNotifier.dispose();
+    _servicesController.dispose();
+    _servicesNode.dispose();
 
-    _availableHoursNotifier.dispose();
+    pictureNotifier.dispose();
     super.dispose();
   }
 }

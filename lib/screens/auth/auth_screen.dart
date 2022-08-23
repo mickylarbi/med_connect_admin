@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:med_connect_admin/firebase_services/auth_service.dart';
-import 'package:med_connect_admin/screens/home/doctor/doctor_tab_view.dart';
 import 'package:med_connect_admin/screens/shared/custom_buttons.dart';
 import 'package:med_connect_admin/screens/shared/custom_text_span.dart';
 import 'package:med_connect_admin/screens/shared/custom_textformfield.dart';
@@ -143,16 +141,51 @@ class _AuthScreenState extends State<AuthScreen> {
 
 enum AuthType { login, signUp }
 
-class AuthWidget extends StatelessWidget {
-  AuthWidget({Key? key}) : super(key: key);
-  final AuthService _authenticationService = AuthService();
+// class AuthWidget extends StatefulWidget {
+//   const AuthWidget({Key? key}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    if (_authenticationService.currentUser == null) {
-      return const AuthScreen(authType: AuthType.login);
-    }
+//   @override
+//   State<AuthWidget> createState() => _AuthWidgetState();
+// }
 
-    return const DoctorTabView();
-  }
-}
+// class _AuthWidgetState extends State<AuthWidget> {
+//   final AuthService _auth = AuthService();
+
+//   FirestoreService db = FirestoreService();
+
+//   @override
+//   Widget build(BuildContext context)  {
+//     if (_auth.currentUser == null) {
+//       return const AuthScreen(authType: AuthType.login);
+//     } else {
+//       Widget pageToReturn = const Scaffold(
+//         body: Center(child: CircularProgressIndicator.adaptive()),
+//       );
+
+
+//     try{
+
+//     }
+
+
+
+//       db.getDoctorInfo.timeout(ktimeout).then((value) {
+//         pageToReturn = DoctorTabView(
+//             doctor: Doctor.fromFireStore(value.data()!, value.id));
+//         setState(() {});
+//       }).onError((error, stackTrace) {
+//         if (error is FirebaseException && error.code == 'not-found') {
+//           pageToReturn = const SelectCategoryScreen();
+//           setState(() {});
+//         } else {
+//           pageToReturn = const Scaffold(
+//             body: Center(child: Text('Something went wrong')),
+//           );
+//           setState(() {});
+//         }
+//       });
+
+//       return pageToReturn;
+//     }
+//   }
+// }

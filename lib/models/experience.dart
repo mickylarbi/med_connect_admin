@@ -10,11 +10,13 @@ class Experience {
 
   Experience.fromFirestore(Map<String, dynamic> map) {
     location = map['location'];
-    dateTimeRange = DateTimeRange(
-        start: DateTime.fromMillisecondsSinceEpoch(
-            (map['startDate'] as Timestamp).millisecondsSinceEpoch),
-        end: DateTime.fromMillisecondsSinceEpoch(
-            (map['endDate'] as Timestamp).millisecondsSinceEpoch));
+    dateTimeRange = map['startDate'] == null && map['endDate'] == null
+        ? null
+        : DateTimeRange(
+            start: DateTime.fromMillisecondsSinceEpoch(
+                (map['startDate'] as Timestamp).millisecondsSinceEpoch),
+            end: DateTime.fromMillisecondsSinceEpoch(
+                (map['endDate'] as Timestamp).millisecondsSinceEpoch));
   }
 
   Map<String, dynamic> toMap() {

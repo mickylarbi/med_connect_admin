@@ -1,5 +1,14 @@
+import 'dart:developer';
+
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:med_connect_admin/firebase_services/auth_service.dart';
+import 'package:med_connect_admin/firebase_services/firestore_service.dart';
 import 'package:med_connect_admin/screens/auth/auth_screen.dart';
+import 'package:med_connect_admin/screens/home/doctor/doctor_tab_view.dart';
+import 'package:med_connect_admin/screens/onboarding/select_category_screen.dart';
+import 'package:med_connect_admin/utils/constants.dart';
+import 'package:med_connect_admin/utils/dialogs.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -10,6 +19,10 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   double opacity = 0;
+
+  AuthService auth = AuthService();
+  FirestoreService db = FirestoreService();
+
   @override
   void initState() {
     super.initState();
@@ -17,8 +30,50 @@ class _SplashScreenState extends State<SplashScreen> {
       opacity = 1;
       setState(() {});
       Future.delayed(const Duration(seconds: 4), () {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => AuthWidget()));
+        if (auth.currentUser == null) {
+          // if user isn't signed in
+
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      const AuthScreen(authType: AuthType.signUp)));
+        } else {
+          // if user is signed in
+
+          db.getAdminInfo.get().timeout(ktimeout).then((value) {
+            // check if user is in firebase
+
+            if (value.data() == null) {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const SelectCategoryScreen()));
+            }
+
+            if (value.data() != null &&
+                value.data()!['adminRole'] == 'doctor') {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const DoctorTabView()));
+            }
+          }).onError((error, stackTrace) {
+            if (error is FirebaseException && error.code == 'not-found') {
+              // if user doesn't exist in firebase
+
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const SelectCategoryScreen()));
+            } else {
+              // can't check if user is in firebase
+
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => ErrorScreen()));
+            }
+          });
+        }
       });
     });
   }
@@ -41,6 +96,67 @@ class _SplashScreenState extends State<SplashScreen> {
               )
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class ErrorScreen extends StatelessWidget {
+  ErrorScreen({Key? key}) : super(key: key);
+
+  FirestoreService db = FirestoreService();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text('Something went wrong'),
+            TextButton(
+              onPressed: () {
+                showLoadingDialog(context);
+
+                db.getAdminInfo.get().timeout(ktimeout).then((value) {
+                  // check if user is in firebase
+
+                  if (value.data() == null) {
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                const SelectCategoryScreen()));
+                  }
+
+                  if (value.data() != null &&
+                      value.data()!['adminRole'] == 'doctor') {
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const DoctorTabView()));
+                  }
+                }).onError((error, stackTrace) {
+                  if (error is FirebaseException && error.code == 'not-found') {
+                    // if user doesn't exist in firebase
+
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                const SelectCategoryScreen()));
+                  } else {
+                    // can't check if user is in firebase
+
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) => ErrorScreen()));
+                  }
+                });
+              },
+              child: const Text('Try again'),
+            ),
+          ],
         ),
       ),
     );

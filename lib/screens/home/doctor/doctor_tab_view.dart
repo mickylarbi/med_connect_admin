@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:med_connect_admin/screens/home/doctor/doctor_appointments/appointment_list_page.dart';
-import 'package:med_connect_admin/screens/home/doctor/doctor_home_page/home_page.dart';
+import 'package:med_connect_admin/screens/home/doctor/doctor_home_page/doctor_home_page.dart';
 
 class DoctorTabView extends StatefulWidget {
-  const DoctorTabView({Key? key}) : super(key: key);
+  const DoctorTabView({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<DoctorTabView> createState() => _DoctorTabViewState();
@@ -16,7 +18,6 @@ class _DoctorTabViewState extends State<DoctorTabView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: kBackgroundColor,
       body: SafeArea(
         child: PageView(
             controller: _pageController,
@@ -43,12 +44,6 @@ class _DoctorTabViewState extends State<DoctorTabView> {
                 BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
                 BottomNavigationBarItem(
                     icon: Icon(Icons.calendar_month), label: ''),
-                // BottomNavigationBarItem(
-                //     icon: Icon(Icons.person_search), label: ''),
-                // BottomNavigationBarItem(
-                //     icon: Icon(Icons.chat_bubble_rounded), label: ''),
-                // BottomNavigationBarItem(
-                //     icon: Icon(Icons.person_add_alt), label: ''),
               ],
             );
           }),
@@ -59,6 +54,7 @@ class _DoctorTabViewState extends State<DoctorTabView> {
   void dispose() {
     _pageController.dispose();
     _currentIndex.dispose();
+
 
     super.dispose();
   }

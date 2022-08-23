@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:med_connect_admin/firebase_services/auth_service.dart';
 import 'package:med_connect_admin/firebase_services/firestore_service.dart';
@@ -11,7 +14,9 @@ import 'package:med_connect_admin/utils/dialogs.dart';
 
 class DoctorSummaryScreen extends StatelessWidget {
   final Doctor doctor;
-  DoctorSummaryScreen({Key? key, required this.doctor}) : super(key: key);
+  final XFile picture;
+  DoctorSummaryScreen({Key? key, required this.doctor, required this.picture})
+      : super(key: key);
 
   ScrollController scrollController = ScrollController();
 
@@ -28,6 +33,18 @@ class DoctorSummaryScreen extends StatelessWidget {
               padding: const EdgeInsets.all(36),
               children: [
                 const SizedBox(height: 130),
+                Center(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Image.file(
+                      File(picture.path),
+                      fit: BoxFit.fitWidth,
+                      width: 200,
+                      height: 200,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 50),
                 const Text('Name'),
                 Text(
                   '${doctor.firstName} ${doctor.surname}',
@@ -98,6 +115,7 @@ class DoctorSummaryScreen extends StatelessWidget {
                                     fontWeight: FontWeight.bold),
                               ))
                           .toList()),
+                const SizedBox(height: 50)
               ],
             ),
             Align(
@@ -108,11 +126,12 @@ class DoctorSummaryScreen extends StatelessWidget {
                     padding: const EdgeInsets.all(36),
                     child: CustomFlatButton(
                         onPressed: () {
-                          showConfirmationDialog(context, confirmFunction: () {
-                            db.uploadDoctorInfo(context, doctor);
+                          showConfirmationDialog(context,
+                              message: 'Upload info?', confirmFunction: () {
+                            db.uploadDoctorInfo(context, doctor, picture);
                           });
                         },
-                        child: const Text('Done'))),
+                        child: const Text('Upload info'))),
               ),
             ),
             ...fancyAppBar(
@@ -126,7 +145,10 @@ class DoctorSummaryScreen extends StatelessWidget {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => DoctorInfoScreen(doctor: doctor),
+                        builder: (context) => DoctorInfoScreen(
+                          doctor: doctor,
+                          picture: picture,
+                        ),
                       ),
                     );
                   },

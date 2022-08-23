@@ -8,6 +8,7 @@ class CustomTextFormField extends StatelessWidget {
   final TextCapitalization textCapitalization;
   final int? minLines;
   final void Function(String)? onFieldSubmitted;
+  final FocusNode? focusNode;
   const CustomTextFormField({
     Key? key,
     required this.hintText,
@@ -16,7 +17,7 @@ class CustomTextFormField extends StatelessWidget {
     this.textCapitalization = TextCapitalization.none,
     this.textInputAction,
     this.minLines = 1,
-    this.onFieldSubmitted,
+    this.onFieldSubmitted,this.focusNode,
   }) : super(key: key);
 
   @override
@@ -29,6 +30,7 @@ class CustomTextFormField extends StatelessWidget {
       maxLines: minLines,
       textInputAction: textInputAction,
       onFieldSubmitted: onFieldSubmitted,
+      focusNode: focusNode,
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: const TextStyle(color: Colors.grey),
