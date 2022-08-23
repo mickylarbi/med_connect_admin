@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -22,7 +23,7 @@ class FirestoreService {
   uploadDoctorInfo(BuildContext context, Doctor doctor, XFile picture) {
     showLoadingDialog(context);
 
-    _storageService.uploadProfileImage(picture).timeout(ktimeout).then((p0) {
+    _storageService.uploadProfileImage(picture).timeout(const Duration(minutes: 2)).then((p0) {
       instance
           .collection('admins')
           .doc(_auth.currentUser!.uid)
@@ -46,6 +47,7 @@ class FirestoreService {
       });
     }).onError((error, stackTrace) {
       Navigator.pop(context);
+      log(error.toString());
       showAlertDialog(context,
           message: 'Couldn\'t upload profile info. Try again');
     });
@@ -79,4 +81,3 @@ class FirestoreService {
   DocumentReference<Map<String, dynamic>> getpatientById(String id) =>
       instance.collection('patients').doc(id);
 }
-

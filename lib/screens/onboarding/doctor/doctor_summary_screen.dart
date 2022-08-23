@@ -38,7 +38,7 @@ class DoctorSummaryScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20),
                     child: Image.file(
                       File(picture.path),
-                      fit: BoxFit.fitWidth,
+                      fit: BoxFit.cover,
                       width: 200,
                       height: 200,
                     ),
@@ -55,7 +55,9 @@ class DoctorSummaryScreen extends StatelessWidget {
                 if (doctor.currentLocation == null) const Text('-'),
                 if (doctor.currentLocation != null)
                   Text(
-                    '${doctor.currentLocation!.location!} (since ${DateFormat.yMMMMd().format(doctor.currentLocation!.dateTimeRange!.start)})',
+                    doctor.currentLocation!.dateTimeRange!.start.year == 0
+                        ? doctor.currentLocation!.location!
+                        : '${doctor.currentLocation!.location!} (since ${DateFormat.yMMMMd().format(doctor.currentLocation!.dateTimeRange!.start)})',
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 const SizedBox(height: 30),
@@ -115,7 +117,7 @@ class DoctorSummaryScreen extends StatelessWidget {
                                     fontWeight: FontWeight.bold),
                               ))
                           .toList()),
-                const SizedBox(height: 50)
+                SizedBox(height: 50 + MediaQuery.of(context).padding.bottom)
               ],
             ),
             Align(
