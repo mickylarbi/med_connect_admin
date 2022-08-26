@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:med_connect_admin/models/appointment.dart';
+import 'package:med_connect_admin/models/doctor_appointment.dart';
 import 'package:med_connect_admin/screens/home/doctor/doctor_appointments/doctor_appointment_details_screen.dart';
+import 'package:med_connect_admin/screens/home/doctor/doctor_appointments/patient_profile_screen.dart';
 import 'package:med_connect_admin/screens/shared/header_text.dart';
 import 'package:med_connect_admin/utils/functions.dart';
 
@@ -49,13 +50,11 @@ class DoctorAppointmentTodayCard extends StatelessWidget {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: Image.asset(
-                    //TODO:
-                    'assets/images/humberto-chavez-FVh_yqLR9eA-unsplash.jpg',
+                  child: ProfileImageWidget(
+                    patientId: appointment.patientId!,
                     height: 40,
                     width: 40,
-                    fit: BoxFit.cover,
-                    alignment: Alignment.topCenter,
+                    borderRadius: BorderRadius.circular(10),
                   ),
                 ),
                 Container(
@@ -156,16 +155,49 @@ class DoctorAppointmentCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     HeaderText(text: appointment.service!),
-                    Text(appointment.doctorName!),
-                    Text(appointment.location!)
+                    Text(appointment.patientName!),
+                    Text(appointment.venueString!)
                   ],
                 ),
               ),
               const Spacer(),
-              Icon(
-                Icons.chevron_right_rounded,
-                color: Colors.grey.withOpacity(.5),
-                size: 40,
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  const CircleAvatar(
+                    //placeholder for centering date
+                    backgroundColor: Colors.transparent,
+                    radius: 10,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        color: Colors.blueGrey.withOpacity(.15)),
+                    child: Text(
+                      DateFormat.jm().format(appointment.dateTime!),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  // Icon(
+                  //   Icons.chevron_right_rounded,
+                  //   color: Colors.grey.withOpacity(.5),
+                  //   size: 40,
+                  // ),
+
+                  if (appointment.isConfirmed != null &&
+                      appointment.isConfirmed!)
+                    const CircleAvatar(
+                      backgroundColor: Colors.green,
+                      radius: 10,
+                      child: Icon(
+                        Icons.done,
+                        size: 10,
+                        color: Colors.white,
+                      ),
+                    ),
+                ],
               )
             ],
           )),

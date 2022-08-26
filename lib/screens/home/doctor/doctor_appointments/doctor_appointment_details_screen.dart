@@ -1,13 +1,13 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:med_connect_admin/firebase_services/firestore_service.dart';
-import 'package:med_connect_admin/models/appointment.dart';
-import 'package:med_connect_admin/screens/home/doctor/patient_profile_screen.dart';
+import 'package:med_connect_admin/models/doctor_appointment.dart';
+import 'package:med_connect_admin/screens/home/doctor/doctor_appointments/patient_profile_screen.dart';
 import 'package:med_connect_admin/screens/shared/custom_app_bar.dart';
-import 'package:med_connect_admin/screens/shared/custom_buttons.dart';
+import 'package:med_connect_admin/utils/constants.dart';
 import 'package:med_connect_admin/utils/dialogs.dart';
 import 'package:med_connect_admin/utils/functions.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DoctorAppointmentDetailsScreen extends StatefulWidget {
   final DoctorAppointment appointment;
@@ -63,11 +63,11 @@ class _DoctorAppointmentDetailsScreenState
 
               //SYMPTOMS
 
-              if (widget.appointment.symptoms != null ||
+              if (widget.appointment.symptoms != null &&
                   widget.appointment.symptoms!.isNotEmpty)
                 const SizedBox(height: 20),
 
-              if (widget.appointment.symptoms != null ||
+              if (widget.appointment.symptoms != null &&
                   widget.appointment.symptoms!.isNotEmpty)
                 Material(
                   color: Colors.grey.withOpacity(.2),
@@ -97,11 +97,11 @@ class _DoctorAppointmentDetailsScreenState
                 ),
 
               //CONDITIONS
-              if (widget.appointment.conditions != null ||
+              if (widget.appointment.conditions != null &&
                   widget.appointment.conditions!.isNotEmpty)
                 const SizedBox(height: 20),
 
-              if (widget.appointment.conditions != null ||
+              if (widget.appointment.conditions != null &&
                   widget.appointment.conditions!.isNotEmpty)
                 Material(
                   color: Colors.grey.withOpacity(.2),
@@ -124,7 +124,7 @@ class _DoctorAppointmentDetailsScreenState
                           itemBuilder: (context, index) => Text(
                               '- ${widget.appointment.conditions![index]}'),
                           separatorBuilder: (context, index) =>
-                              SizedBox(height: 5),
+                              const SizedBox(height: 5),
                           itemCount: widget.appointment.conditions!.length,
                         ),
                       ],
@@ -135,11 +135,57 @@ class _DoctorAppointmentDetailsScreenState
               //LOCATION
 
               const SizedBox(height: 20),
-              Container(
-                padding: const EdgeInsets.all(24),
-                color: Colors.pink.withOpacity(.1),
-                child:
-                    Text('some implementation of google maps will go on here'),
+              Material(
+                color: Colors.grey.withOpacity(.2),
+                borderRadius: BorderRadius.circular(14),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Venue',
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                      Text(
+                        widget.appointment.venueString!,
+                      ),
+                      Center(
+                        child: TextButton(
+                          onPressed: () async {
+                            Uri mapUri =
+                                Uri.https('www.google.com', '/maps/search/', {
+                              'api': '1',
+                              'query':
+                                  '${widget.appointment.venueGeo!['lat']},${widget.appointment.venueGeo!['lng']}'
+                            });
+
+                            try {
+                              if (await canLaunchUrl(mapUri)) {
+                                await launchUrl(mapUri);
+                              } else {
+                                showAlertDialog(context);
+                              }
+                            } catch (e) {
+                              showAlertDialog(context);
+                            }
+                          },
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(
+                                Colors.blueGrey.withOpacity(.2)),
+                            shape: MaterialStateProperty.all(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10))),
+                            padding: MaterialStateProperty.all(
+                                const EdgeInsets.symmetric(horizontal: 14)),
+                          ),
+                          child: const Text('Open in Google Maps'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
               const Divider(height: 70),
 
@@ -191,14 +237,17 @@ class _DoctorAppointmentDetailsScreenState
                         showLoadingDialog(context);
                         db
                             .getappointmentById(widget.appointment.id!)
-                            .update({'isConfirmed': !value}).then((val) {
-                          Navigator.pop(context);
-                          isConfirmed.value = !value;
-                        }).onError((error, stackTrace) {
-                          Navigator.pop(context);
-                          showAlertDialog(context,
-                              message: 'Error confirming appointment.');
-                        });
+                            .update({'isConfirmed': !value})
+                            .timeout(ktimeout)
+                            .then((val) {
+                              Navigator.pop(context);
+                              isConfirmed.value = !value;
+                            })
+                            .onError((error, stackTrace) {
+                              Navigator.pop(context);
+                              showAlertDialog(context,
+                                  message: 'Error confirming appointment.');
+                            });
                       },
                       style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all(value

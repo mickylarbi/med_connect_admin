@@ -74,12 +74,16 @@ class FirestoreService {
     });
   }
 
-  Query<Map<String, dynamic>> get myAppointments => instance
-      .collection('doctorAppointments')
+  // DOCTOR APPOINTMENT
+
+  CollectionReference<Map<String, dynamic>> get doctorAppointmentsCollection =>
+      instance.collection('doctor_appointments');
+
+  Query<Map<String, dynamic>> get myAppointments => doctorAppointmentsCollection
       .where('doctorId', isEqualTo: _auth.currentUser!.uid);
 
   DocumentReference<Map<String, dynamic>> getappointmentById(String id) =>
-      instance.collection('doctorAppointments').doc(id);
+      doctorAppointmentsCollection.doc(id);
 
   DocumentReference<Map<String, dynamic>> getpatientById(String id) =>
       instance.collection('patients').doc(id);

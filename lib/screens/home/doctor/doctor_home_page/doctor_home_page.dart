@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:med_connect_admin/firebase_services/firestore_service.dart';
 import 'package:med_connect_admin/firebase_services/storage_service.dart';
-import 'package:med_connect_admin/models/appointment.dart';
+import 'package:med_connect_admin/models/doctor_appointment.dart';
 import 'package:med_connect_admin/models/doctor.dart';
 import 'package:med_connect_admin/screens/home/doctor/doctor_appointments/doctor_appointment_card.dart';
 import 'package:med_connect_admin/screens/home/doctor/doctor_home_page/doctor_profile/edit_doctor_profile_screen.dart';

@@ -24,7 +24,7 @@ class _DoctorTabViewState extends State<DoctorTabView> {
             physics: const NeverScrollableScrollPhysics(),
             children: const [
               DoctorHomePage(),
-              DoctorAppointmentsListPage(),
+             AppointmentsListPage(),
             ]),
       ),
       bottomNavigationBar: ValueListenableBuilder<int>(

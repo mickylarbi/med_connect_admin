@@ -1,12 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:intl/intl.dart';
 import 'package:med_connect_admin/firebase_services/firestore_service.dart';
+import 'package:med_connect_admin/firebase_services/storage_service.dart';
 import 'package:med_connect_admin/models/patient.dart';
 import 'package:med_connect_admin/screens/shared/custom_app_bar.dart';
-import 'package:med_connect_admin/screens/shared/custom_buttons.dart';
 import 'package:med_connect_admin/utils/dialogs.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -53,16 +52,8 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
                           horizontal: 36, vertical: 88),
                       children: [
                         Center(
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
-                            child: Image.asset(
-                              'assets/images/bruno-rodrigues-279xIHymPYY-unsplash.jpg',
-                              height: 150,
-                              width: 150,
-                              fit: BoxFit.cover,
-                              alignment: Alignment.topCenter,
-                            ),
-                          ),
+                          child: ProfileImageWidget(
+                              patientId: patient.id!, height: 150, width: 150),
                         ),
                         const SizedBox(height: 20),
                         Center(
@@ -141,55 +132,74 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
                         const SizedBox(height: 20),
                         Row(
                           children: [
-                            Expanded(
-                              child: Center(
-                                child: Column(
-                                  children: [
-                                    const Text(
-                                      'Age',
-                                      style: TextStyle(color: Colors.grey),
-                                    ),
-                                    Text(
-                                        '${(DateTime.now().difference(patient.dateOfBirth!).inDays ~/ 365)} years'),
-                                    const SizedBox(height: 20),
-                                    const Text(
-                                      'Gender',
-                                      style: TextStyle(color: Colors.grey),
-                                    ),
-                                    Text(patient.gender!),
-                                    const SizedBox(height: 20),
-                                  ],
+                            if (patient.dateOfBirth != null ||
+                                patient.gender != null)
+                              Expanded(
+                                child: Center(
+                                  child: Column(
+                                    children: [
+                                      if (patient.dateOfBirth != null)
+                                        const Text(
+                                          'Age',
+                                          style: TextStyle(color: Colors.grey),
+                                        ),
+                                      if (patient.dateOfBirth != null)
+                                        Text(
+                                            '${(DateTime.now().difference(patient.dateOfBirth!).inDays ~/ 365)} years'),
+                                      if (patient.dateOfBirth != null &&
+                                          patient.gender != null)
+                                        const SizedBox(height: 20),
+                                      if (patient.gender != null)
+                                        const Text(
+                                          'Gender',
+                                          style: TextStyle(color: Colors.grey),
+                                        ),
+                                      if (patient.gender != null)
+                                        Text(patient.gender!),
+                                      const SizedBox(height: 20),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                            Expanded(
-                              child: Center(
-                                child: Column(
-                                  children: [
-                                    const Text(
-                                      'Height',
-                                      style: TextStyle(color: Colors.grey),
-                                    ),
-                                    Text('${patient.height!.toString()} cm'),
-                                    const SizedBox(height: 20),
-                                    const Text(
-                                      'Weight',
-                                      style: TextStyle(color: Colors.grey),
-                                    ),
-                                    Text('${patient.weight!.toString()} kg'),
-                                    const SizedBox(height: 20),
-                                  ],
+                            if (patient.height != null ||
+                                patient.weight != null)
+                              Expanded(
+                                child: Center(
+                                  child: Column(
+                                    children: [
+                                      if (patient.height != null)
+                                        const Text(
+                                          'Height',
+                                          style: TextStyle(color: Colors.grey),
+                                        ),
+                                      if (patient.height != null)
+                                        Text(
+                                            '${patient.height!.toString()} cm'),
+                                      if (patient.height != null &&
+                                          patient.weight != null)
+                                        const SizedBox(height: 20),
+                                      if (patient.weight != null)
+                                        const Text(
+                                          'Weight',
+                                          style: TextStyle(color: Colors.grey),
+                                        ),
+                                      if (patient.weight != null)
+                                        Text(
+                                            '${patient.weight!.toString()} kg'),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
                           ],
                         ),
-                        const Divider(height: 70),
-                        const Text(
-                          'Blood type',
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                        Text(patient.bloodType!),
+                        if (patient.bloodType != null)
+                          const Divider(height: 70),
+                        if (patient.bloodType != null)
+                          const Text(
+                            'Blood type',
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        if (patient.bloodType != null) Text(patient.bloodType!),
 
                         //MEDICAL HISTORY
 
@@ -200,7 +210,7 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
                             children: [
                               const Divider(height: 70),
                               const Text(
-                                'Medical History',
+                                'Immunization',
                                 style: TextStyle(color: Colors.grey),
                               ),
                               const SizedBox(height: 10),
@@ -246,10 +256,11 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
                         if (patient.immunizations != null &&
                             patient.immunizations!.isNotEmpty)
                           Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               const Divider(height: 70),
                               const Text(
-                                'Medical History',
+                                'Immunization',
                                 style: TextStyle(color: Colors.grey),
                               ),
                               const SizedBox(height: 10),
@@ -450,6 +461,78 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
             )
           ],
         ),
+      ),
+    );
+  }
+}
+
+class ProfileImageWidget extends StatelessWidget {
+  ProfileImageWidget({
+    Key? key,
+    required this.patientId,
+    required this.height,
+    required this.width,
+    this.borderRadius,
+  }) : super(key: key);
+
+  StorageService storage = StorageService();
+  final String patientId;
+  final double height;
+  final double width;
+  final BorderRadius? borderRadius;
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: borderRadius ?? BorderRadius.circular(20),
+      child: Container(
+        height: height,
+        width: width,
+        alignment: Alignment.center,
+        color: Colors.grey.withOpacity(.1),
+        child: StatefulBuilder(builder: (context, setState) {
+          return FutureBuilder<String>(
+            future: storage.profileImageDownloadUrl(patientId),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return GestureDetector(
+                  onTap: () async {
+                    setState(() {});
+                  },
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: const [
+                      Text(
+                        'Tap to reload',
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                      Icon(
+                        Icons.refresh,
+                        color: Colors.grey,
+                      )
+                    ],
+                  ),
+                );
+              }
+              if (snapshot.connectionState == ConnectionState.done) {
+                return CachedNetworkImage(
+                  imageUrl: snapshot.data!,
+                  height: height,
+                  width: width,
+                  fit: BoxFit.cover,
+                  progressIndicatorBuilder: (context, url, downloadProgress) =>
+                      Center(
+                    child: CircularProgressIndicator.adaptive(
+                        value: downloadProgress.progress),
+                  ),
+                  errorWidget: (context, url, error) =>
+                      const Center(child: Icon(Icons.person)),
+                );
+              }
+              return const Center(child: CircularProgressIndicator.adaptive());
+            },
+          );
+        }),
       ),
     );
   }

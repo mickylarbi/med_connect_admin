@@ -1,86 +1,110 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:med_connect_admin/firebase_services/auth_service.dart';
 import 'package:med_connect_admin/firebase_services/firestore_service.dart';
-import 'package:med_connect_admin/models/appointment.dart';
+import 'package:med_connect_admin/models/doctor_appointment.dart';
+import 'package:med_connect_admin/screens/home/doctor/doctor_appointments/calendar_view_screen.dart';
 import 'package:med_connect_admin/screens/home/doctor/doctor_appointments/doctor_appointment_card.dart';
 import 'package:med_connect_admin/screens/shared/custom_app_bar.dart';
+import 'package:med_connect_admin/screens/shared/outline_icon_button.dart';
+import 'package:med_connect_admin/utils/functions.dart';
 
-class DoctorAppointmentsListPage extends StatefulWidget {
-  const DoctorAppointmentsListPage({Key? key}) : super(key: key);
+class AppointmentsListPage extends StatefulWidget {
+  const AppointmentsListPage({Key? key}) : super(key: key);
 
   @override
-  State<DoctorAppointmentsListPage> createState() =>
-      _DoctorAppointmentsListPageState();
+  State<AppointmentsListPage> createState() => _AppointmentsListPageState();
 }
 
-class _DoctorAppointmentsListPageState
-    extends State<DoctorAppointmentsListPage> {
-  ScrollController scrollController = ScrollController();
+class _AppointmentsListPageState extends State<AppointmentsListPage> {
+  final ScrollController _scrollController = ScrollController();
 
+  AuthService auth = AuthService();
   FirestoreService db = FirestoreService();
+
+  List<DoctorAppointment> appointmentsList = [];
 
   @override
   Widget build(BuildContext context) {
-    //TODO: calendar
-    return Scaffold(
-      body: SafeArea(
-        child: Stack(
-          children: [
-            ListView(
-              controller: scrollController,
-              children: [
-                StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                  stream: db.myAppointments.snapshots(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasError) {
-                      return Center(
-                        child: Column(
-                          children: [
-                            const Text('Could not fetch appointments.'),
-                            IconButton(
-                                onPressed: () {
-                                  setState(() {});
-                                },
-                                icon: const Icon(Icons.refresh))
-                          ],
-                        ),
-                      );
-                    }
-
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                          child: CircularProgressIndicator.adaptive());
-                    }
-
-                    List<DoctorAppointment> appointmentsList = snapshot
-                        .data!.docs
-                        .map((e) =>
-                            DoctorAppointment.fromFirestore(e.data(), e.id))
-                        .toList();
-                    return ListView.separated(
-                      padding: const EdgeInsets.symmetric(vertical: 130),
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      primary: false,
-                      itemCount: appointmentsList.length,
-                      itemBuilder: (context, index) => DoctorAppointmentCard(
-                          appointment: appointmentsList[index]),
-                      separatorBuilder: (context, index) =>
-                          const Divider(height: 30),
+    return Stack(
+      children: [
+        RefreshIndicator(
+          onRefresh: () async {
+            setState(() {});
+          },
+          child: ListView(
+            controller: _scrollController,
+            physics: const BouncingScrollPhysics(),
+            children: <Widget>[
+              const SizedBox(height: 138),
+              StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                stream: db.myAppointments.snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text('Something went wrong'),
                     );
-                  },
-                ),
-              ],
-            ),
-            ...fancyAppBar(
-              context,
-              scrollController,
-              'Appointments',
-              [],
+                  }
+
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator.adaptive(),
+                    );
+                  }
+
+                  appointmentsList = snapshot.data!.docs
+                      .map(
+                        (e) => DoctorAppointment.fromFirestore(e.data(), e.id),
+                      )
+                      .toList();
+
+                  return ListView.separated(
+                    shrinkWrap: true,
+                    primary: false,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: appointmentsList.length,
+                    separatorBuilder: (BuildContext context, int index) {
+                      return const Divider(
+                        height: 0,
+                        indent: 126,
+                        endIndent: 36,
+                      );
+                    },
+                    itemBuilder: (BuildContext context, int index) {
+                      return DoctorAppointmentCard(
+                          appointment: appointmentsList[index]);
+                    },
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+        ...fancyAppBar(
+          context,
+          _scrollController,
+          'Appointments',
+          [
+            OutlineIconButton(
+              iconData: Icons.calendar_month_rounded,
+              onPressed: () {
+                if (appointmentsList.isNotEmpty) {
+                  navigate(context,
+                      CalendarViewScreen(appointmentList: appointmentsList));
+                }
+              },
             ),
           ],
         ),
-      ),
+      ],
     );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 }
