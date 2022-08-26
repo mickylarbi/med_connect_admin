@@ -14,7 +14,7 @@ import 'package:med_connect_admin/screens/onboarding/doctor/edit_experience_scre
 import 'package:med_connect_admin/screens/shared/custom_app_bar.dart';
 import 'package:med_connect_admin/screens/shared/custom_buttons.dart';
 import 'package:med_connect_admin/screens/shared/custom_textformfield.dart';
-import 'package:med_connect_admin/screens/shared/outline_icon_button.dart';
+import 'package:med_connect_admin/screens/shared/custom_icon_buttons.dart';
 import 'package:med_connect_admin/utils/constants.dart';
 import 'package:med_connect_admin/utils/dialogs.dart';
 import 'package:med_connect_admin/utils/functions.dart';
@@ -95,7 +95,7 @@ class _EditDoctorProfileScreenState extends State<EditDoctorProfileScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const ProfileImage(),
+                        const ChangeProfileImageWidget(),
                         const SizedBox(height: 30),
                         const Text(
                           'Personal info',
@@ -595,16 +595,17 @@ class _EditDoctorProfileScreenState extends State<EditDoctorProfileScreen> {
   }
 }
 
-class ProfileImage extends StatefulWidget {
-  const ProfileImage({
+class ChangeProfileImageWidget extends StatefulWidget {
+  const ChangeProfileImageWidget({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<ProfileImage> createState() => _ProfileImageState();
+  State<ChangeProfileImageWidget> createState() =>
+      _ChangeProfileImageWidgetState();
 }
 
-class _ProfileImageState extends State<ProfileImage> {
+class _ChangeProfileImageWidgetState extends State<ChangeProfileImageWidget> {
   AuthService auth = AuthService();
 
   StorageService storage = StorageService();

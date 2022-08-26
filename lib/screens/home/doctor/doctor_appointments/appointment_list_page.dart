@@ -8,7 +8,7 @@ import 'package:med_connect_admin/models/doctor/doctor_appointment.dart';
 import 'package:med_connect_admin/screens/home/doctor/doctor_appointments/calendar_view_screen.dart';
 import 'package:med_connect_admin/screens/home/doctor/doctor_appointments/doctor_appointment_card.dart';
 import 'package:med_connect_admin/screens/shared/custom_app_bar.dart';
-import 'package:med_connect_admin/screens/shared/outline_icon_button.dart';
+import 'package:med_connect_admin/screens/shared/custom_icon_buttons.dart';
 import 'package:med_connect_admin/utils/functions.dart';
 
 class AppointmentsListPage extends StatefulWidget {

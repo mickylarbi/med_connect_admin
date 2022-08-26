@@ -4,7 +4,7 @@ import 'package:med_connect_admin/models/doctor/experience.dart';
 import 'package:med_connect_admin/screens/shared/custom_app_bar.dart';
 import 'package:med_connect_admin/screens/shared/custom_buttons.dart';
 import 'package:med_connect_admin/screens/shared/custom_textformfield.dart';
-import 'package:med_connect_admin/screens/shared/outline_icon_button.dart';
+import 'package:med_connect_admin/screens/shared/custom_icon_buttons.dart';
 import 'package:med_connect_admin/utils/constants.dart';
 import 'package:med_connect_admin/utils/dialogs.dart';
 

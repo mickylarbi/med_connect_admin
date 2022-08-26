@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:med_connect_admin/screens/shared/header_text.dart';
-import 'package:med_connect_admin/screens/shared/outline_icon_button.dart';
+import 'package:med_connect_admin/screens/shared/custom_icon_buttons.dart';
 import 'package:med_connect_admin/utils/constants.dart';
 
 class CustomAppBar extends StatelessWidget {

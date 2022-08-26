@@ -108,7 +108,6 @@ class _PharmacyInfoScreenState extends State<PharmacyInfoScreen> {
     );
   }
 
-
   nameColumn() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

@@ -1,11 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:med_connect_admin/firebase_services/firestore_service.dart';
 import 'package:med_connect_admin/models/pharmacy/pharmacy.dart';
 import 'package:med_connect_admin/screens/home/doctor/doctor_appointments/patient_profile_screen.dart';
-import 'package:med_connect_admin/screens/home/doctor/doctor_home_page/doctor_profile/edit_doctor_profile_screen.dart';
 import 'package:med_connect_admin/screens/home/pharmacy/inventory/pharmacy_profile_screen.dart';
 import 'package:med_connect_admin/screens/shared/custom_app_bar.dart';
 import 'package:med_connect_admin/utils/functions.dart';
@@ -63,23 +60,24 @@ class _InventoryListPageState extends State<InventoryListPage> {
                           return ClipRRect(
                             borderRadius: BorderRadius.circular(10),
                             child: InkWell(
-                                onTap: () async {
-                                  if (snapshot.data!.data() != null) {
-                                    await navigate(
-                                        context,
-                                        PharmacyProfileScreen(
-                                            pharmacy: pharmacy.fromFirestore(
-                                                snapshot.data!.data()!,
-                                                snapshot.data!.id)));
+                              onTap: () async {
+                                if (snapshot.data!.data() != null) {
+                                  await navigate(
+                                      context,
+                                      PharmacyProfileScreen(
+                                          pharmacy: pharmacy.fromFirestore(
+                                              snapshot.data!.data()!,
+                                              snapshot.data!.id)));
 
-                                    setState(() {});
-                                  }
-                                },
-                                child: ProfileImageWidget(
-                                  height: 44,
-                                  width: 44,
-                                  borderRadius: BorderRadius.circular(4),
-                                )),
+                                  setState(() {});
+                                }
+                              },
+                              child: ProfileImageWidget(
+                                height: 44,
+                                width: 44,
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                            ),
                           );
                         },
                       ),

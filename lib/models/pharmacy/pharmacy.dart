@@ -9,7 +9,7 @@ class Pharmacy extends Admin {
   @override
   Pharmacy fromFirestore(Map<String, dynamic> map, String aId) {
     id = aId;
-    map['name'];
+    name = map['name'];
     return this;
   }
 
