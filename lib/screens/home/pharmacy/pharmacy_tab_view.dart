@@ -20,8 +20,8 @@ class _DoctorTabViewState extends State<PharmacyTabView> {
         child: PageView(
             controller: _pageController,
             physics: const NeverScrollableScrollPhysics(),
-            children:  [
-             const InventoryListPage(),
+            children: [
+              const InventoryListPage(),
               Container(),
             ]),
       ),
@@ -39,15 +39,11 @@ class _DoctorTabViewState extends State<PharmacyTabView> {
                 }
               },
               items: const [
-                BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
                 BottomNavigationBarItem(
-                    icon: Icon(Icons.calendar_month), label: ''),
-                // BottomNavigationBarItem(
-                //     icon: Icon(Icons.person_search), label: ''),
-                // BottomNavigationBarItem(
-                //     icon: Icon(Icons.chat_bubble_rounded), label: ''),
-                // BottomNavigationBarItem(
-                //     icon: Icon(Icons.person_add_alt), label: ''),
+                    icon: Icon(Icons.medication_rounded), label: ''),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.shopping_cart_checkout_rounded),
+                    label: ''),
               ],
             );
           }),

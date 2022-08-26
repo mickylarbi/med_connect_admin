@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:med_connect_admin/models/experience.dart';
+import 'package:med_connect_admin/models/doctor/experience.dart';
 import 'package:med_connect_admin/screens/shared/custom_app_bar.dart';
 import 'package:med_connect_admin/screens/shared/custom_buttons.dart';
 import 'package:med_connect_admin/screens/shared/custom_textformfield.dart';

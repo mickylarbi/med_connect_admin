@@ -4,14 +4,9 @@ import 'package:med_connect_admin/screens/onboarding/select_category_screen.dart
 import 'package:med_connect_admin/screens/shared/custom_buttons.dart';
 import 'package:med_connect_admin/utils/constants.dart';
 
-class OnboardingScreen extends StatefulWidget {
-  OnboardingScreen({Key? key}) : super(key: key);
+class WelcomeScreen extends StatelessWidget {
+  const WelcomeScreen({Key? key}) : super(key: key);
 
-  @override
-  State<OnboardingScreen> createState() => _OnboardingScreenState();
-}
-
-class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

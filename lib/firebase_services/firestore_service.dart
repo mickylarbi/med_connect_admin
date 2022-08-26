@@ -6,8 +6,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:med_connect_admin/firebase_services/storage_service.dart';
-import 'package:med_connect_admin/models/doctor.dart';
+import 'package:med_connect_admin/models/admin.dart';
+import 'package:med_connect_admin/models/doctor/doctor.dart';
+import 'package:med_connect_admin/models/pharmacy/pharmacy.dart';
 import 'package:med_connect_admin/screens/home/doctor/doctor_tab_view.dart';
+import 'package:med_connect_admin/screens/home/pharmacy/pharmacy_tab_view.dart';
 import 'package:med_connect_admin/utils/constants.dart';
 import 'package:med_connect_admin/utils/dialogs.dart';
 
@@ -17,10 +20,32 @@ class FirestoreService {
 
   FirebaseFirestore instance = FirebaseFirestore.instance;
 
-  DocumentReference<Map<String, dynamic>> get getAdminInfo =>
+  // ADMIN
+
+  DocumentReference<Map<String, dynamic>> get adminDocument =>
       instance.collection('admins').doc(_auth.currentUser!.uid);
 
-  uploadDoctorInfo(BuildContext context, Doctor doctor, XFile picture) {
+  Future<void> addAdmin(Admin admin) => adminDocument.set(admin.toMap());
+
+  Future<void> updateAdmin(Admin admin) => adminDocument.update(admin.toMap());
+
+  // DOCTOR APPOINTMENT
+
+  CollectionReference<Map<String, dynamic>> get doctorAppointmentsCollection =>
+      instance.collection('doctor_appointments');
+
+  Query<Map<String, dynamic>> get myAppointments => doctorAppointmentsCollection
+      .where('doctorId', isEqualTo: _auth.currentUser!.uid);
+
+  DocumentReference<Map<String, dynamic>> getappointmentById(String id) =>
+      doctorAppointmentsCollection.doc(id);
+
+  DocumentReference<Map<String, dynamic>> getpatientById(String id) =>
+      instance.collection('patients').doc(id);
+
+  // PHARMACY
+
+  uploadPharmacyInfo(BuildContext context, Pharmacy pharmacy, XFile picture) {
     showLoadingDialog(context);
 
     _storageService
@@ -30,13 +55,13 @@ class FirestoreService {
       instance
           .collection('admins')
           .doc(_auth.currentUser!.uid)
-          .set(doctor.toMap())
+          .set(pharmacy.toMap())
           .timeout(ktimeout)
           .then((value) {
-        getAdminInfo.get().timeout(ktimeout).then((value) {
+        adminDocument.get().timeout(ktimeout).then((value) {
           Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => const DoctorTabView()),
+              MaterialPageRoute(builder: (context) => const PharmacyTabView()),
               (route) => false);
         }).onError((error, stackTrace) {
           Navigator.pop(context);
@@ -55,36 +80,4 @@ class FirestoreService {
           message: 'Couldn\'t upload profile info. Try again');
     });
   }
-
-  editDoctorInfo(BuildContext context, Doctor doctor) {
-    showLoadingDialog(context);
-
-    instance
-        .collection('admins')
-        .doc(_auth.currentUser!.uid)
-        .update(doctor.toMap())
-        .timeout(const Duration(seconds: 30))
-        .then((value) {
-      Navigator.pop(context);
-      Navigator.pop(context, EditObject(action: EditAction.edit));
-    }).onError((error, stackTrace) {
-      Navigator.pop(context);
-      showAlertDialog(context,
-          message: 'Couldn\'t update profile info. Try again');
-    });
-  }
-
-  // DOCTOR APPOINTMENT
-
-  CollectionReference<Map<String, dynamic>> get doctorAppointmentsCollection =>
-      instance.collection('doctor_appointments');
-
-  Query<Map<String, dynamic>> get myAppointments => doctorAppointmentsCollection
-      .where('doctorId', isEqualTo: _auth.currentUser!.uid);
-
-  DocumentReference<Map<String, dynamic>> getappointmentById(String id) =>
-      doctorAppointmentsCollection.doc(id);
-
-  DocumentReference<Map<String, dynamic>> getpatientById(String id) =>
-      instance.collection('patients').doc(id);
 }

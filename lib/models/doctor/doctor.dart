@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:med_connect_admin/models/experience.dart';
+import 'package:med_connect_admin/models/admin.dart';
+import 'package:med_connect_admin/models/doctor/experience.dart';
 import 'package:med_connect_admin/models/review.dart';
 
-class Doctor {
-  String? id;
+class Doctor extends Admin {
   String? firstName;
   String? surname;
   String? mainSpecialty;
@@ -16,7 +16,7 @@ class Doctor {
   List<String>? services;
 
   Doctor({
-    this.id,
+    id,
     this.firstName,
     this.surname,
     this.bio,
@@ -28,8 +28,9 @@ class Doctor {
     this.reviews,
   });
 
-  Doctor.fromFireStore(Map<String, dynamic> map, String dId) {
-    id = dId;
+  @override
+  Doctor fromFirestore(Map<String, dynamic> map, String aId) {
+    id = aId;
     firstName = map['firstName'] as String?;
     surname = map['surname'] as String?;
     bio = map['bio'] as String?;
@@ -61,8 +62,10 @@ class Doctor {
         reviews!.add(Review.fromFirestore(element));
       }
     }
+    return this;
   }
 
+  @override
   Map<String, dynamic> toMap() {
     return {
       'firstName': firstName,

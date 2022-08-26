@@ -3,8 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:med_connect_admin/firebase_services/firestore_service.dart';
 import 'package:med_connect_admin/firebase_services/storage_service.dart';
-import 'package:med_connect_admin/models/doctor_appointment.dart';
-import 'package:med_connect_admin/models/doctor.dart';
+import 'package:med_connect_admin/models/doctor/doctor_appointment.dart';
+import 'package:med_connect_admin/models/doctor/doctor.dart';
 import 'package:med_connect_admin/screens/home/doctor/doctor_appointments/doctor_appointment_card.dart';
 import 'package:med_connect_admin/screens/home/doctor/doctor_home_page/doctor_profile/edit_doctor_profile_screen.dart';
 import 'package:med_connect_admin/screens/shared/custom_app_bar.dart';
@@ -200,7 +200,7 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
           ),
         ),
         StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-          stream: db.getAdminInfo.snapshots(),
+          stream: db.adminDocument.snapshots(),
           builder: (context, snapshot) {
             return SizedBox(
               height: 138,
@@ -222,10 +222,11 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
                           child: InkWell(
                             onTap: () async {
                               if (snapshot.data!.data() != null) {
+                                Doctor doctor = Doctor();
                                 await navigate(
                                     context,
                                     EditDoctorProfileScreen(
-                                        doctor: Doctor.fromFireStore(
+                                        doctor: doctor.fromFirestore(
                                             snapshot.data!.data()!,
                                             snapshot.data!.id)));
 

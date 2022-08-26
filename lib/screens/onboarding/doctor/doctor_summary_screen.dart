@@ -5,7 +5,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:med_connect_admin/firebase_services/auth_service.dart';
 import 'package:med_connect_admin/firebase_services/firestore_service.dart';
-import 'package:med_connect_admin/models/doctor.dart';
+import 'package:med_connect_admin/firebase_services/storage_service.dart';
+import 'package:med_connect_admin/models/doctor/doctor.dart';
 import 'package:med_connect_admin/screens/onboarding/doctor/doctor_info_screen.dart';
 import 'package:med_connect_admin/screens/shared/custom_app_bar.dart';
 import 'package:med_connect_admin/screens/shared/custom_buttons.dart';
@@ -130,7 +131,24 @@ class DoctorSummaryScreen extends StatelessWidget {
                         onPressed: () {
                           showConfirmationDialog(context,
                               message: 'Upload info?', confirmFunction: () {
-                            db.uploadDoctorInfo(context, doctor, picture);
+                            FirestoreService db = FirestoreService();
+                            StorageService storage = StorageService();
+
+                            storage.uploadProfileImage(picture).then((p0) {
+                              db.addAdmin(doctor).then((value) {
+                                AuthService auth = AuthService();
+
+                                auth.authFunction(context);
+                              }).onError((error, stackTrace) {
+                                Navigator.pop(context);
+                                showAlertDialog(context,
+                                    message: 'Error uploading info');
+                              });
+                            }).onError((error, stackTrace) {
+                              Navigator.pop(context);
+                              showAlertDialog(context,
+                                  message: 'Error uploading info');
+                            });
                           });
                         },
                         child: const Text('Upload info'))),

@@ -8,8 +8,8 @@ import 'package:intl/intl.dart';
 import 'package:med_connect_admin/firebase_services/auth_service.dart';
 import 'package:med_connect_admin/firebase_services/firestore_service.dart';
 import 'package:med_connect_admin/firebase_services/storage_service.dart';
-import 'package:med_connect_admin/models/doctor.dart';
-import 'package:med_connect_admin/models/experience.dart';
+import 'package:med_connect_admin/models/doctor/doctor.dart';
+import 'package:med_connect_admin/models/doctor/experience.dart';
 import 'package:med_connect_admin/screens/onboarding/doctor/edit_experience_screen.dart';
 import 'package:med_connect_admin/screens/shared/custom_app_bar.dart';
 import 'package:med_connect_admin/screens/shared/custom_buttons.dart';
@@ -509,7 +509,19 @@ class _EditDoctorProfileScreenState extends State<EditDoctorProfileScreen> {
                             context,
                             message: 'Update profile info',
                             confirmFunction: () {
-                              db.editDoctorInfo(context, newDoctor);
+                              db
+                                  .updateAdmin(newDoctor)
+                                  .timeout(const Duration(seconds: 30))
+                                  .then((value) {
+                                Navigator.pop(context);
+                                Navigator.pop(context,
+                                    EditObject(action: EditAction.edit));
+                              }).onError((error, stackTrace) {
+                                Navigator.pop(context);
+                                showAlertDialog(context,
+                                    message:
+                                        'Couldn\'t update profile info. Try again');
+                              });
                             },
                           );
                         }

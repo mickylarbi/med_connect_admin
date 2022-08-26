@@ -18,3 +18,5 @@ class EditObject {
 }
 
 enum EditAction { add, edit, delete }
+
+String? kadminName;

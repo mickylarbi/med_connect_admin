@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:med_connect_admin/models/doctor_appointment.dart';
+import 'package:med_connect_admin/models/doctor/doctor_appointment.dart';
 import 'package:med_connect_admin/screens/home/doctor/doctor_appointments/doctor_appointment_details_screen.dart';
 import 'package:med_connect_admin/screens/home/doctor/doctor_appointments/patient_profile_screen.dart';
 import 'package:med_connect_admin/screens/shared/header_text.dart';

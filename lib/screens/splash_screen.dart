@@ -30,60 +30,7 @@ class _SplashScreenState extends State<SplashScreen> {
       opacity = 1;
       setState(() {});
       Future.delayed(const Duration(seconds: 4), () {
-        if (auth.currentUser == null) {
-          // if user isn't signed in
-
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    const AuthScreen(authType: AuthType.signUp)),
-            (route) => false,
-          );
-        } else {
-          // if user is signed in
-
-          db.getAdminInfo.get().timeout(ktimeout).then((value) {
-            // check if user is in firebase
-
-            if (value.data() == null) {
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const SelectCategoryScreen()),
-                (route) => false,
-              );
-            }
-
-            if (value.data() != null &&
-                value.data()!['adminRole'] == 'doctor') {
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => const DoctorTabView()),
-                (route) => false,
-              );
-            }
-          }).onError((error, stackTrace) {
-            if (error is FirebaseException && error.code == 'not-found') {
-              // if user doesn't exist in firebase
-
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const SelectCategoryScreen()),
-                (route) => false,
-              );
-            } else {
-              // can't check if user is in firebase
-
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => ErrorScreen()),
-                (route) => false,
-              );
-            }
-          });
-        }
+        auth.authFunction(context);
       });
     });
   }
@@ -129,7 +76,7 @@ class ErrorScreen extends StatelessWidget {
               onPressed: () {
                 showLoadingDialog(context);
 
-                db.getAdminInfo.get().timeout(ktimeout).then((value) {
+                db.adminDocument.get().timeout(ktimeout).then((value) {
                   // check if user is in firebase
 
                   if (value.data() == null) {

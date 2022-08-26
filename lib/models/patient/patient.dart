@@ -1,11 +1,11 @@
 import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:med_connect_admin/models/allergy.dart';
-import 'package:med_connect_admin/models/family_medical_history_entry.dart';
-import 'package:med_connect_admin/models/immunization.dart';
-import 'package:med_connect_admin/models/medical_history_entry.dart';
-import 'package:med_connect_admin/models/surgery.dart';
+import 'package:med_connect_admin/models/patient/allergy.dart';
+import 'package:med_connect_admin/models/patient/family_medical_history_entry.dart';
+import 'package:med_connect_admin/models/patient/immunization.dart';
+import 'package:med_connect_admin/models/patient/medical_history_entry.dart';
+import 'package:med_connect_admin/models/patient/surgery.dart';
 
 class Patient {
   String? id;

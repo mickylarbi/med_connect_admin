@@ -4,8 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:med_connect_admin/models/doctor.dart';
-import 'package:med_connect_admin/models/experience.dart';
+import 'package:med_connect_admin/models/doctor/doctor.dart';
+import 'package:med_connect_admin/models/doctor/experience.dart';
 import 'package:med_connect_admin/screens/onboarding/doctor/edit_experience_screen.dart';
 import 'package:med_connect_admin/screens/onboarding/doctor/doctor_summary_screen.dart';
 import 'package:med_connect_admin/screens/onboarding/pharmacy/pharmacy_info.dart';
@@ -96,7 +96,7 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
       _servicesNotifier.value = widget.doctor!.services!;
 
       pictureNotifier.value = widget.picture;
-    }
+    }//TODO: add phone number
 
     _pageController.addListener(() {
       // print(_pageController.page);

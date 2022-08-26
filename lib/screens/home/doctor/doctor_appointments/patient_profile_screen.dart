@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:med_connect_admin/firebase_services/firestore_service.dart';
 import 'package:med_connect_admin/firebase_services/storage_service.dart';
-import 'package:med_connect_admin/models/patient.dart';
+import 'package:med_connect_admin/models/patient/patient.dart';
 import 'package:med_connect_admin/screens/shared/custom_app_bar.dart';
 import 'package:med_connect_admin/utils/dialogs.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -469,14 +469,14 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
 class ProfileImageWidget extends StatelessWidget {
   ProfileImageWidget({
     Key? key,
-    required this.patientId,
+     this.patientId,
     required this.height,
     required this.width,
     this.borderRadius,
   }) : super(key: key);
 
   StorageService storage = StorageService();
-  final String patientId;
+  final String? patientId;
   final double height;
   final double width;
   final BorderRadius? borderRadius;
