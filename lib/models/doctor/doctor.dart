@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:med_connect_admin/models/admin.dart';
 import 'package:med_connect_admin/models/doctor/experience.dart';
@@ -14,6 +13,7 @@ class Doctor extends Admin {
   String? bio;
   Experience? currentLocation;
   List<String>? services;
+  String? phone;
 
   Doctor({
     id,
@@ -26,6 +26,7 @@ class Doctor extends Admin {
     this.services,
     this.currentLocation,
     this.reviews,
+    this.phone,
   });
 
   @override
@@ -62,6 +63,9 @@ class Doctor extends Admin {
         reviews!.add(Review.fromFirestore(element));
       }
     }
+
+    phone = map['phone'];
+
     return this;
   }
 
@@ -78,6 +82,7 @@ class Doctor extends Admin {
       'services': services,
       if (currentLocation != null) 'currentLocation': currentLocation!.toMap(),
       'reviews': reviews,
+      'phone': phone,
       'adminRole': 'doctor'
     };
   }
@@ -93,7 +98,8 @@ class Doctor extends Admin {
       otherSpecialties == other.otherSpecialties &&
       experiences == other.experiences &&
       services == other.services &&
-      currentLocation == other.currentLocation;
+      currentLocation == other.currentLocation &&
+      phone == other.phone;
 
   @override
   int get hashCode => hashValues(
@@ -104,5 +110,6 @@ class Doctor extends Admin {
         hashList(experiences),
         hashList(services),
         currentLocation,
+        phone,
       );
 }

@@ -45,39 +45,39 @@ class FirestoreService {
 
   // PHARMACY
 
-  uploadPharmacyInfo(BuildContext context, Pharmacy pharmacy, XFile picture) {
-    showLoadingDialog(context);
+  // uploadPharmacyInfo(BuildContext context, Pharmacy pharmacy, XFile picture) {
+  //   showLoadingDialog(context);
 
-    _storageService
-        .uploadProfileImage(picture)
-        .timeout(const Duration(minutes: 2))
-        .then((p0) {
-      instance
-          .collection('admins')
-          .doc(_auth.currentUser!.uid)
-          .set(pharmacy.toMap())
-          .timeout(ktimeout)
-          .then((value) {
-        adminDocument.get().timeout(ktimeout).then((value) {
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => const PharmacyTabView()),
-              (route) => false);
-        }).onError((error, stackTrace) {
-          Navigator.pop(context);
-          showAlertDialog(context,
-              message: 'Couldn\'t get profile info. Try again');
-        });
-      }).onError((error, stackTrace) {
-        Navigator.pop(context);
-        showAlertDialog(context,
-            message: 'Couldn\'t upload profile info. Try again');
-      });
-    }).onError((error, stackTrace) {
-      Navigator.pop(context);
-      log(error.toString());
-      showAlertDialog(context,
-          message: 'Couldn\'t upload profile info. Try again');
-    });
-  }
+  //   _storageService
+  //       .uploadProfileImage(picture)
+  //       .timeout(const Duration(minutes: 2))
+  //       .then((p0) {
+  //     instance
+  //         .collection('admins')
+  //         .doc(_auth.currentUser!.uid)
+  //         .set(pharmacy.toMap())
+  //         .timeout(ktimeout)
+  //         .then((value) {
+  //       adminDocument.get().timeout(ktimeout).then((value) {
+  //         Navigator.pushAndRemoveUntil(
+  //             context,
+  //             MaterialPageRoute(builder: (context) => const PharmacyTabView()),
+  //             (route) => false);
+  //       }).onError((error, stackTrace) {
+  //         Navigator.pop(context);
+  //         showAlertDialog(context,
+  //             message: 'Couldn\'t get profile info. Try again');
+  //       });
+  //     }).onError((error, stackTrace) {
+  //       Navigator.pop(context);
+  //       showAlertDialog(context,
+  //           message: 'Couldn\'t upload profile info. Try again');
+  //     });
+  //   }).onError((error, stackTrace) {
+  //     Navigator.pop(context);
+  //     log(error.toString());
+  //     showAlertDialog(context,
+  //         message: 'Couldn\'t upload profile info. Try again');
+  //   });
+  // }
 }

@@ -21,7 +21,9 @@ class PharmacyInfoScreen extends StatefulWidget {
 
 class _PharmacyInfoScreenState extends State<PharmacyInfoScreen> {
   TextEditingController nameController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
   ValueNotifier<XFile?> pictureNotifier = ValueNotifier<XFile?>(null);
+  FocusNode focusNode = FocusNode();
 
   FirestoreService db = FirestoreService();
   StorageService storage = StorageService();
@@ -37,7 +39,7 @@ class _PharmacyInfoScreenState extends State<PharmacyInfoScreen> {
           child: Stack(
             children: [
               Padding(
-                padding: const EdgeInsets.only(bottom: 150),
+                padding: const EdgeInsets.only(top: 100, bottom: 150),
                 child: Center(
                   child: ListView(
                     padding: const EdgeInsets.symmetric(horizontal: 36),
@@ -46,6 +48,8 @@ class _PharmacyInfoScreenState extends State<PharmacyInfoScreen> {
                       photoColumn(),
                       const Divider(height: 100),
                       nameColumn(),
+                      const Divider(height: 100),
+                      phoneColumn(),
                     ],
                   ),
                 ),
@@ -68,57 +72,12 @@ class _PharmacyInfoScreenState extends State<PharmacyInfoScreen> {
           padding: const EdgeInsets.all(36),
           child: CustomFlatButton(
             onPressed: () {
-              if (pictureNotifier.value != null &&
-                  nameController.text.trim().isNotEmpty) {
-                showLoadingDialog(context);
-                storage
-                    .uploadProfileImage(pictureNotifier.value!)
-                    .timeout(const Duration(minutes: 2))
-                    .then((value) {
-                  db
-                      .addAdmin(Pharmacy(name: nameController.text.trim()))
-                      .timeout(ktimeout)
-                      .then((value) {
-                    AuthService auth = AuthService();
-                    auth.authFunction(context);
-                  }).onError((error, stackTrace) {
-                    Navigator.pop(context);
-                    showAlertDialog(context,
-                        message: 'Error while creating pharmacy');
-                  });
-                }).onError((error, stackTrace) {
-                  Navigator.pop(context);
-                  showAlertDialog(context,
-                      message: 'Error while creating pharmacy');
-                });
-              } else if (nameController.text.trim().isEmpty) {
-                showAlertDialog(context,
-                    message: 'Please enter a name for your pharmacy');
-              } else if (pictureNotifier.value == null) {
-                showAlertDialog(context, message: 'Please add a logo');
-              } else if (nameController.text.trim().isEmpty) {
-                showAlertDialog(context,
-                    message: 'Please enter a name for your pharmacy');
-              }
+              onButtonPressed();
             },
             child: const Text('Create pharmacy'),
           ),
         ),
       ),
-    );
-  }
-
-  nameColumn() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const PageViewHeaderText('What\'s the name of your pharmacy?'),
-        const SizedBox(height: 20),
-        CustomTextFormField(
-          hintText: 'Pharmacy name',
-          controller: nameController,
-        ),
-      ],
     );
   }
 
@@ -189,12 +148,15 @@ class _PharmacyInfoScreenState extends State<PharmacyInfoScreen> {
                   },
                   style: TextButton.styleFrom(
                     padding: const EdgeInsets.symmetric(horizontal: 14),
-                    backgroundColor: Colors.blueGrey.withOpacity(.2),
+                    backgroundColor: Colors.black54,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  child: Text(value == null ? 'Choose photo' : 'Change photo'),
+                  child: Text(
+                    value == null ? 'Choose photo' : 'Change photo',
+                    style: const TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
             ],
@@ -202,10 +164,90 @@ class _PharmacyInfoScreenState extends State<PharmacyInfoScreen> {
         });
   }
 
+  nameColumn() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const PageViewHeaderText('What\'s the name of your pharmacy?'),
+        const SizedBox(height: 20),
+        CustomTextFormField(
+          hintText: 'Pharmacy name',
+          controller: nameController,
+          onFieldSubmitted: (value) {
+            focusNode.requestFocus();
+          },
+        ),
+      ],
+    );
+  }
+
+  phoneColumn() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const PageViewHeaderText('How should we contact you?'),
+        const SizedBox(height: 20),
+        CustomTextFormField(
+          hintText: 'Phone number',
+          controller: phoneController,
+          keyboardType: TextInputType.phone,
+          focusNode: focusNode,
+          onFieldSubmitted: (value) {
+            onButtonPressed();
+          },
+        ),
+      ],
+    );
+  }
+
+  onButtonPressed() {
+    showConfirmationDialog(context, message: 'Create pharmacy?',
+        confirmFunction: () {
+      if (pictureNotifier.value != null &&
+          nameController.text.trim().isNotEmpty &&
+          phoneController.text.trim().isNotEmpty &&
+          phoneController.text.trim().length >= 10) {
+        showLoadingDialog(context);
+        storage
+            .uploadProfileImage(pictureNotifier.value!)
+            .timeout(const Duration(minutes: 2))
+            .then((value) {
+          db
+              .addAdmin(Pharmacy(
+                  name: nameController.text.trim(),
+                  phone: phoneController.text.trim()))
+              .timeout(ktimeout)
+              .then((value) {
+            AuthService auth = AuthService();
+            auth.authFunction(context);
+          }).onError((error, stackTrace) {
+            Navigator.pop(context);
+            showAlertDialog(context, message: 'Error while creating pharmacy');
+          });
+        }).onError((error, stackTrace) {
+          Navigator.pop(context);
+          showAlertDialog(context, message: 'Error while creating pharmacy');
+        });
+      } else if (pictureNotifier.value == null) {
+        showAlertDialog(context, message: 'Please add a logo');
+      } else if (nameController.text.trim().isEmpty) {
+        showAlertDialog(context,
+            message: 'Please enter a name for your pharmacy');
+      } else if (phoneController.text.trim().isEmpty) {
+        showAlertDialog(context, message: 'Please enter a phone number');
+      } else if (phoneController.text.trim().length < 10) {
+        showAlertDialog(context, message: 'Please enter a valid phone number');
+      }
+    });
+  }
+
   @override
   void dispose() {
     nameController.dispose();
+    phoneController.dispose();
     pictureNotifier.dispose();
+    focusNode.dispose();
+
     super.dispose();
   }
 }

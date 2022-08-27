@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:med_connect_admin/firebase_services/auth_service.dart';
 import 'package:med_connect_admin/firebase_services/firestore_service.dart';
@@ -20,62 +22,94 @@ class PharmacyProfileScreen extends StatefulWidget {
 }
 
 class _PharmacyProfileScreenState extends State<PharmacyProfileScreen> {
-  String? name;
+  TextEditingController nameController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
 
   AuthService auth = AuthService();
   FirestoreService db = FirestoreService();
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    nameController.text = widget.pharmacy.name!;
+    phoneController.text = widget.pharmacy.phone!;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Center(
-                child: ListView(
-              padding: const EdgeInsets.fromLTRB(36, 88, 36, 50),
-              shrinkWrap: true,
-              children: [
-                const ChangeProfileImageWidget(),
-                const Divider(height: 100),
-                nameColumn(),
-                const SizedBox(height: 20),
-                CustomFlatButton(
-                    child: const Text('Change name'),
-                    onPressed: () {
-                      if (name != null && name != widget.pharmacy.name) {
-                        showConfirmationDialog(context,
-                            message: 'Change pharmacy name?',
-                            confirmFunction: () {
-                          showLoadingDialog(context);
-                          db.updateAdmin(Pharmacy(name: name)).then((value) {
-                            Navigator.pop(context);
-                            Navigator.pop(context);
-                          }).onError((error, stackTrace) {
-                            Navigator.pop(context);
-                            showAlertDialog(context,
-                                message: 'Error changing pharmacy name');
+    return GestureDetector(
+      onTap: () {
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: Scaffold(
+        body: SafeArea(
+          child: Stack(
+            children: [
+              Center(
+                  child: ListView(
+                padding: const EdgeInsets.fromLTRB(36, 88, 36, 50),
+                shrinkWrap: true,
+                children: [
+                  const ChangeProfileImageWidget(),
+                  const Divider(height: 100),
+                  nameColumn(),
+                  const SizedBox(height: 20),
+                  phoneColumn(),
+                  const SizedBox(height: 50),
+                  CustomFlatButton(
+                      child: const Text('Save changes'),
+                      onPressed: () {
+                        if (nameController.text.trim().isNotEmpty &&
+                            phoneController.text.trim().isNotEmpty &&
+                            phoneController.text.trim().length >= 10) {
+                          showConfirmationDialog(context,
+                              message: 'Save changes to pharmacy?',
+                              confirmFunction: () {
+                            showLoadingDialog(context);
+                            db
+                                .updateAdmin(Pharmacy(
+                                    name: nameController.text.trim(),
+                                    phone: phoneController.text.trim()))
+                                .then((value) {
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+                            }).onError((error, stackTrace) {
+                              Navigator.pop(context);
+                              showAlertDialog(context,
+                                  message: 'Error updating pharmacy info');
+                            });
                           });
-                        });
-                      }
-                    })
-              ],
-            )),
-            CustomAppBar(
-              title: 'Pharmacy Info',
-              actions: [
-                SolidIconButton(
-                  iconData: Icons.logout,
-                  onPressed: () {
-                    showConfirmationDialog(context, confirmFunction: () {
-                      auth.signOut(context);
-                    });
-                  },
-                  color: Colors.red,
-                )
-              ],
-            ),
-          ],
+                        } else if (nameController.text.trim().isEmpty) {
+                          showAlertDialog(context,
+                              message: 'Please enter a name for your pharmacy');
+                        } else if (phoneController.text.trim().isEmpty) {
+                          showAlertDialog(context,
+                              message: 'Please enter a phone number');
+                        } else if (phoneController.text.trim().length < 10) {
+                          showAlertDialog(context,
+                              message: 'Please enter a valid phone number');
+                        }
+                      })
+                ],
+              )),
+              CustomAppBar(
+                title: 'Pharmacy Info',
+                actions: [
+                  SolidIconButton(
+                    iconData: Icons.logout,
+                    onPressed: () {
+                      showConfirmationDialog(context, confirmFunction: () {
+                        auth.signOut(context);
+                      });
+                    },
+                    color: Colors.red,
+                  )
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -89,12 +123,32 @@ class _PharmacyProfileScreenState extends State<PharmacyProfileScreen> {
         const SizedBox(height: 20),
         CustomTextFormField(
           hintText: 'Pharmacy name',
-          initialValue: widget.pharmacy.name,
-          onChanged: (value) {
-            name = value;
-          },
+          controller: nameController,
         ),
       ],
     );
+  }
+
+  phoneColumn() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const PageViewHeaderText('How should we contact you?'),
+        const SizedBox(height: 20),
+        CustomTextFormField(
+          hintText: 'Phone number',
+          keyboardType: TextInputType.phone,
+          controller: phoneController,
+        ),
+      ],
+    );
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    phoneController.dispose();
+
+    super.dispose();
   }
 }

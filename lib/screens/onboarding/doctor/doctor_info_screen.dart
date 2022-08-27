@@ -60,6 +60,8 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
 
   final ValueNotifier<XFile?> pictureNotifier = ValueNotifier<XFile?>(null);
 
+  final TextEditingController phoneController = TextEditingController();
+
   List pagesList() => [
         namePage(),
         currentLocationPage(),
@@ -68,6 +70,7 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
         otherSpecialtiesPage(),
         servicesPage(),
         photoPage(),
+        phonePage(),
       ];
 
   @override
@@ -83,8 +86,10 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
       if (widget.doctor!.currentLocation != null) {
         _currentLocationController.text =
             widget.doctor!.currentLocation!.location!;
-        _currentLocationStartDateNotifier.value =
-            widget.doctor!.currentLocation!.dateTimeRange!.start;
+        if (widget.doctor!.currentLocation!.dateTimeRange != null) {
+          _currentLocationStartDateNotifier.value =
+              widget.doctor!.currentLocation!.dateTimeRange!.start;
+        }
       }
 
       _experiencesNotifier.value = widget.doctor!.experiences!;
@@ -96,11 +101,11 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
       _servicesNotifier.value = widget.doctor!.services!;
 
       pictureNotifier.value = widget.picture;
-    }//TODO: add phone number
+
+      phoneController.text = widget.doctor!.phone!;
+    } //TODO: add phone number
 
     _pageController.addListener(() {
-      // print(_pageController.page);
-
       if ((_pageController.page == 0 &&
               (_firstNameController.text.trim().isEmpty ||
                   _surnameController.text.trim().isEmpty)) ||
@@ -109,7 +114,10 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
           (_pageController.page == 3 &&
               _mainSpecialtyController.text.trim().isEmpty) ||
           (_pageController.page == 5 && _servicesNotifier.value.isEmpty) ||
-          (_pageController.page == 6 && pictureNotifier.value == null)) {
+          (_pageController.page == 6 && pictureNotifier.value == null) ||
+          (_pageController.page == 7 &&
+              (phoneController.text.trim().isEmpty ||
+                  phoneController.text.trim().length < 10))) {
         canGoNext.value = false;
       } else {
         canGoNext.value = true;
@@ -196,6 +204,15 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
 
     pictureNotifier.addListener(() {
       if (pictureNotifier.value == null) {
+        canGoNext.value = false;
+      } else {
+        canGoNext.value = true;
+      }
+    });
+
+    phoneController.addListener(() {
+      if (phoneController.text.trim().isEmpty ||
+          phoneController.text.trim().length < 10) {
         canGoNext.value = false;
       } else {
         canGoNext.value = true;
@@ -307,60 +324,66 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
         ValueListenableBuilder<DateTime?>(
             valueListenable: _currentLocationStartDateNotifier,
             builder: (context, value, child) {
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
+              return Column(
                 children: [
-                  InkWell(
-                    onTap: () async {
-                      var result = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(1950),
-                          lastDate: DateTime.now());
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      InkWell(
+                        onTap: () async {
+                          var result = await showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(1950),
+                              lastDate: DateTime.now());
 
-                      if (result != null) {
-                        _currentLocationStartDateNotifier.value = result;
-                      }
-                    },
-                    child: Row(
-                      children: const [
-                        Icon(Icons.calendar_month_outlined),
-                        SizedBox(width: 10),
-                        Text(
-                          'Choose start date',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            decoration: TextDecoration.underline,
-                          ),
+                          if (result != null) {
+                            _currentLocationStartDateNotifier.value = result;
+                          }
+                        },
+                        child: Row(
+                          children: const [
+                            Icon(Icons.calendar_month_outlined),
+                            SizedBox(width: 10),
+                            Text(
+                              'Choose start date',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                      Text(
+                        value == null ? '-' : DateFormat.yMMMMd().format(value),
+                        style: const TextStyle(
+                          color: Colors.grey,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
-                  Text(
-                    value == null ? '-' : DateFormat.yMMMMd().format(value),
-                    style: const TextStyle(
-                      color: Colors.grey,
-                      fontWeight: FontWeight.bold,
+                  const SizedBox(height: 12),
+                  if (value != null)
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: () {
+                          _currentLocationStartDateNotifier.value = null;
+                        },
+                        child: const Text(
+                          'Clear date',
+                          style:
+                              TextStyle(decoration: TextDecoration.underline),
+                        ),
+                      ),
                     ),
-                  ),
+                  const SizedBox(height: 50),
                 ],
               );
             }),
-        const SizedBox(height: 12),
-        Align(
-          alignment: Alignment.centerRight,
-          child: TextButton(
-            onPressed: () {
-              _currentLocationStartDateNotifier.value = null;
-            },
-            child: const Text(
-              'Clear date',
-              style: TextStyle(decoration: TextDecoration.underline),
-            ),
-          ),
-        ),
-        const SizedBox(height: 50),
       ];
 
   List<Widget> experiencesPage() => [
@@ -730,6 +753,22 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
     ];
   }
 
+  phonePage() => [
+        const Text(
+          'How should we contact you?',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+        ),
+        const SizedBox(height: 30),
+        CustomTextFormField(
+          hintText: 'Phone number',
+          controller: phoneController,
+          keyboardType: TextInputType.phone,
+          onFieldSubmitted: (value) {
+            onPhoneFieldSubmitted();
+          },
+        ),
+      ];
+
   Widget nextButton() {
     return ValueListenableBuilder(
         valueListenable: canGoNext,
@@ -738,38 +777,7 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
             onPressed: value
                 ? () {
                     if (_pageController.page == pagesList().length - 1) {
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          CupertinoPageRoute(
-                            builder: (context) => DoctorSummaryScreen(
-                              picture: pictureNotifier.value!,
-                              doctor: Doctor(
-                                firstName: _firstNameController.text.trim(),
-                                surname: _surnameController.text.trim(),
-                                currentLocation: Experience(
-                                  location:
-                                      _currentLocationController.text.trim(),
-                                  dateTimeRange:
-                                      _currentLocationStartDateNotifier.value ==
-                                              null
-                                          ? null
-                                          : DateTimeRange(
-                                              start:
-                                                  _currentLocationStartDateNotifier
-                                                      .value!,
-                                              end: DateTime(2100),
-                                            ),
-                                ),
-                                experiences: _experiencesNotifier.value,
-                                mainSpecialty:
-                                    _mainSpecialtyController.text.trim(),
-                                otherSpecialties:
-                                    _otherSpecialtiesNotifier.value,
-                                services: _servicesNotifier.value,
-                              ),
-                            ),
-                          ),
-                          (route) => false);
+                      onPhoneFieldSubmitted();
                     } else {
                       _pageController.nextPage(
                           duration: const Duration(seconds: 1),
@@ -811,6 +819,35 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
     }
   }
 
+  onPhoneFieldSubmitted() {
+    Navigator.pushAndRemoveUntil(
+        context,
+        CupertinoPageRoute(
+          builder: (context) => DoctorSummaryScreen(
+            picture: pictureNotifier.value!,
+            doctor: Doctor(
+              firstName: _firstNameController.text.trim(),
+              surname: _surnameController.text.trim(),
+              currentLocation: Experience(
+                location: _currentLocationController.text.trim(),
+                dateTimeRange: _currentLocationStartDateNotifier.value == null
+                    ? null
+                    : DateTimeRange(
+                        start: _currentLocationStartDateNotifier.value!,
+                        end: DateTime(2100),
+                      ),
+              ),
+              experiences: _experiencesNotifier.value,
+              mainSpecialty: _mainSpecialtyController.text.trim(),
+              otherSpecialties: _otherSpecialtiesNotifier.value,
+              services: _servicesNotifier.value,
+              phone: phoneController.text.trim(),
+            ),
+          ),
+        ),
+        (route) => false);
+  }
+
   //TODO: profile image
 
   @override
@@ -837,6 +874,8 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
     _servicesNode.dispose();
 
     pictureNotifier.dispose();
+
+    phoneController.dispose();
     super.dispose();
   }
 }

@@ -33,6 +33,7 @@ class _EditDoctorProfileScreenState extends State<EditDoctorProfileScreen> {
   TextEditingController firstNameController = TextEditingController();
   TextEditingController surnameController = TextEditingController();
   TextEditingController bioController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
   TextEditingController mainSpecialtyController = TextEditingController();
 
   ValueNotifier<List<String>> otherSpecialtiesNotifier =
@@ -60,6 +61,7 @@ class _EditDoctorProfileScreenState extends State<EditDoctorProfileScreen> {
     firstNameController.text = widget.doctor.firstName!;
     surnameController.text = widget.doctor.surname!;
     bioController.text = widget.doctor.bio ?? '';
+    phoneController.text = widget.doctor.phone!;
     mainSpecialtyController.text = widget.doctor.mainSpecialty!;
 
     otherSpecialtiesNotifier.value = [...widget.doctor.otherSpecialties!];
@@ -95,6 +97,7 @@ class _EditDoctorProfileScreenState extends State<EditDoctorProfileScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        const SizedBox(height: 12),
                         const ChangeProfileImageWidget(),
                         const SizedBox(height: 30),
                         const Text(
@@ -118,6 +121,12 @@ class _EditDoctorProfileScreenState extends State<EditDoctorProfileScreen> {
                         CustomTextFormField(
                           hintText: 'Bio',
                           controller: bioController,
+                        ),
+                        const SizedBox(height: 10),
+                        CustomTextFormField(
+                          hintText: 'Phone',
+                          controller: phoneController,
+                          keyboardType: TextInputType.phone,
                         ),
                         const Divider(height: 70),
                         const Text(
@@ -475,6 +484,7 @@ class _EditDoctorProfileScreenState extends State<EditDoctorProfileScreen> {
                           firstName: firstNameController.text.trim(),
                           surname: surnameController.text.trim(),
                           bio: bioController.text.trim(),
+                          phone: phoneController.text.trim(),
                           mainSpecialty: mainSpecialtyController.text.trim(),
                           otherSpecialties: otherSpecialtiesNotifier.value,
                           experiences: experiencesNotifier.value,
@@ -493,11 +503,16 @@ class _EditDoctorProfileScreenState extends State<EditDoctorProfileScreen> {
                         );
 
                         if (newDoctor == widget.doctor) {
-                          Navigator.pop(context);
                         } else if (newDoctor.firstName!.trim().isEmpty ||
                             newDoctor.surname!.trim().isEmpty) {
                           showAlertDialog(context,
                               message: 'Name fields cannot be empty');
+                        } else if (newDoctor.phone!.trim().isEmpty) {
+                          showAlertDialog(context,
+                              message: 'Please enter a phone number');
+                        } else if (newDoctor.phone!.trim().length < 10) {
+                          showAlertDialog(context,
+                              message: 'Please enter a valid phone number');
                         } else if (newDoctor.mainSpecialty!.trim().isEmpty) {
                           showAlertDialog(context,
                               message: 'Main specialty field cannot be empty');
@@ -509,6 +524,7 @@ class _EditDoctorProfileScreenState extends State<EditDoctorProfileScreen> {
                             context,
                             message: 'Update profile info',
                             confirmFunction: () {
+                              showLoadingDialog(context);
                               db
                                   .updateAdmin(newDoctor)
                                   .timeout(const Duration(seconds: 30))
@@ -534,7 +550,8 @@ class _EditDoctorProfileScreenState extends State<EditDoctorProfileScreen> {
                 title: 'Edit Profile',
                 leading: Icons.arrow_back,
                 actions: [
-                  OutlineIconButton(
+                  SolidIconButton(
+                    color: Colors.red,
                     iconData: Icons.logout,
                     onPressed: () {
                       showConfirmationDialog(
@@ -579,6 +596,7 @@ class _EditDoctorProfileScreenState extends State<EditDoctorProfileScreen> {
     firstNameController.dispose();
     surnameController.dispose();
     bioController.dispose();
+    phoneController.dispose();
     mainSpecialtyController.dispose();
 
     otherSpecialtiesNotifier.dispose();

@@ -118,6 +118,12 @@ class DoctorSummaryScreen extends StatelessWidget {
                                     fontWeight: FontWeight.bold),
                               ))
                           .toList()),
+                const SizedBox(height: 20),
+                const Text('Phone:'),
+                Text(
+                  '${doctor.phone}',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
                 SizedBox(height: 50 + MediaQuery.of(context).padding.bottom)
               ],
             ),
@@ -133,6 +139,8 @@ class DoctorSummaryScreen extends StatelessWidget {
                               message: 'Upload info?', confirmFunction: () {
                             FirestoreService db = FirestoreService();
                             StorageService storage = StorageService();
+
+                            showLoadingDialog(context);
 
                             storage.uploadProfileImage(picture).then((p0) {
                               db.addAdmin(doctor).then((value) {
