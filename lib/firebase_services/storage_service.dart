@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:med_connect_admin/firebase_services/auth_service.dart';
 
 class StorageService {
   FirebaseAuth _auth = FirebaseAuth.instance;
@@ -18,4 +17,16 @@ class StorageService {
   UploadTask uploadProfileImage(XFile picture) => profilePicturesRef
       .child(_auth.currentUser!.uid)
       .putFile(File(picture.path));
+
+  //DRUGS
+
+  Reference drugsPicturesRef = FirebaseStorage.instance.ref('drugs/');
+
+  Future<String> drugImageDownloadUrl({required String id}) =>
+      drugsPicturesRef.child(id).getDownloadURL();
+
+  UploadTask uploadDrugImage({required XFile picture, required String id}) =>
+      drugsPicturesRef.child(id).putFile(File(picture.path));
+
+  deleteDrug({required String id}) => drugsPicturesRef.child(id).delete();
 }

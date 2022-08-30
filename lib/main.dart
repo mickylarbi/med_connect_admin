@@ -10,4 +10,6 @@ Future<void> main() async {
   );
 
   runApp(const Src());
+
+  //TODO: account deletion
 }

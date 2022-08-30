@@ -192,15 +192,10 @@ class _DoctorAppointmentDetailsScreenState
               //PATIENT
 
               Center(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Image.asset(
-                    'assets/images/bruno-rodrigues-279xIHymPYY-unsplash.jpg',
-                    height: 150,
-                    width: 150,
-                    fit: BoxFit.cover,
-                    alignment: Alignment.topCenter,
-                  ),
+                child: ProfileImageWidget(
+                  height: 150,
+                  width: 150,
+                  patientId: widget.appointment.patientId,
                 ),
               ),
               const SizedBox(height: 20),

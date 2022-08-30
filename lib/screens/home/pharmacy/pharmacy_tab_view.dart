@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:med_connect_admin/screens/home/pharmacy/inventory/inventory_list_page.dart';
+import 'package:med_connect_admin/screens/home/pharmacy/drugs/drugs_list_page.dart';
 
 class PharmacyTabView extends StatefulWidget {
   const PharmacyTabView({Key? key}) : super(key: key);
@@ -21,7 +21,7 @@ class _DoctorTabViewState extends State<PharmacyTabView> {
             controller: _pageController,
             physics: const NeverScrollableScrollPhysics(),
             children: [
-              const InventoryListPage(),
+              const DrugsListPage(),
               Container(),
             ]),
       ),
@@ -53,8 +53,8 @@ class _DoctorTabViewState extends State<PharmacyTabView> {
   @override
   void dispose() {
     _pageController.dispose();
-
     _currentIndex.dispose();
+    
     super.dispose();
   }
 }

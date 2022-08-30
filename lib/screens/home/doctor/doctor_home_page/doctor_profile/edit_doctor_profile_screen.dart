@@ -614,6 +614,7 @@ class _EditDoctorProfileScreenState extends State<EditDoctorProfileScreen> {
 }
 
 class ChangeProfileImageWidget extends StatefulWidget {
+  
   const ChangeProfileImageWidget({
     Key? key,
   }) : super(key: key);

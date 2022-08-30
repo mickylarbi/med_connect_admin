@@ -66,7 +66,7 @@ void showConfirmationDialog(BuildContext context,
           style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all(Colors.grey[200]),
             shape: MaterialStateProperty.all(
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             ),
           ),
           child: const Text(
@@ -86,7 +86,7 @@ void showConfirmationDialog(BuildContext context,
             backgroundColor:
                 MaterialStateProperty.all(Theme.of(context).primaryColor),
             shape: MaterialStateProperty.all(
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             ),
           ),
           child: const Text(

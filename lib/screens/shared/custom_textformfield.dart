@@ -7,10 +7,12 @@ class CustomTextFormField extends StatelessWidget {
   final TextInputAction? textInputAction;
   final TextCapitalization textCapitalization;
   final int? minLines;
+  final int? maxLines;
   final void Function(String)? onFieldSubmitted;
   final void Function(String)? onChanged;
   final FocusNode? focusNode;
   final String? initialValue;
+  final Widget? suffix;
 
   const CustomTextFormField({
     Key? key,
@@ -20,10 +22,11 @@ class CustomTextFormField extends StatelessWidget {
     this.textCapitalization = TextCapitalization.none,
     this.textInputAction,
     this.minLines = 1,
+    this.maxLines = 1,
     this.onFieldSubmitted,
     this.onChanged,
     this.focusNode,
-    this.initialValue,
+    this.initialValue, this.suffix,
   }) : super(key: key);
 
   @override
@@ -33,7 +36,7 @@ class CustomTextFormField extends StatelessWidget {
       keyboardType: keyboardType,
       textCapitalization: textCapitalization,
       minLines: minLines,
-      maxLines: minLines,
+      maxLines: maxLines,
       textInputAction: textInputAction,
       onFieldSubmitted: onFieldSubmitted,
       onChanged: onChanged,
@@ -50,6 +53,7 @@ class CustomTextFormField extends StatelessWidget {
           borderRadius: BorderRadius.circular(14),
           borderSide: BorderSide.none,
         ),
+        suffix: suffix,
       ),
     );
   }

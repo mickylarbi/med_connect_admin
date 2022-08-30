@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:med_connect_admin/firebase_services/storage_service.dart';
 import 'package:med_connect_admin/models/admin.dart';
 import 'package:med_connect_admin/models/doctor/doctor.dart';
+import 'package:med_connect_admin/models/pharmacy/drug.dart';
 import 'package:med_connect_admin/models/pharmacy/pharmacy.dart';
 import 'package:med_connect_admin/screens/home/doctor/doctor_tab_view.dart';
 import 'package:med_connect_admin/screens/home/pharmacy/pharmacy_tab_view.dart';
@@ -29,7 +30,7 @@ class FirestoreService {
 
   Future<void> updateAdmin(Admin admin) => adminDocument.update(admin.toMap());
 
-  // DOCTOR APPOINTMENT
+  // DOCTOR Drug
 
   CollectionReference<Map<String, dynamic>> get doctorAppointmentsCollection =>
       instance.collection('doctor_appointments');
@@ -43,41 +44,22 @@ class FirestoreService {
   DocumentReference<Map<String, dynamic>> getpatientById(String id) =>
       instance.collection('patients').doc(id);
 
-  // PHARMACY
+  // DRUGS
 
-  // uploadPharmacyInfo(BuildContext context, Pharmacy pharmacy, XFile picture) {
-  //   showLoadingDialog(context);
+CollectionReference<Map<String, dynamic>> get drugsCollection =>
+      instance.collection('drugs');
 
-  //   _storageService
-  //       .uploadProfileImage(picture)
-  //       .timeout(const Duration(minutes: 2))
-  //       .then((p0) {
-  //     instance
-  //         .collection('admins')
-  //         .doc(_auth.currentUser!.uid)
-  //         .set(pharmacy.toMap())
-  //         .timeout(ktimeout)
-  //         .then((value) {
-  //       adminDocument.get().timeout(ktimeout).then((value) {
-  //         Navigator.pushAndRemoveUntil(
-  //             context,
-  //             MaterialPageRoute(builder: (context) => const PharmacyTabView()),
-  //             (route) => false);
-  //       }).onError((error, stackTrace) {
-  //         Navigator.pop(context);
-  //         showAlertDialog(context,
-  //             message: 'Couldn\'t get profile info. Try again');
-  //       });
-  //     }).onError((error, stackTrace) {
-  //       Navigator.pop(context);
-  //       showAlertDialog(context,
-  //           message: 'Couldn\'t upload profile info. Try again');
-  //     });
-  //   }).onError((error, stackTrace) {
-  //     Navigator.pop(context);
-  //     log(error.toString());
-  //     showAlertDialog(context,
-  //         message: 'Couldn\'t upload profile info. Try again');
-  //   });
-  // }
+  Query<Map<String, dynamic>> get myDrugs => drugsCollection
+      .where('pharmacyId', isEqualTo: _auth.currentUser!.uid);
+
+      Future<DocumentReference<Map<String, dynamic>>> addDrug(
+          Drug drug) =>
+      drugsCollection.add(drug.toMap());
+
+  Future<void> updateDrug(Drug drug) =>
+      drugsCollection.doc(drug.id).update(drug.toMap());
+
+  Future<void> deleteDrug(String drugId) =>
+      drugsCollection.doc(drugId).delete();
+
 }
