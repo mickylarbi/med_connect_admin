@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:med_connect_admin/screens/home/pharmacy/drugs/drugs_list_page.dart';
+import 'package:med_connect_admin/screens/home/pharmacy/orders/orders_list_page.dart';
 
 class PharmacyTabView extends StatefulWidget {
   const PharmacyTabView({Key? key}) : super(key: key);
@@ -20,9 +21,9 @@ class _DoctorTabViewState extends State<PharmacyTabView> {
         child: PageView(
             controller: _pageController,
             physics: const NeverScrollableScrollPhysics(),
-            children: [
-              const DrugsListPage(),
-              Container(),
+            children: const [
+              OrdersListPage(),
+              DrugsListPage(),
             ]),
       ),
       bottomNavigationBar: ValueListenableBuilder<int>(
@@ -40,10 +41,10 @@ class _DoctorTabViewState extends State<PharmacyTabView> {
               },
               items: const [
                 BottomNavigationBarItem(
-                    icon: Icon(Icons.medication_rounded), label: ''),
-                BottomNavigationBarItem(
                     icon: Icon(Icons.shopping_cart_checkout_rounded),
                     label: ''),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.medication_rounded), label: ''),
               ],
             );
           }),
@@ -54,7 +55,7 @@ class _DoctorTabViewState extends State<PharmacyTabView> {
   void dispose() {
     _pageController.dispose();
     _currentIndex.dispose();
-    
+
     super.dispose();
   }
 }

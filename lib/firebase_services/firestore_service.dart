@@ -46,14 +46,13 @@ class FirestoreService {
 
   // DRUGS
 
-CollectionReference<Map<String, dynamic>> get drugsCollection =>
+  CollectionReference<Map<String, dynamic>> get drugsCollection =>
       instance.collection('drugs');
 
-  Query<Map<String, dynamic>> get myDrugs => drugsCollection
-      .where('pharmacyId', isEqualTo: _auth.currentUser!.uid);
+  Query<Map<String, dynamic>> get myDrugs =>
+      drugsCollection.where('pharmacyId', isEqualTo: _auth.currentUser!.uid);
 
-      Future<DocumentReference<Map<String, dynamic>>> addDrug(
-          Drug drug) =>
+  Future<DocumentReference<Map<String, dynamic>>> addDrug(Drug drug) =>
       drugsCollection.add(drug.toMap());
 
   Future<void> updateDrug(Drug drug) =>
@@ -62,4 +61,11 @@ CollectionReference<Map<String, dynamic>> get drugsCollection =>
   Future<void> deleteDrug(String drugId) =>
       drugsCollection.doc(drugId).delete();
 
+  // ORDERS
+
+  CollectionReference<Map<String, dynamic>> get ordersCollection =>
+      instance.collection('orders');
+
+  Query<Map<String, dynamic>> get myOrders =>
+      ordersCollection.where('pharmacyIds', arrayContains: _auth.currentUser!.uid);
 }
