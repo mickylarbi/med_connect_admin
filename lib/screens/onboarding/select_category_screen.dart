@@ -38,11 +38,6 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
                   text: 'Pharmacy',
                   destination: PharmacyInfoScreen(),
                 ),
-                SizedBox(height: 20),
-                CategoryTile(
-                  text: 'Lab Tech',
-                  destination: DoctorInfoScreen(),
-                ),
               ],
             ),
           ),

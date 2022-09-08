@@ -132,8 +132,13 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                   child: CustomFlatButton(
                     child: Text(widget.experience == null ? 'Add' : 'Save'),
                     onPressed: () {
-                      if (_controller.text.isNotEmpty &&
-                          _notifier.value != null) {
+                      if (_controller.text.trim().isEmpty) {
+                        showAlertDialog(context,
+                            message: 'Textfield cannot be empty');
+                      } else if (_notifier.value == null) {
+                        showAlertDialog(context,
+                            message: 'A date must be selected');
+                      } else {
                         Navigator.pop(
                             context,
                             EditObject(

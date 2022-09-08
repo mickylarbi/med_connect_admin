@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class Order {
   String? id;
+  String? patientId;
   Map<String, dynamic>? cart;
   String? locationString;
   GeoPoint? locationGeo;
@@ -28,6 +29,7 @@ class Order {
 
   Order.fromFirestore(Map<String, dynamic> map, String oId) {
     id = oId;
+    patientId = map['patientId'];
     cart = map['cart'];
     locationString = map['locationString'];
     locationGeo = map['locationGeo'];
@@ -37,18 +39,6 @@ class Order {
     dateTime = DateTime.fromMillisecondsSinceEpoch(
         (map['dateTime'] as Timestamp).millisecondsSinceEpoch);
   }
-
-  Map<String, dynamic> toMap() => {
-        'patientId': FirebaseAuth.instance.currentUser!.uid,
-        'cart': cart,
-        'pharmacyIds': pharmacyIds,
-        'locationString': locationString,
-        'locationGeo': locationGeo,
-        'totalPrice': totalPrice,
-        'status': status!.index,
-        'confirmDelivery': confirmDelivery,
-        'dateTime': dateTime,
-      };
 
   @override
   bool operator ==(other) =>

@@ -6,7 +6,7 @@ import 'package:med_connect_admin/firebase_services/storage_service.dart';
 import 'package:med_connect_admin/models/pharmacy/drug.dart';
 import 'package:med_connect_admin/models/pharmacy/pharmacy.dart';
 import 'package:med_connect_admin/screens/home/doctor/doctor_appointments/patient_profile_screen.dart';
-import 'package:med_connect_admin/screens/home/pharmacy/drugs/drug_details_screen.dart';
+import 'package:med_connect_admin/screens/home/pharmacy/drugs/edit_drug_details_screen.dart';
 import 'package:med_connect_admin/screens/home/pharmacy/drugs/pharmacy_profile_screen.dart';
 import 'package:med_connect_admin/screens/shared/custom_app_bar.dart';
 import 'package:med_connect_admin/utils/functions.dart';
@@ -131,7 +131,7 @@ class _DrugsListPageState extends State<DrugsListPage> {
               padding: const EdgeInsets.all(24),
               child: FloatingActionButton(
                 onPressed: () {
-                  navigate(context, const DrugDetailsScreen());
+                  navigate(context, const EditDrugDetailsScreen());
                 },
                 child: const Icon(Icons.add),
               ),
@@ -201,7 +201,7 @@ class DrugCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        navigate(context, DrugDetailsScreen(drug: drug));
+        navigate(context, EditDrugDetailsScreen(drug: drug));
       },
       child: Container(
         padding: const EdgeInsets.all(24),
@@ -229,14 +229,6 @@ class DrugCard extends StatelessWidget {
               'GH¢ ${drug.price!.toStringAsFixed(2)}',
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
-            // TextButton(
-            //   onPressed: () {},
-            //   style: TextButton.styleFrom(
-            //       backgroundColor: Colors.blueGrey[100],
-            //       shape: RoundedRectangleBorder(
-            //           borderRadius: BorderRadius.circular(14))),
-            //   child: const Text('Add to cart'),
-            // ),
           ],
         ),
       ),
@@ -246,7 +238,9 @@ class DrugCard extends StatelessWidget {
 
 class DrugImageWidget extends StatelessWidget {
   final String drugId;
-  DrugImageWidget({super.key, required this.drugId});
+  final double? height;
+  final double? width;
+  DrugImageWidget({super.key, required this.drugId, this.height, this.width});
 
   StorageService storage = StorageService();
 
@@ -273,10 +267,9 @@ class DrugImageWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(14),
                 child: CachedNetworkImage(
                   imageUrl: snapshot.data!,
-                  // height: 40,
-                  // width: 40,
-                  fit: BoxFit.fitWidth, width: double.maxFinite,
-
+                  height: height,
+                  width: width ?? double.maxFinite,
+                  fit: BoxFit.fitWidth,
                   progressIndicatorBuilder: (context, url, downloadProgress) =>
                       Center(
                     child: CircularProgressIndicator.adaptive(

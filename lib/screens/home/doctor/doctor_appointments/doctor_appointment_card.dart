@@ -65,6 +65,7 @@ class DoctorAppointmentTodayCard extends StatelessWidget {
                   child: Text(
                     DateFormat.jm().format(appointment.dateTime!),
                     style: const TextStyle(fontWeight: FontWeight.bold),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
@@ -72,6 +73,7 @@ class DoctorAppointmentTodayCard extends StatelessWidget {
             Text(
               appointment.patientName!,
               style: const TextStyle(fontSize: 18),
+              overflow: TextOverflow.ellipsis,
             ),
             Row(
               mainAxisSize: MainAxisSize.min,
@@ -82,6 +84,7 @@ class DoctorAppointmentTodayCard extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     color: Colors.grey,
                   ),
+                  overflow: TextOverflow.ellipsis,
                 ),
                 const Spacer(),
                 if (appointment.isConfirmed != null && appointment.isConfirmed!)
@@ -147,17 +150,27 @@ class DoctorAppointmentCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 30),
-              Container(
-                height: 130,
-                padding: const EdgeInsets.symmetric(vertical: 30),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    HeaderText(text: appointment.service!),
-                    Text(appointment.patientName!),
-                    Text(appointment.venueString!)
-                  ],
+              Expanded(
+                child: Container(
+                  height: 130,
+                  padding: const EdgeInsets.symmetric(vertical: 30),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      HeaderText(
+                        text: appointment.service!,
+                      ),
+                      Text(
+                        appointment.patientName!,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        appointment.venueString!,
+                        overflow: TextOverflow.ellipsis,
+                      )
+                    ],
+                  ),
                 ),
               ),
               const Spacer(),

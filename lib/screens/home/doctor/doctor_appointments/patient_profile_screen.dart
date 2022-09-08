@@ -28,7 +28,7 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
         child: Stack(
           children: [
             FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                future: db.getpatientById(widget.patientId).get(),
+                future: db.patientDocument(widget.patientId).get(),
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
                     return Center(
@@ -469,7 +469,7 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
 class ProfileImageWidget extends StatelessWidget {
   ProfileImageWidget({
     Key? key,
-     this.patientId,
+    this.patientId,
     required this.height,
     required this.width,
     this.borderRadius,

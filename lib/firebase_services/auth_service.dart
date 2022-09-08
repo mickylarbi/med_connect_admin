@@ -93,8 +93,7 @@ class AuthService {
         } else {
           String adminRole = value.data()!['adminRole'];
 
-          kadminName =
-              '${value.data()!['firstName']} ${value.data()!['surname']}';
+         
 
           if (adminRole == 'doctor') {
             kadminName = '${value.data()!['firstName']}';
@@ -103,6 +102,7 @@ class AuthService {
                 MaterialPageRoute(builder: (context) => const DoctorTabView()),
                 (route) => false);
           } else if (adminRole == 'pharmacy') {
+            kadminName = '${value.data()!['name']}';
             Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(

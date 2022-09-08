@@ -7,6 +7,7 @@ import 'package:med_connect_admin/firebase_services/firestore_service.dart';
 import 'package:med_connect_admin/main.dart';
 import 'package:med_connect_admin/models/pharmacy/order.dart';
 import 'package:med_connect_admin/screens/home/pharmacy/orders/order_details_screen.dart';
+import 'package:med_connect_admin/screens/home/pharmacy/orders/order_history_screen.dart';
 import 'package:med_connect_admin/screens/shared/custom_app_bar.dart';
 import 'package:med_connect_admin/screens/shared/custom_icon_buttons.dart';
 import 'package:med_connect_admin/utils/functions.dart';
@@ -251,7 +252,11 @@ class _OrdersListPageState extends State<OrdersListPage> {
             ],
           ),
           ...fancyAppBar(context, scrollController, 'Orders', [
-            OutlineIconButton(iconData: Icons.history, onPressed: () {}),
+            OutlineIconButton(
+                iconData: Icons.history,
+                onPressed: () {
+                  navigate(context, OrderHistoryScreen());
+                }),
           ])
         ],
       ),

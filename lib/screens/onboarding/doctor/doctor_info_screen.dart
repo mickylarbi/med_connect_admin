@@ -243,9 +243,17 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
                 ),
               ),
               if (widget.doctor == null)
-                const CustomAppBar(
-                  leading: Icons.arrow_back,
-                ),
+                CustomAppBar(
+                    leading: Icons.arrow_back,
+                    onPressedLeading: () {
+                      if (_pageController.page == 0) {
+                        Navigator.pop(context);
+                      } else {
+                        _pageController.previousPage(
+                            duration: const Duration(seconds: 1),
+                            curve: Curves.easeOutQuint);
+                      }
+                    }),
               Align(
                 alignment: Alignment.bottomCenter,
                 child: SizedBox(
@@ -820,32 +828,32 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
   }
 
   onPhoneFieldSubmitted() {
-    Navigator.pushAndRemoveUntil(
-        context,
-        CupertinoPageRoute(
-          builder: (context) => DoctorSummaryScreen(
-            picture: pictureNotifier.value!,
-            doctor: Doctor(
-              firstName: _firstNameController.text.trim(),
-              surname: _surnameController.text.trim(),
-              currentLocation: Experience(
-                location: _currentLocationController.text.trim(),
-                dateTimeRange: _currentLocationStartDateNotifier.value == null
-                    ? null
-                    : DateTimeRange(
-                        start: _currentLocationStartDateNotifier.value!,
-                        end: DateTime(2100),
-                      ),
-              ),
-              experiences: _experiencesNotifier.value,
-              mainSpecialty: _mainSpecialtyController.text.trim(),
-              otherSpecialties: _otherSpecialtiesNotifier.value,
-              services: _servicesNotifier.value,
-              phone: phoneController.text.trim(),
+    Navigator.pushReplacement(
+      context,
+      CupertinoPageRoute(
+        builder: (context) => DoctorSummaryScreen(
+          picture: pictureNotifier.value!,
+          doctor: Doctor(
+            firstName: _firstNameController.text.trim(),
+            surname: _surnameController.text.trim(),
+            currentLocation: Experience(
+              location: _currentLocationController.text.trim(),
+              dateTimeRange: _currentLocationStartDateNotifier.value == null
+                  ? null
+                  : DateTimeRange(
+                      start: _currentLocationStartDateNotifier.value!,
+                      end: DateTime(2100),
+                    ),
             ),
+            experiences: _experiencesNotifier.value,
+            mainSpecialty: _mainSpecialtyController.text.trim(),
+            otherSpecialties: _otherSpecialtiesNotifier.value,
+            services: _servicesNotifier.value,
+            phone: phoneController.text.trim(),
           ),
         ),
-        (route) => false);
+      ),
+    );
   }
 
   //TODO: profile image

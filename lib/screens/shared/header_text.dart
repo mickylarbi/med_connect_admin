@@ -19,6 +19,7 @@ class HeaderText extends StatelessWidget {
         fontSize: isLarge ? 18 : 16,
         color: Colors.blueGrey,
       ),
+      overflow: TextOverflow.ellipsis,
     );
   }
 }
