@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 
-class DoctorAppointment {
+class Appointment {
   String? id;
   String? doctorId;
   String? doctorName;
@@ -15,7 +14,7 @@ class DoctorAppointment {
   String? venueString;
   Map? venueGeo;
 
-  DoctorAppointment({
+  Appointment({
     this.id,
     this.doctorId,
     this.doctorName,
@@ -30,7 +29,7 @@ class DoctorAppointment {
     this.venueGeo,
   });
 
-  DoctorAppointment.fromFirestore(Map<String, dynamic> map, String aId) {
+  Appointment.fromFirestore(Map<String, dynamic> map, String aId) {
     id = aId;
     doctorId = map['doctorId'] as String?;
     doctorName = map['doctorName'] as String?;

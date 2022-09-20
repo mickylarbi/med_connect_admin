@@ -6,7 +6,7 @@ import 'package:med_connect_admin/firebase_services/firestore_service.dart';
 import 'package:med_connect_admin/models/patient/patient.dart';
 import 'package:med_connect_admin/models/pharmacy/drug.dart';
 import 'package:med_connect_admin/models/pharmacy/order.dart';
-import 'package:med_connect_admin/screens/home/doctor/doctor_appointments/patient_profile_screen.dart';
+import 'package:med_connect_admin/screens/home/doctor/appointments/patient_profile_screen.dart';
 import 'package:med_connect_admin/screens/home/pharmacy/drugs/drug_details_screen.dart';
 import 'package:med_connect_admin/screens/home/pharmacy/drugs/drugs_list_page.dart';
 import 'package:med_connect_admin/screens/home/pharmacy/orders/orders_list_page.dart';
@@ -200,7 +200,8 @@ class OrderDetailsScreen extends StatelessWidget {
                       }
 
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const CircularProgressIndicator.adaptive();
+                        return const Center(
+                            child: CircularProgressIndicator.adaptive());
                       }
 
                       Order currentOrder = Order.fromFirestore(

@@ -4,9 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:med_connect_admin/firebase_services/auth_service.dart';
 import 'package:med_connect_admin/firebase_services/firestore_service.dart';
-import 'package:med_connect_admin/models/doctor/doctor_appointment.dart';
-import 'package:med_connect_admin/screens/home/doctor/doctor_appointments/calendar_view_screen.dart';
-import 'package:med_connect_admin/screens/home/doctor/doctor_appointments/doctor_appointment_card.dart';
+import 'package:med_connect_admin/models/doctor/appointment.dart';
+import 'package:med_connect_admin/screens/home/doctor/appointments/calendar_view_screen.dart';
+import 'package:med_connect_admin/screens/home/doctor/appointments/appointment_card.dart';
 import 'package:med_connect_admin/screens/shared/custom_app_bar.dart';
 import 'package:med_connect_admin/screens/shared/custom_icon_buttons.dart';
 import 'package:med_connect_admin/utils/functions.dart';
@@ -24,7 +24,7 @@ class _AppointmentsListPageState extends State<AppointmentsListPage> {
   AuthService auth = AuthService();
   FirestoreService db = FirestoreService();
 
-  List<DoctorAppointment> appointmentsList = [];
+  List<Appointment> appointmentsList = [];
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +56,7 @@ class _AppointmentsListPageState extends State<AppointmentsListPage> {
 
                   appointmentsList = snapshot.data!.docs
                       .map(
-                        (e) => DoctorAppointment.fromFirestore(e.data(), e.id),
+                        (e) => Appointment.fromFirestore(e.data(), e.id),
                       )
                       .toList();
 
@@ -73,7 +73,7 @@ class _AppointmentsListPageState extends State<AppointmentsListPage> {
                       );
                     },
                     itemBuilder: (BuildContext context, int index) {
-                      return DoctorAppointmentCard(
+                      return AppointmentCard(
                           appointment: appointmentsList[index]);
                     },
                   );

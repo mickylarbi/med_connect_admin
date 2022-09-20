@@ -5,7 +5,7 @@ import 'package:med_connect_admin/firebase_services/firestore_service.dart';
 import 'package:med_connect_admin/firebase_services/storage_service.dart';
 import 'package:med_connect_admin/models/pharmacy/drug.dart';
 import 'package:med_connect_admin/models/pharmacy/pharmacy.dart';
-import 'package:med_connect_admin/screens/home/doctor/doctor_appointments/patient_profile_screen.dart';
+import 'package:med_connect_admin/screens/home/doctor/appointments/patient_profile_screen.dart';
 import 'package:med_connect_admin/screens/home/pharmacy/drugs/edit_drug_details_screen.dart';
 import 'package:med_connect_admin/screens/home/pharmacy/drugs/pharmacy_profile_screen.dart';
 import 'package:med_connect_admin/screens/shared/custom_app_bar.dart';

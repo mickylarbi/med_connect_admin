@@ -3,9 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:med_connect_admin/firebase_services/firestore_service.dart';
 import 'package:med_connect_admin/firebase_services/storage_service.dart';
-import 'package:med_connect_admin/models/doctor/doctor_appointment.dart';
+import 'package:med_connect_admin/models/doctor/appointment.dart';
 import 'package:med_connect_admin/models/doctor/doctor.dart';
-import 'package:med_connect_admin/screens/home/doctor/doctor_appointments/doctor_appointment_card.dart';
+import 'package:med_connect_admin/screens/home/doctor/appointments/appointment_card.dart';
 import 'package:med_connect_admin/screens/home/doctor/doctor_home_page/doctor_profile/edit_doctor_profile_screen.dart';
 import 'package:med_connect_admin/screens/shared/custom_app_bar.dart';
 import 'package:med_connect_admin/utils/functions.dart';
@@ -80,10 +80,9 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
                           );
                         }
 
-                        List<DoctorAppointment> appointmentsList = snapshot
-                            .data!.docs
+                        List<Appointment> appointmentsList = snapshot.data!.docs
                             .map((e) =>
-                                DoctorAppointment.fromFirestore(e.data(), e.id))
+                                Appointment.fromFirestore(e.data(), e.id))
                             .toList()
                             .where((element) =>
                                 element.dateTime!.year == DateTime.now().year &&
@@ -107,10 +106,10 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
                                   return const SizedBox(width: 24);
                                 },
                                 itemBuilder: (BuildContext context, int index) {
-                                  DoctorAppointment appointment =
+                                  Appointment appointment =
                                       appointmentsList[index];
 
-                                  return DoctorAppointmentTodayCard(
+                                  return AppointmentTodayCard(
                                       appointment: appointment);
                                 },
                               );
@@ -162,10 +161,9 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
                           );
                         }
 
-                        List<DoctorAppointment> appointmentsList = snapshot
-                            .data!.docs
+                        List<Appointment> appointmentsList = snapshot.data!.docs
                             .map((e) =>
-                                DoctorAppointment.fromFirestore(e.data(), e.id))
+                                Appointment.fromFirestore(e.data(), e.id))
                             .toList()
                             .where((element) =>
                                 element.dateTime!.isAfter(DateTime.now()))
@@ -186,10 +184,10 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
                                   return const SizedBox(width: 24);
                                 },
                                 itemBuilder: (BuildContext context, int index) {
-                                  DoctorAppointment appointment =
+                                  Appointment appointment =
                                       appointmentsList[index];
 
-                                  return DoctorAppointmentTodayCard(
+                                  return AppointmentTodayCard(
                                       appointment: appointment);
                                 },
                               );

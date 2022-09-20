@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:med_connect_admin/models/doctor/doctor_appointment.dart';
-import 'package:med_connect_admin/screens/home/doctor/doctor_appointments/doctor_appointment_details_screen.dart';
-import 'package:med_connect_admin/screens/home/doctor/doctor_appointments/patient_profile_screen.dart';
+import 'package:med_connect_admin/models/doctor/appointment.dart';
+import 'package:med_connect_admin/screens/home/doctor/appointments/appointment_details_screen.dart';
+import 'package:med_connect_admin/screens/home/doctor/appointments/patient_profile_screen.dart';
 import 'package:med_connect_admin/screens/shared/header_text.dart';
 import 'package:med_connect_admin/utils/functions.dart';
 
-class DoctorAppointmentTodayCard extends StatelessWidget {
-  const DoctorAppointmentTodayCard({
+class AppointmentTodayCard extends StatelessWidget {
+  const AppointmentTodayCard({
     Key? key,
     required this.appointment,
   }) : super(key: key);
 
-  final DoctorAppointment appointment;
+  final Appointment appointment;
 
   @override
   Widget build(BuildContext context) {
@@ -106,10 +106,10 @@ class DoctorAppointmentTodayCard extends StatelessWidget {
   }
 }
 
-class DoctorAppointmentCard extends StatelessWidget {
-  final DoctorAppointment appointment;
+class AppointmentCard extends StatelessWidget {
+  final Appointment appointment;
   final EdgeInsetsGeometry padding;
-  const DoctorAppointmentCard(
+  const AppointmentCard(
       {Key? key,
       required this.appointment,
       this.padding = const EdgeInsets.symmetric(horizontal: 36)})
@@ -141,11 +141,13 @@ class DoctorAppointmentCard extends StatelessWidget {
                       DateFormat.d().format(appointment.dateTime!),
                       style: const TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 24),
+                      overflow: TextOverflow.ellipsis,
                     ),
                     Text(
                       DateFormat.MMM().format(appointment.dateTime!),
                       style: const TextStyle(fontWeight: FontWeight.bold),
-                    )
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ],
                 ),
               ),
@@ -158,9 +160,7 @@ class DoctorAppointmentCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      HeaderText(
-                        text: appointment.service!,
-                      ),
+                      HeaderText(text: appointment.service!),
                       Text(
                         appointment.patientName!,
                         overflow: TextOverflow.ellipsis,
@@ -173,7 +173,7 @@ class DoctorAppointmentCard extends StatelessWidget {
                   ),
                 ),
               ),
-              const Spacer(),
+              const SizedBox(width: 20),
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.end,

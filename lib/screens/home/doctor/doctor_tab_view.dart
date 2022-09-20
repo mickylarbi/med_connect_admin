@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:med_connect_admin/screens/home/doctor/doctor_appointments/appointment_list_page.dart';
+import 'package:med_connect_admin/screens/home/doctor/appointments/appointment_list_page.dart';
 import 'package:med_connect_admin/screens/home/doctor/doctor_home_page/doctor_home_page.dart';
 
 class DoctorTabView extends StatefulWidget {
@@ -24,7 +24,7 @@ class _DoctorTabViewState extends State<DoctorTabView> {
             physics: const NeverScrollableScrollPhysics(),
             children: const [
               DoctorHomePage(),
-             AppointmentsListPage(),
+              AppointmentsListPage(),
             ]),
       ),
       bottomNavigationBar: ValueListenableBuilder<int>(
@@ -54,7 +54,6 @@ class _DoctorTabViewState extends State<DoctorTabView> {
   void dispose() {
     _pageController.dispose();
     _currentIndex.dispose();
-
 
     super.dispose();
   }

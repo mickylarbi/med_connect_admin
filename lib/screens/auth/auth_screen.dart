@@ -27,8 +27,7 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // SystemChannels.textInput.invokeMethod('TextInput.hide');
-        FocusScope.of(context).unfocus();
+        FocusManager.instance.primaryFocus?.unfocus();
       },
       child: Scaffold(
         body: SafeArea(

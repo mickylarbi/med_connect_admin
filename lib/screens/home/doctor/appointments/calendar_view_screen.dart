@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:med_connect_admin/models/doctor/doctor_appointment.dart';
-import 'package:med_connect_admin/screens/home/doctor/doctor_appointments/doctor_appointment_details_screen.dart';
+import 'package:med_connect_admin/models/doctor/appointment.dart';
+import 'package:med_connect_admin/screens/home/doctor/appointments/appointment_details_screen.dart';
 import 'package:med_connect_admin/screens/shared/custom_app_bar.dart';
 import 'package:med_connect_admin/screens/shared/header_text.dart';
 import 'package:med_connect_admin/utils/constants.dart';
 import 'package:med_connect_admin/utils/functions.dart';
 
 class CalendarViewScreen extends StatefulWidget {
-  final List<DoctorAppointment> appointmentList;
+  final List<Appointment> appointmentList;
   const CalendarViewScreen({Key? key, required this.appointmentList})
       : super(key: key);
 
@@ -98,8 +98,8 @@ class _CalendarViewScreenState extends State<CalendarViewScreen> {
                         controller: pageController,
                         itemCount: dates.length,
                         itemBuilder: (context, pageIndex) {
-                          List<DoctorAppointment> dayAppointments = [];
-                          for (DoctorAppointment appointment
+                          List<Appointment> dayAppointments = [];
+                          for (Appointment appointment
                               in widget.appointmentList) {
                             if (appointment.dateTime!.year ==
                                     dates[pageIndex].year &&
@@ -115,7 +115,7 @@ class _CalendarViewScreenState extends State<CalendarViewScreen> {
                             padding: const EdgeInsets.symmetric(vertical: 36),
                             itemCount: dayAppointments.length,
                             itemBuilder: (BuildContext context, int listIndex) {
-                              DoctorAppointment appointment =
+                              Appointment appointment =
                                   dayAppointments[listIndex];
                               return InkWell(
                                 onTap: () {

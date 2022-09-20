@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:med_connect_admin/firebase_services/firestore_service.dart';
-import 'package:med_connect_admin/models/doctor/doctor_appointment.dart';
-import 'package:med_connect_admin/screens/home/doctor/doctor_appointments/patient_profile_screen.dart';
+import 'package:med_connect_admin/models/doctor/appointment.dart';
+import 'package:med_connect_admin/screens/home/doctor/appointments/patient_profile_screen.dart';
 import 'package:med_connect_admin/screens/shared/custom_app_bar.dart';
 import 'package:med_connect_admin/utils/constants.dart';
 import 'package:med_connect_admin/utils/dialogs.dart';
@@ -10,7 +10,7 @@ import 'package:med_connect_admin/utils/functions.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DoctorAppointmentDetailsScreen extends StatefulWidget {
-  final DoctorAppointment appointment;
+  final Appointment appointment;
   const DoctorAppointmentDetailsScreen({Key? key, required this.appointment})
       : super(key: key);
 
