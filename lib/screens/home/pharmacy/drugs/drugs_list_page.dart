@@ -6,9 +6,11 @@ import 'package:med_connect_admin/firebase_services/storage_service.dart';
 import 'package:med_connect_admin/models/pharmacy/drug.dart';
 import 'package:med_connect_admin/models/pharmacy/pharmacy.dart';
 import 'package:med_connect_admin/screens/home/doctor/appointments/patient_profile_screen.dart';
+import 'package:med_connect_admin/screens/home/pharmacy/drugs/drugs_search_delegate.dart';
 import 'package:med_connect_admin/screens/home/pharmacy/drugs/edit_drug_details_screen.dart';
 import 'package:med_connect_admin/screens/home/pharmacy/drugs/pharmacy_profile_screen.dart';
 import 'package:med_connect_admin/screens/shared/custom_app_bar.dart';
+import 'package:med_connect_admin/screens/shared/custom_icon_buttons.dart';
 import 'package:med_connect_admin/utils/functions.dart';
 
 class DrugsListPage extends StatefulWidget {
@@ -22,108 +24,106 @@ class _DrugsListPageState extends State<DrugsListPage> {
   ScrollController scrollController = ScrollController();
   FirestoreService db = FirestoreService();
 
+  List<Drug> drugsList = [];
+  List<String> groups = [];
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Stack(
         children: [
-          RefreshIndicator(
-            onRefresh: () async {
-              setState(() {});
-            },
-            child: ListView(
-              controller: scrollController,
-              physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.symmetric(horizontal: 36),
-              children: [
-                const SizedBox(height: 150),
-                StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                  stream: db.myDrugs.snapshots(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasError) {
-                      return Center(
-                        child: TextButton(
-                          onPressed: () {},
-                          child: const Text('Reload'),
-                        ),
-                      );
-                    }
-
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                        child: CircularProgressIndicator.adaptive(),
-                      );
-                    }
-
-                    List<Drug> drugsList = snapshot.data!.docs
-                        .map((e) => Drug.fromFirestore(e.data(), e.id))
-                        .toList();
-
-                    Map<String, List<Drug>> categories = {};
-
-                    for (Drug element in drugsList) {
-                      if (categories[element.group] == null) {
-                        categories[element.group!] = [element];
-                      } else {
-                        categories[element.group!]!.add(element);
-                      }
-                    }
-
-                    List<String> groups = categories.keys.toList()..sort();
-
-                    groups.sort(
-                        (a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
-
-                    return ListView.separated(
-                      shrinkWrap: true,
-                      primary: false,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: groups.length,
-                      separatorBuilder: (BuildContext context, int index) {
-                        return const SizedBox(height: 50);
-                      },
-                      itemBuilder: (BuildContext context, int index) {
-                        List<Drug> categoryList = categories[groups[index]]!;
-//TODO; sort by brand name then generic name
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              groups[index],
-                              style: const TextStyle(
-                                color: Colors.grey,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            GridView.builder(
-                              shrinkWrap: true,
-                              primary: false,
-                              physics: const NeverScrollableScrollPhysics(),
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 20,
-                                mainAxisSpacing: 20,
-                                childAspectRatio: .8,
-                              ),
-                              itemCount: categoryList.length,
-                              itemBuilder:
-                                  (BuildContext context, int categoryIndex) {
-                                return DrugCard(
-                                  drug: categoryList[categoryIndex],
-                                );
-                              },
-                            ),
-                          ],
-                        );
-                      },
+          ListView(
+            controller: scrollController,
+            physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.all(36),
+            children: [
+              const SizedBox(height: 130),
+              StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                stream: db.myDrugs.snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: TextButton(
+                        onPressed: () {},
+                        child: const Text('Reload'),
+                      ),
                     );
-                  },
-                ),
-              ],
-            ),
+                  }
+
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator.adaptive(),
+                    );
+                  }
+
+                  drugsList = snapshot.data!.docs
+                      .map((e) => Drug.fromFirestore(e.data(), e.id))
+                      .toList();
+
+                  Map<String, List<Drug>> categories = {};
+
+                  for (Drug element in drugsList) {
+                    if (categories[element.group] == null) {
+                      categories[element.group!] = [element];
+                    } else {
+                      categories[element.group!]!.add(element);
+                    }
+                  }
+
+                  groups = categories.keys.toList()..sort();
+
+                  groups.sort(
+                      (a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
+
+                  return ListView.separated(
+                    shrinkWrap: true,
+                    primary: false,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: groups.length,
+                    separatorBuilder: (BuildContext context, int index) {
+                      return const SizedBox(height: 50);
+                    },
+                    itemBuilder: (BuildContext context, int index) {
+                      List<Drug> categoryList = categories[groups[index]]!;
+//TODO; sort by brand name then generic name
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            groups[index],
+                            style: const TextStyle(
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          GridView.builder(
+                            shrinkWrap: true,
+                            primary: false,
+                            physics: const NeverScrollableScrollPhysics(),
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 20,
+                              mainAxisSpacing: 20,
+                              childAspectRatio: .8,
+                            ),
+                            itemCount: categoryList.length,
+                            itemBuilder:
+                                (BuildContext context, int categoryIndex) {
+                              return DrugCard(
+                                drug: categoryList[categoryIndex],
+                              );
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+              ),
+            ],
           ),
           Align(
             alignment: Alignment.bottomRight,
@@ -153,6 +153,15 @@ class _DrugsListPageState extends State<DrugsListPage> {
                         ? 'Hi'
                         : '${snapshot.data!.data()!['name']}',
                     [
+                      OutlineIconButton(
+                        iconData: Icons.search,
+                        onPressed: () {
+                          showSearch(
+                              context: context,
+                              delegate: DrugSearchDelegate(drugsList, groups));
+                        },
+                      ),
+                      const SizedBox(width: 10),
                       StatefulBuilder(
                         builder: (context, setState) {
                           Pharmacy pharmacy = Pharmacy();

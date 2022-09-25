@@ -10,7 +10,7 @@ class Appointment {
   DateTime? dateTime;
   List<String>? symptoms;
   List<String>? conditions;
-  bool? isConfirmed;
+  AppointmentStatus? status;
   String? venueString;
   Map? venueGeo;
 
@@ -24,8 +24,7 @@ class Appointment {
     this.service,
     this.conditions,
     this.symptoms,
-    this.isConfirmed,
-    this.venueString,
+this.status,    this.venueString,
     this.venueGeo,
   });
 
@@ -52,10 +51,12 @@ class Appointment {
             .map((e) => e.toString())
             .toList();
 
-    isConfirmed = map['isConfirmed'] as bool?;
+    status = AppointmentStatus.values[map['status']];
 
     venueString = map['venueString'] as String?;
 
     venueGeo = map['venueGeo'];
   }
 }
+
+enum AppointmentStatus { canceled, completed, confirmed, pending }

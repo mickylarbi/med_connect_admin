@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:med_connect_admin/models/doctor/appointment.dart';
+import 'package:med_connect_admin/screens/home/doctor/appointments/appointment_card.dart';
 import 'package:med_connect_admin/screens/home/doctor/appointments/appointment_details_screen.dart';
 import 'package:med_connect_admin/screens/shared/custom_app_bar.dart';
 import 'package:med_connect_admin/screens/shared/header_text.dart';
@@ -189,12 +190,6 @@ class _CalendarViewScreenState extends State<CalendarViewScreen> {
                                             //   size: 40,
                                             // ),
 
-                                            const CircleAvatar(
-                                              //placeholder for centering date
-                                              backgroundColor:
-                                                  Colors.transparent,
-                                              radius: 10,
-                                            ),
                                             Container(
                                               padding: const EdgeInsets.all(8),
                                               decoration: BoxDecoration(
@@ -210,18 +205,19 @@ class _CalendarViewScreenState extends State<CalendarViewScreen> {
                                                         FontWeight.bold),
                                               ),
                                             ),
-                                            if (appointment.isConfirmed !=
-                                                    null &&
-                                                appointment.isConfirmed!)
-                                              const CircleAvatar(
-                                                backgroundColor: Colors.green,
-                                                radius: 10,
-                                                child: Icon(
-                                                  Icons.done,
-                                                  size: 10,
-                                                  color: Colors.white,
-                                                ),
+                                            const SizedBox(height: 10),
+                                            CircleAvatar(
+                                              backgroundColor:
+                                                  appointmentStatusColor(
+                                                      appointment.status!),
+                                              radius: 10,
+                                              child: Icon(
+                                                appointmentStatusIconData(
+                                                    appointment.status!),
+                                                size: 10,
+                                                color: Colors.white,
                                               ),
+                                            ),
                                           ],
                                         )
                                       ],

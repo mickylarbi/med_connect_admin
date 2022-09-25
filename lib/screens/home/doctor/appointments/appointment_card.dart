@@ -87,16 +87,15 @@ class AppointmentTodayCard extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
                 const Spacer(),
-                if (appointment.isConfirmed != null && appointment.isConfirmed!)
-                  const CircleAvatar(
-                    backgroundColor: Colors.green,
-                    radius: 10,
-                    child: Icon(
-                      Icons.done,
-                      size: 10,
-                      color: Colors.white,
-                    ),
-                  ),
+                 CircleAvatar(
+                backgroundColor: appointmentStatusColor(appointment.status!),
+                radius: 10,
+                child: Icon(
+                  appointmentStatusIconData(appointment.status!),
+                  size: 10,
+                  color: Colors.white,
+                ),
+              )
               ],
             ),
           ],
@@ -119,11 +118,9 @@ class AppointmentCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        navigate(
-            context, DoctorAppointmentDetailsScreen(appointment: appointment));
+        navigate(context, DoctorAppointmentDetailsScreen(appointment: appointment));
       },
       child: Padding(
-          //TODO: show time
           padding: padding,
           child: Row(
             children: [
@@ -162,11 +159,11 @@ class AppointmentCard extends StatelessWidget {
                     children: [
                       HeaderText(text: appointment.service!),
                       Text(
-                        appointment.patientName!,
+                        appointment.doctorName!,
                         overflow: TextOverflow.ellipsis,
                       ),
                       Text(
-                        appointment.venueString!,
+                        DateFormat.jm().format(appointment.dateTime!),
                         overflow: TextOverflow.ellipsis,
                       )
                     ],
@@ -174,46 +171,63 @@ class AppointmentCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 20),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  const CircleAvatar(
-                    //placeholder for centering date
-                    backgroundColor: Colors.transparent,
-                    radius: 10,
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        color: Colors.blueGrey.withOpacity(.15)),
-                    child: Text(
-                      DateFormat.jm().format(appointment.dateTime!),
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  // Icon(
-                  //   Icons.chevron_right_rounded,
-                  //   color: Colors.grey.withOpacity(.5),
-                  //   size: 40,
-                  // ),
-
-                  if (appointment.isConfirmed != null &&
-                      appointment.isConfirmed!)
-                    const CircleAvatar(
-                      backgroundColor: Colors.green,
-                      radius: 10,
-                      child: Icon(
-                        Icons.done,
-                        size: 10,
-                        color: Colors.white,
-                      ),
-                    ),
-                ],
+              CircleAvatar(
+                backgroundColor: appointmentStatusColor(appointment.status!),
+                radius: 10,
+                child: Icon(
+                  appointmentStatusIconData(appointment.status!),
+                  size: 10,
+                  color: Colors.white,
+                ),
               )
             ],
           )),
     );
+  }
+}
+
+
+Color appointmentStatusColor(AppointmentStatus appointmentStatus) {
+  switch (appointmentStatus) {
+    case AppointmentStatus.pending:
+      return Colors.grey;
+    case AppointmentStatus.confirmed:
+      return Colors.green;
+    case AppointmentStatus.completed:
+      return Colors.blue;
+    case AppointmentStatus.canceled:
+      return Colors.red;
+    default:
+      return Colors.grey;
+  }
+}
+
+IconData appointmentStatusIconData(AppointmentStatus appointmentStatus) {
+  switch (appointmentStatus) {
+    case AppointmentStatus.pending:
+      return Icons.more_horiz;
+    case AppointmentStatus.confirmed:
+      return Icons.done;
+    case AppointmentStatus.completed:
+      return Icons.done_all;
+    case AppointmentStatus.canceled:
+      return Icons.clear;
+    default:
+      return Icons.pending;
+  }
+}
+
+String appointmentStatusMessage(AppointmentStatus appointmentStatus) {
+  switch (appointmentStatus) {
+    case AppointmentStatus.pending:
+      return 'Appointment is pending confirmation';
+    case AppointmentStatus.confirmed:
+      return 'Appointment has been confirmed';
+    case AppointmentStatus.completed:
+      return 'Appointment has been completed';
+    case AppointmentStatus.canceled:
+      return 'Appointment has been canceled';
+    default:
+      return 'Appointment is pending';
   }
 }

@@ -133,7 +133,8 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
                 child: StatefulBuilder(builder: (context, setState) {
                   return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                       stream: db.myAppointments
-                          .where('isConfirmed', isEqualTo: false)
+                          .where('status',
+                              isEqualTo: AppointmentStatus.pending.index)
                           .snapshots(),
                       builder: (context, snapshot) {
                         if (snapshot.hasError) {
@@ -144,9 +145,7 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
                                 const Text('Something went wrong'),
                                 IconButton(
                                     onPressed: () {
-                                      setState(
-                                        () {},
-                                      );
+                                      setState(() {});
                                     },
                                     icon: const Icon(Icons.refresh))
                               ],

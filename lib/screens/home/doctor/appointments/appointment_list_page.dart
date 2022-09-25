@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:med_connect_admin/firebase_services/auth_service.dart';
 import 'package:med_connect_admin/firebase_services/firestore_service.dart';
 import 'package:med_connect_admin/models/doctor/appointment.dart';
+import 'package:med_connect_admin/screens/home/doctor/appointments/appointments_history_screen.dart';
 import 'package:med_connect_admin/screens/home/doctor/appointments/calendar_view_screen.dart';
 import 'package:med_connect_admin/screens/home/doctor/appointments/appointment_card.dart';
 import 'package:med_connect_admin/screens/shared/custom_app_bar.dart';
@@ -24,7 +25,8 @@ class _AppointmentsListPageState extends State<AppointmentsListPage> {
   AuthService auth = AuthService();
   FirestoreService db = FirestoreService();
 
-  List<Appointment> appointmentsList = [];
+  ValueNotifier<List<Appointment>> appointmentsListNotifier =
+      ValueNotifier<List<Appointment>>([]);
 
   @override
   Widget build(BuildContext context) {
@@ -54,17 +56,33 @@ class _AppointmentsListPageState extends State<AppointmentsListPage> {
                     );
                   }
 
-                  appointmentsList = snapshot.data!.docs
-                      .map(
-                        (e) => Appointment.fromFirestore(e.data(), e.id),
-                      )
-                      .toList();
+                  appointmentsListNotifier.value = [
+                    ...snapshot.data!.docs
+                        .map(
+                          (e) => Appointment.fromFirestore(e.data(), e.id),
+                        )
+                        .toList()
+                  ];
+
+                  appointmentsListNotifier.value.sort((a, b) =>
+                      a.dateTime!.millisecondsSinceEpoch.toString().compareTo(
+                          b.dateTime!.millisecondsSinceEpoch.toString()));
+
+                  appointmentsListNotifier.value =
+                      appointmentsListNotifier.value.reversed.toList();
+
+                  List<Appointment> currentAppointmentsList =
+                      appointmentsListNotifier.value
+                          .where((element) =>
+                              element.status == AppointmentStatus.pending ||
+                              element.status == AppointmentStatus.confirmed)
+                          .toList();
 
                   return ListView.separated(
                     shrinkWrap: true,
                     primary: false,
                     physics: const NeverScrollableScrollPhysics(),
-                    itemCount: appointmentsList.length,
+                    itemCount: currentAppointmentsList.length,
                     separatorBuilder: (BuildContext context, int index) {
                       return const Divider(
                         height: 0,
@@ -74,7 +92,7 @@ class _AppointmentsListPageState extends State<AppointmentsListPage> {
                     },
                     itemBuilder: (BuildContext context, int index) {
                       return AppointmentCard(
-                          appointment: appointmentsList[index]);
+                          appointment: currentAppointmentsList[index]);
                     },
                   );
                 },
@@ -90,12 +108,30 @@ class _AppointmentsListPageState extends State<AppointmentsListPage> {
             OutlineIconButton(
               iconData: Icons.calendar_month_rounded,
               onPressed: () {
-                if (appointmentsList.isNotEmpty) {
-                  navigate(context,
-                      CalendarViewScreen(appointmentList: appointmentsList));
+                if (appointmentsListNotifier.value.isNotEmpty) {
+                  navigate(
+                      context,
+                      CalendarViewScreen(
+                          appointmentList: appointmentsListNotifier.value));
                 }
               },
             ),
+            const SizedBox(width: 10),
+            OutlineIconButton(
+              iconData: Icons.history,
+              onPressed: () {
+                navigate(
+                  context,
+                  AppointmentHistoryScreen(
+                    appointmentsList: appointmentsListNotifier.value
+                        .where((element) =>
+                            element.status == AppointmentStatus.canceled ||
+                            element.status == AppointmentStatus.completed)
+                        .toList(),
+                  ),
+                );
+              },
+            )
           ],
         ),
       ],
@@ -105,6 +141,7 @@ class _AppointmentsListPageState extends State<AppointmentsListPage> {
   @override
   void dispose() {
     _scrollController.dispose();
+    appointmentsListNotifier.dispose();
     super.dispose();
   }
 }
