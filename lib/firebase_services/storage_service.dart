@@ -28,5 +28,5 @@ class StorageService {
   UploadTask uploadDrugImage({required XFile picture, required String id}) =>
       drugsPicturesRef.child(id).putFile(File(picture.path));
 
-  deleteDrug({required String id}) => drugsPicturesRef.child(id).delete();
+  deleteDrugImage({required String id}) => drugsPicturesRef.child(id).delete();
 }

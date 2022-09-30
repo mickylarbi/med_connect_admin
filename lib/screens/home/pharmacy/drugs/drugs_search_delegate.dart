@@ -6,7 +6,8 @@ import 'package:med_connect_admin/screens/home/pharmacy/drugs/drugs_list_page.da
 class DrugSearchDelegate extends SearchDelegate {
   List<Drug> drugsList;
   List<String> groups;
-  DrugSearchDelegate(this.drugsList, this.groups);
+  bool isFromDoctor;
+  DrugSearchDelegate(this.drugsList, this.groups, {this.isFromDoctor = false});
 
   @override
   ThemeData appBarTheme(BuildContext context) {
@@ -134,7 +135,6 @@ class DrugSearchDelegate extends SearchDelegate {
       },
       itemBuilder: (BuildContext context, int index) {
         List<Drug> categoryList = categories[groups[index]]!;
-//TODO; sort by brand name then generic name
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -161,6 +161,7 @@ class DrugSearchDelegate extends SearchDelegate {
               itemBuilder: (BuildContext context, int categoryIndex) {
                 return DrugCard(
                   drug: categoryList[categoryIndex],
+                  isFromDoctor: isFromDoctor,
                 );
               },
             ),

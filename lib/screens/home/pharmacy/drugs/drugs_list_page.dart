@@ -6,6 +6,7 @@ import 'package:med_connect_admin/firebase_services/storage_service.dart';
 import 'package:med_connect_admin/models/pharmacy/drug.dart';
 import 'package:med_connect_admin/models/pharmacy/pharmacy.dart';
 import 'package:med_connect_admin/screens/home/doctor/appointments/patient_profile_screen.dart';
+import 'package:med_connect_admin/screens/home/pharmacy/drugs/drug_details_screen.dart';
 import 'package:med_connect_admin/screens/home/pharmacy/drugs/drugs_search_delegate.dart';
 import 'package:med_connect_admin/screens/home/pharmacy/drugs/edit_drug_details_screen.dart';
 import 'package:med_connect_admin/screens/home/pharmacy/drugs/pharmacy_profile_screen.dart';
@@ -204,13 +205,14 @@ class _DrugsListPageState extends State<DrugsListPage> {
 
 class DrugCard extends StatelessWidget {
   final Drug drug;
-  const DrugCard({super.key, required this.drug});
+  final bool isFromDoctor;
+  const DrugCard({super.key, required this.drug,  this.isFromDoctor=false});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        navigate(context, EditDrugDetailsScreen(drug: drug));
+        navigate(context,isFromDoctor? DrugDetailsScreen(drug: drug, isFromDoctor: isFromDoctor): EditDrugDetailsScreen(drug: drug));
       },
       child: Container(
         padding: const EdgeInsets.all(24),

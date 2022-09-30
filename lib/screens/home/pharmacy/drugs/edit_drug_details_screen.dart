@@ -276,7 +276,7 @@ class _EditDrugDetailsScreenState extends State<EditDrugDetailsScreen> {
                                 .deleteDrug(widget.drug!.id!)
                                 .timeout(ktimeout)
                                 .then((value) {
-                              storage.deleteDrug(id: widget.drug!.id!);
+                              storage.deleteDrugImage(id: widget.drug!.id!);
                               Navigator.pop(context);
                               Navigator.pop(context);
                             }).onError((error, stackTrace) {

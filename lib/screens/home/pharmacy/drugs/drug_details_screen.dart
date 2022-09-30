@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:med_connect_admin/firebase_services/auth_service.dart';
 import 'package:med_connect_admin/models/pharmacy/drug.dart';
@@ -11,7 +10,12 @@ import 'package:med_connect_admin/utils/functions.dart';
 class DrugDetailsScreen extends StatelessWidget {
   final Drug drug;
   final bool showButton;
-  DrugDetailsScreen({Key? key, required this.drug, this.showButton = false})
+  final bool isFromDoctor;
+  DrugDetailsScreen(
+      {Key? key,
+      required this.drug,
+      this.showButton = false,
+      this.isFromDoctor = false})
       : super(key: key);
 
   AuthService auth = AuthService();
@@ -58,6 +62,9 @@ class DrugDetailsScreen extends StatelessWidget {
                 ),
               );
             }),
+            if (isFromDoctor)
+              ElevatedButton(
+                  onPressed: () {}, child: const Text('Add to prescription')),
             CustomAppBar(
               actions: [
                 if (drug.pharmacyId == auth.uid)

@@ -11,7 +11,6 @@ class Order {
   GeoPoint? locationGeo;
   double? totalPrice;
   OrderStatus? status;
-  bool? confirmDelivery;
   DateTime? dateTime;
   List<String>? pharmacyIds;
 
@@ -23,7 +22,6 @@ class Order {
     this.locationGeo,
     this.totalPrice,
     this.status,
-    this.confirmDelivery,
     this.dateTime,
   });
 
@@ -35,7 +33,6 @@ class Order {
     locationGeo = map['locationGeo'];
     totalPrice = map['totalPrice'].toDouble();
     status = OrderStatus.values[map['status']];
-    confirmDelivery = map['confirmDelivery'];
     dateTime = DateTime.fromMillisecondsSinceEpoch(
         (map['dateTime'] as Timestamp).millisecondsSinceEpoch);
   }
@@ -49,8 +46,7 @@ class Order {
       locationGeo == other.locationGeo &&
       totalPrice == other.totalPrice &&
       status == other.status &&
-      dateTime == other.dateTime &&
-      confirmDelivery == other.confirmDelivery;
+      dateTime == other.dateTime;
 
   @override
   int get hashCode => hashValues(
@@ -60,7 +56,6 @@ class Order {
         locationGeo,
         totalPrice,
         status,
-        confirmDelivery,
         dateTime,
       );
 }

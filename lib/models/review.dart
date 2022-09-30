@@ -74,7 +74,7 @@ class ReviewCard extends StatelessWidget {
             ),
             Text(
               review.rating!.toStringAsFixed(2),
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ],
         ),

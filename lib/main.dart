@@ -12,6 +12,6 @@ Future<void> main() async {
   runApp(const Src());
 
   //TODO: account deletion
-  //TODO: search
-  //TODO: appointment status
+  //TODO: add drug type (ie over the counter and things)
+  
 }

@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:med_connect_admin/firebase_services/firestore_service.dart';
 import 'package:med_connect_admin/models/doctor/appointment.dart';
+import 'package:med_connect_admin/models/pharmacy/drug.dart';
 import 'package:med_connect_admin/screens/home/doctor/appointments/appointment_card.dart';
 import 'package:med_connect_admin/screens/home/doctor/appointments/patient_profile_screen.dart';
+import 'package:med_connect_admin/screens/home/pharmacy/drugs/drugs_search_delegate.dart';
 import 'package:med_connect_admin/screens/shared/custom_app_bar.dart';
 import 'package:med_connect_admin/utils/constants.dart';
 import 'package:med_connect_admin/utils/dialogs.dart';
@@ -41,6 +43,34 @@ class _DoctorAppointmentDetailsScreenState
           ListView(
             padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 88),
             children: [
+              TextButton(
+                onPressed: () {
+                  showLoadingDialog(context);
+                  db.drugsCollection.get().timeout(ktimeout).then((value) {
+                    List<Drug> drugsList = value.docs
+                        .map((e) => Drug.fromFirestore(e.data(), e.id))
+                        .toList();
+
+                    List<String> groups = [];
+
+                    for (Drug element in drugsList) {
+                      if (!groups.contains(element.group)) {
+                        groups.add(element.group!);
+                      }
+                    }
+
+                    Navigator.pop(context);
+                    showSearch(
+                        context: context,
+                        delegate: DrugSearchDelegate(drugsList, groups));
+                  }).onError((error, stackTrace) {});
+                },
+                style: TextButton.styleFrom(
+                    backgroundColor: Colors.blueGrey.withOpacity(.1),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14))),
+                child: const Text('Prescribe medication'),
+              ),
               const SizedBox(height: 10),
               Material(
                 color: Colors.grey.withOpacity(.2),
@@ -251,62 +281,67 @@ class _DoctorAppointmentDetailsScreenState
                 ValueListenableBuilder<AppointmentStatus>(
                     valueListenable: status,
                     builder: (context, value, child) {
-                      print(value);
-                      return TextButton(
-                        onPressed: () {
-                          AppointmentStatus newStatus =
-                              widget.appointment.status ==
-                                      AppointmentStatus.confirmed
-                                  ? AppointmentStatus.completed
-                                  : AppointmentStatus.confirmed;
+                      return widget.appointment.status ==
+                                  AppointmentStatus.confirmed &&
+                              widget.appointment.dateTime!
+                                  .isAfter(DateTime.now())
+                          ? const SizedBox()
+                          : TextButton(
+                              onPressed: () {
+                                AppointmentStatus newStatus =
+                                    widget.appointment.status ==
+                                            AppointmentStatus.confirmed
+                                        ? AppointmentStatus.completed
+                                        : AppointmentStatus.confirmed;
 
-                          showConfirmationDialog(
-                            context,
-                            message: widget.appointment.status ==
-                                    AppointmentStatus.confirmed
-                                ? 'Set appointment status to completed?'
-                                : 'Confirm appointment?',
-                            confirmFunction: () {
-                              showLoadingDialog(context);
-                              db
-                                  .getappointmentById(widget.appointment.id!)
-                                  .update({'status': newStatus.index})
-                                  .timeout(ktimeout)
-                                  .then((val) {
-                                    Navigator.pop(context);
-                                    Navigator.pop(context);
-                                  })
-                                  .onError((error, stackTrace) {
-                                    Navigator.pop(context);
-                                    showAlertDialog(context,
-                                        message:
-                                            'Error confirming appointment.');
-                                  });
-                            },
-                          );
-                        },
-                        style: TextButton.styleFrom(
-                            backgroundColor: widget.appointment.status ==
-                                    AppointmentStatus.confirmed
-                                ? Colors.blue.withOpacity(.1)
-                                : Colors.green.withOpacity(.1),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)),
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 14)),
-                        child: Text(
-                          widget.appointment.status ==
-                                  AppointmentStatus.confirmed
-                              ? 'Complete'
-                              : 'Confirm',
-                          style: TextStyle(
-                            color: widget.appointment.status ==
-                                    AppointmentStatus.confirmed
-                                ? Colors.blue
-                                : Colors.green,
-                          ),
-                        ),
-                      );
+                                showConfirmationDialog(
+                                  context,
+                                  message: widget.appointment.status ==
+                                          AppointmentStatus.confirmed
+                                      ? 'Set appointment status to completed?'
+                                      : 'Confirm appointment?',
+                                  confirmFunction: () {
+                                    showLoadingDialog(context);
+                                    db
+                                        .getappointmentById(
+                                            widget.appointment.id!)
+                                        .update({'status': newStatus.index})
+                                        .timeout(ktimeout)
+                                        .then((val) {
+                                          Navigator.pop(context);
+                                          Navigator.pop(context);
+                                        })
+                                        .onError((error, stackTrace) {
+                                          Navigator.pop(context);
+                                          showAlertDialog(context,
+                                              message:
+                                                  'Error confirming appointment.');
+                                        });
+                                  },
+                                );
+                              },
+                              style: TextButton.styleFrom(
+                                  backgroundColor: widget.appointment.status ==
+                                          AppointmentStatus.confirmed
+                                      ? Colors.blue.withOpacity(.1)
+                                      : Colors.green.withOpacity(.1),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10)),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 14)),
+                              child: Text(
+                                widget.appointment.status ==
+                                        AppointmentStatus.confirmed
+                                    ? 'Complete'
+                                    : 'Confirm',
+                                style: TextStyle(
+                                  color: widget.appointment.status ==
+                                          AppointmentStatus.confirmed
+                                      ? Colors.blue
+                                      : Colors.green,
+                                ),
+                              ),
+                            );
                     })
             ],
           ),
