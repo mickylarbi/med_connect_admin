@@ -14,6 +14,8 @@ class Doctor extends Admin {
   Experience? currentLocation;
   List<String>? services;
   String? phone;
+  String? licenseId;
+  bool? isVerified;
 
   Doctor({
     id,
@@ -27,6 +29,8 @@ class Doctor extends Admin {
     this.currentLocation,
     this.reviews,
     this.phone,
+    this.licenseId,
+    this.isVerified,
   });
 
   @override
@@ -66,6 +70,10 @@ class Doctor extends Admin {
 
     phone = map['phone'];
 
+    licenseId = map['licenseId'];
+
+    isVerified = map['isVerified'];
+
     return this;
   }
 
@@ -83,6 +91,8 @@ class Doctor extends Admin {
       if (currentLocation != null) 'currentLocation': currentLocation!.toMap(),
       'reviews': reviews,
       'phone': phone,
+      'licenseId': licenseId,
+      'isVerified': isVerified,
       'adminRole': 'doctor'
     };
   }
@@ -99,17 +109,18 @@ class Doctor extends Admin {
       experiences == other.experiences &&
       services == other.services &&
       currentLocation == other.currentLocation &&
-      phone == other.phone;
+      phone == other.phone &&
+      licenseId == other.licenseId;
 
   @override
-  int get hashCode => hashValues(
-        name,
-        bio,
-        mainSpecialty,
-        hashList(otherSpecialties),
-        hashList(experiences),
-        hashList(services),
-        currentLocation,
-        phone,
-      );
+  int get hashCode => Object.hash(
+      name,
+      bio,
+      mainSpecialty,
+      Object.hashAll(otherSpecialties!.map((e) => e)),
+      Object.hashAll(experiences!.map((e) => e)),
+      Object.hashAll(services!.map((e) => e)),
+      currentLocation,
+      phone,
+      licenseId);
 }

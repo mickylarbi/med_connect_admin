@@ -206,13 +206,17 @@ class _DrugsListPageState extends State<DrugsListPage> {
 class DrugCard extends StatelessWidget {
   final Drug drug;
   final bool isFromDoctor;
-  const DrugCard({super.key, required this.drug,  this.isFromDoctor=false});
+  const DrugCard({super.key, required this.drug, this.isFromDoctor = false});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        navigate(context,isFromDoctor? DrugDetailsScreen(drug: drug, isFromDoctor: isFromDoctor): EditDrugDetailsScreen(drug: drug));
+        navigate(
+            context,
+            isFromDoctor
+                ? DrugDetailsScreen(drug: drug, isFromDoctor: isFromDoctor)
+                : EditDrugDetailsScreen(drug: drug));
       },
       child: Container(
         padding: const EdgeInsets.all(24),
@@ -263,12 +267,16 @@ class DrugImageWidget extends StatelessWidget {
           future: storage.drugImageDownloadUrl(id: drugId),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.hasError) {
-              return Center(
-                child: IconButton(
-                  icon: const Icon(Icons.refresh),
-                  onPressed: () {
-                    setState(() {});
-                  },
+              return SizedBox(
+                height: height,
+                width: width,
+                child: Center(
+                  child: IconButton(
+                    icon: const Icon(Icons.refresh),
+                    onPressed: () {
+                      setState(() {});
+                    },
+                  ),
                 ),
               );
             }
@@ -292,8 +300,12 @@ class DrugImageWidget extends StatelessWidget {
               );
             }
 
-            return const Center(
-              child: CircularProgressIndicator.adaptive(),
+            return SizedBox(
+              height: height,
+              width: width,
+              child: const Center(
+                child: CircularProgressIndicator.adaptive(),
+              ),
             );
           },
         );

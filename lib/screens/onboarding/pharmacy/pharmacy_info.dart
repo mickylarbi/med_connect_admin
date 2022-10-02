@@ -22,8 +22,8 @@ class PharmacyInfoScreen extends StatefulWidget {
 class _PharmacyInfoScreenState extends State<PharmacyInfoScreen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
+  TextEditingController licenseIdController = TextEditingController();
   ValueNotifier<XFile?> pictureNotifier = ValueNotifier<XFile?>(null);
-  FocusNode focusNode = FocusNode();
 
   FirestoreService db = FirestoreService();
   StorageService storage = StorageService();
@@ -39,7 +39,7 @@ class _PharmacyInfoScreenState extends State<PharmacyInfoScreen> {
           child: Stack(
             children: [
               Padding(
-                padding: const EdgeInsets.only(top: 100, bottom: 150),
+                padding: const EdgeInsets.only(top: 100),
                 child: Center(
                   child: ListView(
                     padding: const EdgeInsets.symmetric(horizontal: 36),
@@ -50,6 +50,9 @@ class _PharmacyInfoScreenState extends State<PharmacyInfoScreen> {
                       nameColumn(),
                       const Divider(height: 100),
                       phoneColumn(),
+                      const Divider(height: 100),
+                      licenseIdColumn(),
+                      const SizedBox(height: 150)
                     ],
                   ),
                 ),
@@ -173,9 +176,6 @@ class _PharmacyInfoScreenState extends State<PharmacyInfoScreen> {
         CustomTextFormField(
           hintText: 'Pharmacy name',
           controller: nameController,
-          onFieldSubmitted: (value) {
-            focusNode.requestFocus();
-          },
         ),
       ],
     );
@@ -191,7 +191,22 @@ class _PharmacyInfoScreenState extends State<PharmacyInfoScreen> {
           hintText: 'Phone number',
           controller: phoneController,
           keyboardType: TextInputType.phone,
-          focusNode: focusNode,
+          prefix: const Text('+233'),
+        ),
+      ],
+    );
+  }
+
+  licenseIdColumn() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const PageViewHeaderText('Let\'s get you verified'),
+        const SizedBox(height: 20),
+        CustomTextFormField(
+          hintText: 'Chemical license ID',
+          controller: licenseIdController,
+          textCapitalization: TextCapitalization.characters,
           onFieldSubmitted: (value) {
             onButtonPressed();
           },
@@ -201,12 +216,20 @@ class _PharmacyInfoScreenState extends State<PharmacyInfoScreen> {
   }
 
   onButtonPressed() {
-    showConfirmationDialog(context, message: 'Create pharmacy?',
-        confirmFunction: () {
-      if (pictureNotifier.value != null &&
-          nameController.text.trim().isNotEmpty &&
-          phoneController.text.trim().isNotEmpty &&
-          phoneController.text.trim().length >= 10) {
+    if (pictureNotifier.value == null) {
+      showAlertDialog(context, message: 'Please add a logo');
+    } else if (nameController.text.trim().isEmpty) {
+      showAlertDialog(context,
+          message: 'Please enter a name for your pharmacy');
+    } else if (phoneController.text.trim().isEmpty) {
+      showAlertDialog(context, message: 'Please enter a phone number');
+    } else if (phoneController.text.trim().length != 9) {
+      showAlertDialog(context, message: 'Please enter a valid phone number');
+    } else if (licenseIdController.text.trim().isEmpty) {
+      showAlertDialog(context, message: 'Please enter a license ID');
+    } else {
+      showConfirmationDialog(context, message: 'Create pharmacy?',
+          confirmFunction: () {
         showLoadingDialog(context);
         storage
             .uploadProfileImage(pictureNotifier.value!)
@@ -214,8 +237,10 @@ class _PharmacyInfoScreenState extends State<PharmacyInfoScreen> {
             .then((value) {
           db
               .addAdmin(Pharmacy(
-                  name: nameController.text.trim(),
-                  phone: phoneController.text.trim()))
+                name: nameController.text.trim(),
+                phone: phoneController.text.trim(),
+                licenseId: licenseIdController.text.trim(),
+              ))
               .timeout(ktimeout)
               .then((value) {
             AuthService auth = AuthService();
@@ -228,25 +253,16 @@ class _PharmacyInfoScreenState extends State<PharmacyInfoScreen> {
           Navigator.pop(context);
           showAlertDialog(context, message: 'Error while creating pharmacy');
         });
-      } else if (pictureNotifier.value == null) {
-        showAlertDialog(context, message: 'Please add a logo');
-      } else if (nameController.text.trim().isEmpty) {
-        showAlertDialog(context,
-            message: 'Please enter a name for your pharmacy');
-      } else if (phoneController.text.trim().isEmpty) {
-        showAlertDialog(context, message: 'Please enter a phone number');
-      } else if (phoneController.text.trim().length < 10) {
-        showAlertDialog(context, message: 'Please enter a valid phone number');
-      }
-    });
+      });
+    }
   }
 
   @override
   void dispose() {
     nameController.dispose();
     phoneController.dispose();
+    licenseIdController.dispose();
     pictureNotifier.dispose();
-    focusNode.dispose();
 
     super.dispose();
   }
@@ -266,4 +282,5 @@ class PageViewHeaderText extends StatelessWidget {
       style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
     );
   }
+  //TODO: change all call number things
 }

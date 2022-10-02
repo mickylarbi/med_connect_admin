@@ -4,7 +4,9 @@ import 'package:med_connect_admin/models/pharmacy/drug.dart';
 import 'package:med_connect_admin/screens/home/pharmacy/drugs/drugs_list_page.dart';
 import 'package:med_connect_admin/screens/home/pharmacy/drugs/edit_drug_details_screen.dart';
 import 'package:med_connect_admin/screens/shared/custom_app_bar.dart';
+import 'package:med_connect_admin/screens/shared/custom_buttons.dart';
 import 'package:med_connect_admin/screens/shared/custom_icon_buttons.dart';
+import 'package:med_connect_admin/utils/constants.dart';
 import 'package:med_connect_admin/utils/functions.dart';
 
 class DrugDetailsScreen extends StatelessWidget {
@@ -63,8 +65,23 @@ class DrugDetailsScreen extends StatelessWidget {
               );
             }),
             if (isFromDoctor)
-              ElevatedButton(
-                  onPressed: () {}, child: const Text('Add to prescription')),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 30),
+                  child: SizedBox(
+                    height: 48,
+                    width: kScreenWidth(context) * .8,
+                    child: CustomFlatButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        Navigator.pop(context, drug);
+                      },
+                      child: const Text('Add to prescription'),
+                    ),
+                  ),
+                ),
+              ),
             CustomAppBar(
               actions: [
                 if (drug.pharmacyId == auth.uid)

@@ -57,13 +57,22 @@ class _PharmacyProfileScreenState extends State<PharmacyProfileScreen> {
                   nameColumn(),
                   const SizedBox(height: 20),
                   phoneColumn(),
+                  const SizedBox(height: 20),
+                  licenseIdColumn(),
                   const SizedBox(height: 50),
                   CustomFlatButton(
                       child: const Text('Save changes'),
                       onPressed: () {
-                        if (nameController.text.trim().isNotEmpty &&
-                            phoneController.text.trim().isNotEmpty &&
-                            phoneController.text.trim().length >= 10) {
+                        if (nameController.text.trim().isEmpty) {
+                          showAlertDialog(context,
+                              message: 'Please enter a name for your pharmacy');
+                        } else if (phoneController.text.trim().isEmpty) {
+                          showAlertDialog(context,
+                              message: 'Please enter a phone number');
+                        } else if (phoneController.text.trim().length != 9) {
+                          showAlertDialog(context,
+                              message: 'Please enter a valid phone number');
+                        } else {
                           showConfirmationDialog(context,
                               message: 'Save changes to pharmacy?',
                               confirmFunction: () {
@@ -81,15 +90,6 @@ class _PharmacyProfileScreenState extends State<PharmacyProfileScreen> {
                                   message: 'Error updating pharmacy info');
                             });
                           });
-                        } else if (nameController.text.trim().isEmpty) {
-                          showAlertDialog(context,
-                              message: 'Please enter a name for your pharmacy');
-                        } else if (phoneController.text.trim().isEmpty) {
-                          showAlertDialog(context,
-                              message: 'Please enter a phone number');
-                        } else if (phoneController.text.trim().length < 10) {
-                          showAlertDialog(context,
-                              message: 'Please enter a valid phone number');
                         }
                       })
                 ],
@@ -139,9 +139,25 @@ class _PharmacyProfileScreenState extends State<PharmacyProfileScreen> {
           hintText: 'Phone number',
           keyboardType: TextInputType.phone,
           controller: phoneController,
+          prefix: const Text('+233'),
         ),
       ],
     );
+  }
+
+  licenseIdColumn() {
+    return TextButton(
+        onPressed: null,
+        style: TextButton.styleFrom(
+            backgroundColor: Colors.grey.withOpacity(.1),
+            foregroundColor: Colors.blueGrey,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+            fixedSize: const Size(double.maxFinite, 48)),
+        child: Text(
+          widget.pharmacy.licenseId!,
+          style: const TextStyle(color: Colors.blueGrey),
+        ));
   }
 
   @override

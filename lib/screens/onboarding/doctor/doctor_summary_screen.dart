@@ -121,10 +121,16 @@ class DoctorSummaryScreen extends StatelessWidget {
                 const SizedBox(height: 20),
                 const Text('Phone:'),
                 Text(
-                  '${doctor.phone}',
+                  '+233${doctor.phone}',
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 50 + MediaQuery.of(context).padding.bottom)
+                const SizedBox(height: 20),
+                const Text('License ID:'),
+                Text(
+                  '${doctor.licenseId}',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 70 + MediaQuery.of(context).padding.bottom)
               ],
             ),
             Align(

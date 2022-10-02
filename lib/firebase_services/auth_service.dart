@@ -91,29 +91,43 @@ class AuthService {
               MaterialPageRoute(builder: (context) => const WelcomeScreen()),
               (route) => false);
         } else {
+          bool? isVerified = value.data()!['isVerified'];
+
           String adminRole = value.data()!['adminRole'];
 
-         
-
-          if (adminRole == 'doctor') {
-            kadminName = '${value.data()!['firstName']}';
+          if (isVerified == null) {
             Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (context) => const DoctorTabView()),
+                MaterialPageRoute(builder: (context) => const PendingScreen()),
                 (route) => false);
-          } else if (adminRole == 'pharmacy') {
-            kadminName = '${value.data()!['name']}';
+          } else if (isVerified == false) {
             Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => const PharmacyTabView()),
+                    builder: (context) => const UnapprovedScreen()),
                 (route) => false);
+          } else {
+            if (adminRole == 'doctor') {
+              kadminName = '${value.data()!['firstName']}';
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const DoctorTabView()),
+                  (route) => false);
+            } else if (adminRole == 'pharmacy') {
+              kadminName = '${value.data()!['name']}';
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const PharmacyTabView()),
+                  (route) => false);
+            }
           }
         }
       }).onError((error, stackTrace) {
         Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => ErrorScreen()),
+            MaterialPageRoute(builder: (context) => const ErrorScreen()),
             (route) => false);
       });
     } else {
@@ -127,25 +141,129 @@ class AuthService {
 }
 
 class ErrorScreen extends StatelessWidget {
-  ErrorScreen({Key? key}) : super(key: key);
-
-  AuthService auth = AuthService();
+  const ErrorScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    AuthService auth = AuthService();
+
     return Scaffold(
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('Error fetching info'),
-            TextButton(
+            Image.asset(
+              'assets/images/error.png',
+              width: kScreenWidth(context) - 72,
+              fit: BoxFit.fitWidth,
+            ),
+            const SizedBox(height: 50),
+            const Text(
+              'Error fetching info',
+              style: TextStyle(color: Colors.grey),
+            ),
+            const SizedBox(height: 20),
+            TextButton.icon(
+                onPressed: () {
+                  showLoadingDialog(context);
+                  auth.authFunction(context);
+                },
+                label: const Text('Retry'),
+                icon: const Icon(Icons.refresh)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class PendingScreen extends StatelessWidget {
+  const PendingScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    AuthService auth = AuthService();
+
+    return Scaffold(
+      body: Center(
+        child: ListView(
+          shrinkWrap: true,
+          padding: const EdgeInsets.all(36),
+          children: [
+            Image.asset(
+              'assets/images/pending.png',
+              // width: kScreenWidth(context) - 72,
+              fit: BoxFit.fitWidth,
+            ),
+            const SizedBox(height: 50),
+            const Text(
+              'Your license ID is pending approval',
+              style: TextStyle(color: Colors.grey),
+            ),
+            const SizedBox(height: 20),
+            TextButton.icon(
               onPressed: () {
                 showLoadingDialog(context);
                 auth.authFunction(context);
               },
-              child: const Text('Retry'),
+              label: const Text('Reload'),
+              icon: const Icon(Icons.refresh),
             ),
+            const SizedBox(height: 20),
+            TextButton.icon(
+                onPressed: () {
+                  showConfirmationDialog(
+                    context,
+                    message: 'Sign out?',
+                    confirmFunction: () {
+                      auth.signOut(context);
+                    },
+                  );
+                },
+                label: const Text(
+                  'Sign out',
+                  style: TextStyle(color: Colors.red),
+                ),
+                icon: const Icon(
+                  Icons.logout,
+                  color: Colors.red,
+                )),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class UnapprovedScreen extends StatelessWidget {
+  const UnapprovedScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    AuthService auth = AuthService();
+
+    return Scaffold(
+      body: Center(
+        child: ListView(
+          shrinkWrap: true,
+          padding: const EdgeInsets.all(36),
+          children: [
+            Image.asset(
+              'assets/images/unapproved.png',
+              fit: BoxFit.fitWidth,
+            ),
+            const SizedBox(height: 50),
+            const Text(
+              'Your license ID was unapproved.\nIf there is any issue contact Tech Support on +233559100608 for assistance',
+              style: TextStyle(color: Colors.grey),
+            ),
+            const SizedBox(height: 20),
+            TextButton.icon(
+                onPressed: () {
+                  auth.signOut(context);
+                },
+                label: const Text('Sign out'),
+                icon: const Icon(Icons.logout)),
           ],
         ),
       ),

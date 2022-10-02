@@ -13,21 +13,24 @@ class CustomTextFormField extends StatelessWidget {
   final FocusNode? focusNode;
   final String? initialValue;
   final Widget? suffix;
+  final Widget? prefix;
 
-  const CustomTextFormField({
-    Key? key,
-    required this.hintText,
-    this.controller,
-    this.keyboardType,
-    this.textCapitalization = TextCapitalization.none,
-    this.textInputAction,
-    this.minLines = 1,
-    this.maxLines = 1,
-    this.onFieldSubmitted,
-    this.onChanged,
-    this.focusNode,
-    this.initialValue, this.suffix,
-  }) : super(key: key);
+  const CustomTextFormField(
+      {Key? key,
+      required this.hintText,
+      this.controller,
+      this.keyboardType,
+      this.textCapitalization = TextCapitalization.none,
+      this.textInputAction,
+      this.minLines = 1,
+      this.maxLines = 1,
+      this.onFieldSubmitted,
+      this.onChanged,
+      this.focusNode,
+      this.initialValue,
+      this.suffix,
+      this.prefix})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +57,7 @@ class CustomTextFormField extends StatelessWidget {
           borderSide: BorderSide.none,
         ),
         suffix: suffix,
+        prefix: prefix,
       ),
     );
   }

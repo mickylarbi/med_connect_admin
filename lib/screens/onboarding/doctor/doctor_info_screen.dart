@@ -62,6 +62,8 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
 
   final TextEditingController phoneController = TextEditingController();
 
+  final TextEditingController licenseIdController = TextEditingController();
+
   List pagesList() => [
         namePage(),
         currentLocationPage(),
@@ -71,6 +73,7 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
         servicesPage(),
         photoPage(),
         phonePage(),
+        licenseIdPage(),
       ];
 
   @override
@@ -103,21 +106,27 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
       pictureNotifier.value = widget.picture;
 
       phoneController.text = widget.doctor!.phone!;
-    } //TODO: add phone number
+
+      licenseIdController.text = widget.doctor!.licenseId!;
+    }
 
     _pageController.addListener(() {
-      if ((_pageController.page == 0 &&
+      if ((_pageController.page!.round() == 0 &&
               (_firstNameController.text.trim().isEmpty ||
                   _surnameController.text.trim().isEmpty)) ||
-          (_pageController.page == 1 &&
+          (_pageController.page!.round() == 1 &&
               _currentLocationController.text.trim().isEmpty) ||
-          (_pageController.page == 3 &&
+          (_pageController.page!.round() == 3 &&
               _mainSpecialtyController.text.trim().isEmpty) ||
-          (_pageController.page == 5 && _servicesNotifier.value.isEmpty) ||
-          (_pageController.page == 6 && pictureNotifier.value == null) ||
-          (_pageController.page == 7 &&
+          (_pageController.page!.round() == 5 &&
+              _servicesNotifier.value.isEmpty) ||
+          (_pageController.page!.round() == 6 &&
+              pictureNotifier.value == null) ||
+          (_pageController.page!.round() == 7 &&
               (phoneController.text.trim().isEmpty ||
-                  phoneController.text.trim().length < 10))) {
+                  phoneController.text.trim().length != 9)) ||
+          (_pageController.page!.round() == 8 &&
+              licenseIdController.text.trim().isEmpty)) {
         canGoNext.value = false;
       } else {
         canGoNext.value = true;
@@ -212,7 +221,15 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
 
     phoneController.addListener(() {
       if (phoneController.text.trim().isEmpty ||
-          phoneController.text.trim().length < 10) {
+          phoneController.text.trim().length != 9) {
+        canGoNext.value = false;
+      } else {
+        canGoNext.value = true;
+      }
+    });
+
+    licenseIdController.addListener(() {
+      if (licenseIdController.text.trim().isEmpty) {
         canGoNext.value = false;
       } else {
         canGoNext.value = true;
@@ -280,7 +297,7 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
             'assets/images/undraw_doctors_hwty.png',
           ),
           fit: BoxFit.fitWidth,
-          opacity: .1,
+          opacity: .05,
         ),
       ),
       child: SingleChildScrollView(
@@ -301,6 +318,7 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
         CustomTextFormField(
           hintText: 'First Name',
           controller: _firstNameController,
+          textCapitalization: TextCapitalization.words,
           onFieldSubmitted: (value) {
             _surnameNode.requestFocus();
           },
@@ -310,6 +328,7 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
           hintText: 'Surname',
           controller: _surnameController,
           focusNode: _surnameNode,
+          textCapitalization: TextCapitalization.words,
           onFieldSubmitted: (value) {
             _pageController.nextPage(
                 duration: const Duration(seconds: 1),
@@ -772,7 +791,26 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
           controller: phoneController,
           keyboardType: TextInputType.phone,
           onFieldSubmitted: (value) {
-            onPhoneFieldSubmitted();
+            _pageController.nextPage(
+                duration: const Duration(seconds: 1),
+                curve: Curves.easeOutQuint);
+          },
+          prefix: const Text('+233'),
+        ),
+      ];
+
+  licenseIdPage() => [
+        const Text(
+          'Let\'s get you verified',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+        ),
+        const SizedBox(height: 30),
+        CustomTextFormField(
+          hintText: 'Medical license ID',
+          controller: licenseIdController,
+          textCapitalization: TextCapitalization.characters,
+          onFieldSubmitted: (value) {
+            onLicenseFieldSubmitted();
           },
         ),
       ];
@@ -785,7 +823,7 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
             onPressed: value
                 ? () {
                     if (_pageController.page == pagesList().length - 1) {
-                      onPhoneFieldSubmitted();
+                      onLicenseFieldSubmitted();
                     } else {
                       _pageController.nextPage(
                           duration: const Duration(seconds: 1),
@@ -827,7 +865,7 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
     }
   }
 
-  onPhoneFieldSubmitted() {
+  onLicenseFieldSubmitted() {
     Navigator.pushReplacement(
       context,
       CupertinoPageRoute(
@@ -850,13 +888,13 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
             otherSpecialties: _otherSpecialtiesNotifier.value,
             services: _servicesNotifier.value,
             phone: phoneController.text.trim(),
+            licenseId: licenseIdController.text.trim(),
+            isVerified: null,
           ),
         ),
       ),
     );
   }
-
-  //TODO: profile image
 
   @override
   void dispose() {
@@ -884,6 +922,9 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
     pictureNotifier.dispose();
 
     phoneController.dispose();
+
+    licenseIdController.dispose();
+
     super.dispose();
   }
 }

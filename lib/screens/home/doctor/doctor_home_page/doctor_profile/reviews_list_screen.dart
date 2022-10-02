@@ -18,9 +18,7 @@ class ReviewListScreen extends StatelessWidget {
               physics: const BouncingScrollPhysics(),
               itemCount: reviews.length,
               separatorBuilder: (BuildContext context, int index) {
-                return const Divider(
-                  height: 50,
-                );
+                return const Divider(height: 50);
               },
               itemBuilder: (BuildContext context, int index) {
                 return ReviewCard(review: reviews[index]);

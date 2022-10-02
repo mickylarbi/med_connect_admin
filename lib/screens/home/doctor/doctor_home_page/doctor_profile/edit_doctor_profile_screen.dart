@@ -1,5 +1,4 @@
-import 'dart:developer';
-import 'dart:io';
+
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -128,6 +127,19 @@ class _EditDoctorProfileScreenState extends State<EditDoctorProfileScreen> {
                           controller: phoneController,
                           keyboardType: TextInputType.phone,
                         ),
+                        const SizedBox(height: 10),
+                        TextButton(
+                            onPressed: null,
+                            style: TextButton.styleFrom(
+                                backgroundColor: Colors.grey.withOpacity(.1),
+                                foregroundColor: Colors.blueGrey,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(14)),
+                                fixedSize: const Size(double.maxFinite, 48)),
+                            child: Text(
+                              widget.doctor.licenseId!,
+                              style: const TextStyle(color: Colors.blueGrey),
+                            )),
                         const Divider(height: 70),
                         const Text(
                           'Specialties',
@@ -614,7 +626,6 @@ class _EditDoctorProfileScreenState extends State<EditDoctorProfileScreen> {
 }
 
 class ChangeProfileImageWidget extends StatefulWidget {
-  
   const ChangeProfileImageWidget({
     Key? key,
   }) : super(key: key);
