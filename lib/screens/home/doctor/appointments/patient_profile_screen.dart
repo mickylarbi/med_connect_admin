@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:med_connect_admin/firebase_services/firestore_service.dart';
 import 'package:med_connect_admin/firebase_services/storage_service.dart';
@@ -73,7 +74,8 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
                                       Navigator.pop(context);
 
                                       Uri phoneUri = Uri(
-                                          scheme: 'tel', path: patient.phone!);
+                                          scheme: 'tel',
+                                          path: '+233${patient.phone}');
 
                                       try {
                                         if (await canLaunchUrl(phoneUri)) {
@@ -93,7 +95,7 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
                                       Navigator.pop(context);
                                       Uri smsUri = Uri(
                                         scheme: 'sms',
-                                        path: patient.phone!,
+                                        path: '+233${patient.phone}',
                                         queryParameters: <String, String>{
                                           'body': Uri.encodeComponent(
                                             'From MedConnect App\n',
@@ -113,6 +115,21 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
                                     },
                                     leading: const Icon(Icons.sms),
                                     title: const Text('Send an SMS'),
+                                  ),
+                                  ListTile(
+                                    leading:
+                                        const FaIcon(FontAwesomeIcons.whatsapp),
+                                    title: const Text('WhatsApp'),
+                                    onTap: () async {
+                                      final Uri whatsAppUri = Uri.parse(
+                                          'https://wa.me/+233${patient.phone}?text=From MedConnect');
+
+                                      if (await canLaunchUrl(whatsAppUri)) {
+                                        launchUrl(whatsAppUri);
+                                      } else {
+                                        showAlertDialog(context);
+                                      }
+                                    },
                                   ),
                                 ],
                               );

@@ -51,7 +51,7 @@ class _EditDrugDetailsScreenState extends State<EditDrugDetailsScreen> {
       otherDetailsController.text = widget.drug!.otherDetails!;
     }
   }
-
+//TODO: over the counter things
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

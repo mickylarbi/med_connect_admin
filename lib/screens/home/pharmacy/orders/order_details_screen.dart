@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:med_connect_admin/firebase_services/auth_service.dart';
 import 'package:med_connect_admin/firebase_services/firestore_service.dart';
@@ -302,6 +303,22 @@ class OrderDetailsScreen extends StatelessWidget {
                                       },
                                       leading: const Icon(Icons.sms),
                                       title: const Text('Send an SMS'),
+                                    ),
+                                    ListTile(
+                                      leading: const FaIcon(
+                                          FontAwesomeIcons.whatsapp),
+                                      title: const Text('WhatsApp'),
+                                      onTap: () async {
+                                        final Uri whatsAppUri = Uri.parse(
+                                            'https://wa.me/+233${patient.phone}?text=From MedConnect');
+
+                                        if (await canLaunchUrl(whatsAppUri)) {
+                                          launchUrl(whatsAppUri);
+                                        } else {
+                                          showAlertDialog(context);
+                                        }
+
+                                      },
                                     ),
                                   ],
                                 );

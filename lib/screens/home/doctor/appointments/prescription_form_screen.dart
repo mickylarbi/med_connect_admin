@@ -171,6 +171,7 @@ class _PrescriptionFormScreenState extends State<PrescriptionFormScreen> {
                                 .set(Prescription(
                                   cart: cart.value.map(
                                       (key, value) => MapEntry(key.id!, value)),
+                                  totalPrice: calculateTotalPrice(),
                                   otherDetails: otherDetails,
                                   isUsed: false,
                                 ).toMap())
@@ -272,6 +273,14 @@ class _PrescriptionFormScreenState extends State<PrescriptionFormScreen> {
       temp.remove(drug);
       cart.value = {...temp};
     }
+  }
+
+  calculateTotalPrice() {
+    double sum = 0;
+    for (MapEntry<Drug, int> entry in cart.value.entries) {
+      sum += entry.key.price! * entry.value;
+    }
+    return sum;
   }
 
   GestureDetector checkoutCard(
