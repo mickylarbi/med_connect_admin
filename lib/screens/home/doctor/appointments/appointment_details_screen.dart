@@ -4,13 +4,16 @@ import 'package:intl/intl.dart';
 import 'package:med_connect_admin/firebase_services/firestore_service.dart';
 import 'package:med_connect_admin/models/doctor/appointment.dart';
 import 'package:med_connect_admin/models/doctor/prescription.dart';
+import 'package:med_connect_admin/models/patient/patient.dart';
 import 'package:med_connect_admin/models/pharmacy/drug.dart';
+import 'package:med_connect_admin/models/review.dart';
 import 'package:med_connect_admin/screens/home/doctor/appointments/appointment_card.dart';
 import 'package:med_connect_admin/screens/home/doctor/appointments/patient_profile_screen.dart';
 import 'package:med_connect_admin/screens/home/doctor/appointments/prescription_details_screen.dart';
 import 'package:med_connect_admin/screens/home/doctor/appointments/prescription_form_screen.dart';
 import 'package:med_connect_admin/screens/home/pharmacy/drugs/drugs_search_delegate.dart';
 import 'package:med_connect_admin/screens/shared/custom_app_bar.dart';
+import 'package:med_connect_admin/screens/shared/header_text.dart';
 import 'package:med_connect_admin/utils/constants.dart';
 import 'package:med_connect_admin/utils/dialogs.dart';
 import 'package:med_connect_admin/utils/functions.dart';
@@ -119,7 +122,10 @@ class _DoctorAppointmentDetailsScreenState
                                   : 'Prescribe medication'),
                         );
                       }),
-                const SizedBox(height: 10),
+                const SizedBox(height: 20),
+                if (widget.appointment.status == AppointmentStatus.completed)
+                  ReviewColumn(appointment: widget.appointment),
+                const SizedBox(height: 20),
                 Material(
                   color: Colors.grey.withOpacity(.2),
                   borderRadius: BorderRadius.circular(14),
@@ -398,5 +404,96 @@ class _DoctorAppointmentDetailsScreenState
         ),
       ),
     );
+  }
+}
+
+class ReviewColumn extends StatelessWidget {
+  const ReviewColumn({
+    Key? key,
+    required this.appointment,
+  }) : super(key: key);
+
+  final Appointment appointment;
+
+  @override
+  Widget build(BuildContext context) {
+    FirestoreService db = FirestoreService();
+
+    return StatefulBuilder(builder: (context, setState) {
+      return FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+          future: db.instance
+              .collection('doctor_reviews')
+              .doc(appointment.id)
+              .get(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {}
+            if (snapshot.connectionState == ConnectionState.done) {
+              return snapshot.data == null || !snapshot.data!.exists
+                  ? const SizedBox()
+                  : ReviewCard(
+                      review: Review.fromFirestore(snapshot.data!.data()!));
+            }
+
+            return const SizedBox();
+          });
+    });
+  }
+}
+
+class ReviewCard extends StatelessWidget {
+  final Review review;
+  const ReviewCard({
+    Key? key,
+    required this.review,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    FirestoreService db = FirestoreService();
+
+    return FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+        future: db.patientDocument(review.patientId!).get(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {}
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (!snapshot.hasData ||
+                snapshot.data == null ||
+                !snapshot.data!.exists) {
+              return const SizedBox();
+            }
+
+            Patient patient = Patient.fromFirestore(
+                snapshot.data!.data()!, snapshot.data!.id);
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    ProfileImageWidget(height: 40, width: 40),
+                    const SizedBox(width: 10),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        HeaderText(text: patient.name),
+                        Text(
+                          DateFormat.yMd().add_jm().format(review.dateTime!),
+                          style: const TextStyle(color: Colors.blueGrey),
+                        ),
+                      ],
+                    ),
+                    const Spacer(),
+                    const Icon(Icons.star, color: Colors.yellow),
+                    HeaderText(text: review.rating!.toStringAsFixed(1)),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Text(review.comment!),
+              ],
+            );
+          }
+          return const SizedBox();
+        });
   }
 }

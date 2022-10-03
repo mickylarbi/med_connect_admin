@@ -1,6 +1,5 @@
-
-
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -9,11 +8,15 @@ import 'package:med_connect_admin/firebase_services/firestore_service.dart';
 import 'package:med_connect_admin/firebase_services/storage_service.dart';
 import 'package:med_connect_admin/models/doctor/doctor.dart';
 import 'package:med_connect_admin/models/doctor/experience.dart';
+import 'package:med_connect_admin/models/review.dart';
+import 'package:med_connect_admin/screens/home/doctor/appointments/appointment_details_screen.dart';
+import 'package:med_connect_admin/screens/home/doctor/doctor_home_page/doctor_profile/reviews_list_screen.dart';
 import 'package:med_connect_admin/screens/onboarding/doctor/edit_experience_screen.dart';
 import 'package:med_connect_admin/screens/shared/custom_app_bar.dart';
 import 'package:med_connect_admin/screens/shared/custom_buttons.dart';
 import 'package:med_connect_admin/screens/shared/custom_textformfield.dart';
 import 'package:med_connect_admin/screens/shared/custom_icon_buttons.dart';
+import 'package:med_connect_admin/screens/shared/header_text.dart';
 import 'package:med_connect_admin/utils/constants.dart';
 import 'package:med_connect_admin/utils/dialogs.dart';
 import 'package:med_connect_admin/utils/functions.dart';
@@ -90,13 +93,84 @@ class _EditDoctorProfileScreenState extends State<EditDoctorProfileScreen> {
               Padding(
                 padding: const EdgeInsets.only(top: 88, bottom: 120),
                 child: SingleChildScrollView(
-                  // controller: controller,
                   padding: const EdgeInsets.symmetric(horizontal: 36),
                   child: Center(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SizedBox(height: 12),
+                        FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                            future: db.instance
+                                .collection('doctor_reviews')
+                                .where('doctorId', isEqualTo: widget.doctor.id)
+                                .get(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasError) {}
+
+                              if (snapshot.connectionState ==
+                                  ConnectionState.done) {
+                                List<Review> reviewsList = snapshot.data!.docs
+                                    .map(
+                                      (e) => Review.fromFirestore(e.data()),
+                                    )
+                                    .toList();
+
+                                double totalRating = 0;
+                                for (Review element in reviewsList) {
+                                  totalRating += element.rating!;
+                                }
+                                totalRating /= reviewsList.length;
+
+                                return Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const HeaderText(text: 'Reviews'),
+                                        TextButton(
+                                          style: ButtonStyle(
+                                              padding:
+                                                  MaterialStateProperty.all(
+                                                      const EdgeInsets
+                                                              .symmetric(
+                                                          vertical: 14))),
+                                          onPressed: () {
+                                            navigate(
+                                                context,
+                                                ReviewListScreen(
+                                                    reviews: reviewsList));
+                                          },
+                                          child: const Text('See all'),
+                                        ),
+                                      ],
+                                    ),
+                                    ReviewCard(
+                                      review: reviewsList
+                                          .where((element) =>
+                                              element.comment != null &&
+                                              element.comment!.isNotEmpty)
+                                          .toList()[0],
+                                    ),
+                                    const SizedBox(height: 20),
+                                    Row(
+                                      children: [
+                                        const Text('Total rating'),
+                                        const Spacer(),
+                                        const Icon(Icons.star,
+                                            color: Colors.yellow),
+                                        HeaderText(
+                                            text:
+                                                totalRating.toStringAsFixed(1)),
+                                      ],
+                                    )
+                                  ],
+                                );
+                              }
+
+                              return const SizedBox();
+                            }),
+                        const SizedBox(height: 30),
                         const ChangeProfileImageWidget(),
                         const SizedBox(height: 30),
                         const Text(
