@@ -36,6 +36,7 @@ class DrugDetailsScreen extends StatelessWidget {
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(horizontal: 36),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 100),
                       Center(
@@ -47,18 +48,39 @@ class DrugDetailsScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 30),
                       Text(
+                        'Price',
+                        style: labelTextStyle,
+                      ),
+                      Text(
                         'GH¢ ${drug.price!.toStringAsFixed(2)}',
                         style: const TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 16),
                       ),
-                      const SizedBox(height: 14),
+                      const SizedBox(height: 20),
+                      Text(
+                        'Brand name',
+                        style: labelTextStyle,
+                      ),
                       Text(drug.brandName!),
-                      const SizedBox(height: 14),
+                      const SizedBox(height: 20),
+                      Text(
+                        'General name',
+                        style: labelTextStyle,
+                      ),
                       Text(drug.genericName!),
-                      const SizedBox(height: 14),
+                      const SizedBox(height: 20),
+                      Text(
+                        'Class',
+                        style: labelTextStyle,
+                      ),
                       Text(drug.group!),
-                      const SizedBox(height: 14),
+                      const SizedBox(height: 20),
+                      Text(
+                        'Other details',
+                        style: labelTextStyle,
+                      ),
                       Text(drug.otherDetails!),
+                      const SizedBox(height: 20),
                     ],
                   ),
                 ),
@@ -98,3 +120,9 @@ class DrugDetailsScreen extends StatelessWidget {
     );
   }
 }
+
+TextStyle get labelTextStyle => const TextStyle(
+      color: Colors.grey,
+      fontWeight: FontWeight.bold,
+      fontSize: 12,
+    );

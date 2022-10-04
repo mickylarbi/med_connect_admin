@@ -109,6 +109,12 @@ class _EditDoctorProfileScreenState extends State<EditDoctorProfileScreen> {
 
                               if (snapshot.connectionState ==
                                   ConnectionState.done) {
+                                if (snapshot.data == null ||
+                                    !snapshot.hasData ||
+                                    snapshot.data!.docs.isEmpty) {
+                                  return const SizedBox();
+                                }
+
                                 List<Review> reviewsList = snapshot.data!.docs
                                     .map(
                                       (e) => Review.fromFirestore(e.data()),
@@ -200,6 +206,7 @@ class _EditDoctorProfileScreenState extends State<EditDoctorProfileScreen> {
                           hintText: 'Phone',
                           controller: phoneController,
                           keyboardType: TextInputType.phone,
+                          prefix: const Text('+233'),
                         ),
                         const SizedBox(height: 10),
                         TextButton(

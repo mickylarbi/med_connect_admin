@@ -30,7 +30,6 @@ class _CalendarViewScreenState extends State<CalendarViewScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     pageController.addListener(() {

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:med_connect_admin/screens/onboarding/select_category_screen.dart';
 import 'package:med_connect_admin/screens/splash_screen.dart';
 
 class Src extends StatelessWidget {
@@ -10,8 +9,7 @@ class Src extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: const SplashScreen(),
-      // home: const SelectCategoryScreen(),
-
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: Colors.blueGrey,
         primarySwatch: Colors.blueGrey,
@@ -24,5 +22,4 @@ class Src extends StatelessWidget {
       ),
     );
   }
-  
 }

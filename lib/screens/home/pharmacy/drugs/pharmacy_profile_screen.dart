@@ -30,7 +30,6 @@ class _PharmacyProfileScreenState extends State<PharmacyProfileScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     nameController.text = widget.pharmacy.name!;

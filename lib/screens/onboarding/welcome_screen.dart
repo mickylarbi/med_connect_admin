@@ -20,7 +20,7 @@ class WelcomeScreen extends StatelessWidget {
               children: [
                 Center(
                   child: Image.asset(
-                    'assets/images/undraw_doctors_hwty.png', //TODO: better resolution
+                    'assets/images/undraw_doctors_hwty.png',
                     width: kScreenWidth(context) - 72,
                     fit: BoxFit.fitWidth,
                   ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:med_connect_admin/screens/home/doctor/doctor_tab_view.dart';
 import 'package:med_connect_admin/screens/home/pharmacy/drugs/drugs_list_page.dart';
 import 'package:med_connect_admin/screens/home/pharmacy/orders/orders_list_page.dart';
 
@@ -22,8 +23,8 @@ class _DoctorTabViewState extends State<PharmacyTabView> {
             controller: _pageController,
             physics: const NeverScrollableScrollPhysics(),
             children: const [
-              OrdersListPage(),
-              DrugsListPage(),
+              KeepAlivePage(child: OrdersListPage()),
+              KeepAlivePage(child: DrugsListPage()),
             ]),
       ),
       bottomNavigationBar: ValueListenableBuilder<int>(

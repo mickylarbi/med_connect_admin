@@ -122,10 +122,12 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
                                     title: const Text('WhatsApp'),
                                     onTap: () async {
                                       final Uri whatsAppUri = Uri.parse(
-                                          'https://wa.me/+233${patient.phone}?text=From MedConnect');
+                                          'https://wa.me/233${patient.phone}?text=From MedConnect');
 
                                       if (await canLaunchUrl(whatsAppUri)) {
-                                        launchUrl(whatsAppUri);
+                                        launchUrl(whatsAppUri,
+                                            mode:
+                                                LaunchMode.externalApplication);
                                       } else {
                                         showAlertDialog(context);
                                       }

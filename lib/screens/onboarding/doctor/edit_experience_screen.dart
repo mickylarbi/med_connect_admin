@@ -23,7 +23,6 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     if (widget.experience != null) {
@@ -78,7 +77,7 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                                     Icon(Icons.calendar_month_outlined),
                                     SizedBox(width: 10),
                                     Text(
-                                      'Choose time range', //TODO: find better phrase
+                                      'Choose time range',
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         decoration: TextDecoration.underline,

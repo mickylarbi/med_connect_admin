@@ -10,6 +10,7 @@ class Drug {
   String? brandName;
   double? price;
   int? quantityInStock;
+  bool? isOverTheCounter;
   String? otherDetails;
 
   Drug({
@@ -20,6 +21,7 @@ class Drug {
     this.brandName,
     this.price,
     this.quantityInStock,
+    this.isOverTheCounter,
     this.otherDetails,
   });
 
@@ -31,6 +33,7 @@ class Drug {
     brandName = map['brandName'];
     price = map['price'].toDouble();
     quantityInStock = map['quantityInStock'].toInt();
+    isOverTheCounter = map['isOverTheCounter'];
     otherDetails = map['otherDetails'];
   }
 
@@ -41,6 +44,7 @@ class Drug {
         'brandName': brandName,
         'price': price,
         'quantityInStock': quantityInStock,
+        'isOverTheCounter': isOverTheCounter,
         'otherDetails': otherDetails,
       };
 
@@ -52,15 +56,16 @@ class Drug {
       brandName == other.brandName &&
       price == other.price &&
       quantityInStock == other.quantityInStock &&
+      isOverTheCounter ==other.isOverTheCounter&&
       otherDetails == other.otherDetails;
 
   @override
-  int get hashCode => hashValues(
+  int get hashCode => Object.hash(
         group,
         genericName,
         brandName,
         price,
-        quantityInStock,
+        quantityInStock,isOverTheCounter,
         otherDetails,
       );
 }

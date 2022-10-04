@@ -73,43 +73,43 @@ class CustomTextButton extends StatelessWidget {
   }
 }
 
-class GoogleButton extends StatelessWidget {
-  const GoogleButton({
-    Key? key,
-  }) : super(key: key);
+// class GoogleButton extends StatelessWidget {
+//   const GoogleButton({
+//     Key? key,
+//   }) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      textStyle: const TextStyle(
-        color: Colors.white,
-        letterSpacing: .5,
-      ),
-      borderRadius: BorderRadius.circular(14),
-      color: Colors.black.withOpacity(.9),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(14),
-        onTap: () {
-          //TODO: firebase google sign in
-        },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
-                'assets/images/google_icon.png',
-                height: 20,
-              ),
-              SizedBox(width: 10),
-              Text('Continue with Google'),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Material(
+//       textStyle: const TextStyle(
+//         color: Colors.white,
+//         letterSpacing: .5,
+//       ),
+//       borderRadius: BorderRadius.circular(14),
+//       color: Colors.black.withOpacity(.9),
+//       child: InkWell(
+//         borderRadius: BorderRadius.circular(14),
+//         onTap: () {
+//           //TODO: firebase google sign in
+//         },
+//         child: Padding(
+//           padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24),
+//           child: Row(
+//             mainAxisAlignment: MainAxisAlignment.center,
+//             children: [
+//               Image.asset(
+//                 'assets/images/google_icon.png',
+//                 height: 20,
+//               ),
+//               SizedBox(width: 10),
+//               Text('Continue with Google'),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
 
 class CustomFlatButton extends StatelessWidget {
   final void Function()? onPressed;

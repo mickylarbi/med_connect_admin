@@ -31,6 +31,7 @@ class _EditDrugDetailsScreenState extends State<EditDrugDetailsScreen> {
   TextEditingController otherDetailsController = TextEditingController();
   TextEditingController quantityInStockController =
       TextEditingController(text: '0');
+  bool isOverTheCounter = false;
 
   ValueNotifier<XFile?> pictureNotifier = ValueNotifier<XFile?>(null);
 
@@ -48,9 +49,11 @@ class _EditDrugDetailsScreenState extends State<EditDrugDetailsScreen> {
       brandNameController.text = widget.drug!.brandName!;
       priceController.text = widget.drug!.price!.toStringAsFixed(2);
       quantityInStockController.text = widget.drug!.quantityInStock!.toString();
+      isOverTheCounter = widget.drug!.isOverTheCounter!;
       otherDetailsController.text = widget.drug!.otherDetails!;
     }
   }
+
 //TODO: over the counter things
   @override
   Widget build(BuildContext context) {
@@ -88,16 +91,18 @@ class _EditDrugDetailsScreenState extends State<EditDrugDetailsScreen> {
                     hintText: 'Price',
                     controller: priceController,
                     keyboardType: TextInputType.number,
-                    suffix: const Text('Ghana Cedis'),
+                    prefix: const Text('GH¢ '),
                   ),
                   const SizedBox(height: 20),
                   Row(
                     children: [
-                      const Text('Quantity in stock',
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontWeight: FontWeight.bold,
-                          )),
+                      const Text(
+                        'Quantity in stock',
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       const Spacer(),
                       IconButton(
                         onPressed: () {
@@ -140,6 +145,26 @@ class _EditDrugDetailsScreenState extends State<EditDrugDetailsScreen> {
                     ],
                   ),
                   const SizedBox(height: 20),
+                  StatefulBuilder(builder: (context, setState) {
+                    return SwitchListTile.adaptive(
+                        title: const Text(
+                          'Over-the-counter',
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        contentPadding:
+                            const EdgeInsets.symmetric(horizontal: 0),
+                        value: isOverTheCounter,
+                        onChanged: (value) {
+                          isOverTheCounter = value;
+                          setState(() {
+                            {}
+                          });
+                        });
+                  }),
+                  const SizedBox(height: 20),
                   CustomTextFormField(
                     hintText: 'More details',
                     controller: otherDetailsController,
@@ -160,6 +185,7 @@ class _EditDrugDetailsScreenState extends State<EditDrugDetailsScreen> {
                         price: double.tryParse(priceController.text.trim()),
                         quantityInStock:
                             int.tryParse(quantityInStockController.text.trim()),
+                        isOverTheCounter: isOverTheCounter,
                         otherDetails: otherDetailsController.text.trim(),
                       );
 
@@ -353,8 +379,7 @@ class _EditDrugDetailsScreenState extends State<EditDrugDetailsScreen> {
                               picker
                                   .pickImage(source: ImageSource.camera)
                                   .then((pickedImage) {
-                                Navigator.pop(
-                                    context); //TODO: if it still doesn't work, cast the function then do am direct
+                                Navigator.pop(context);
                                 if (pickedImage != null) {
                                   showDialog(
                                     context: context,
