@@ -25,6 +25,7 @@ class _DoctorTabViewState extends State<DoctorTabView> {
             children: const [
               KeepAlivePage(child: DoctorHomePage()),
               KeepAlivePage(child: AppointmentsListPage()),
+              KeepAlivePage(child: AppointmentsListPage()),
             ]),
       ),
       bottomNavigationBar: ValueListenableBuilder<int>(
@@ -44,6 +45,7 @@ class _DoctorTabViewState extends State<DoctorTabView> {
                 BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
                 BottomNavigationBarItem(
                     icon: Icon(Icons.calendar_month), label: ''),
+                BottomNavigationBarItem(icon: Icon(Icons.report), label: ''),
               ],
             );
           }),
@@ -58,7 +60,6 @@ class _DoctorTabViewState extends State<DoctorTabView> {
     super.dispose();
   }
 }
-
 
 class KeepAlivePage extends StatefulWidget {
   const KeepAlivePage({

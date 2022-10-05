@@ -165,10 +165,17 @@ class _PrescriptionFormScreenState extends State<PrescriptionFormScreen> {
                               'Add prescription?\nThis cannot be later changed',
                           confirmFunction: () {
                             showLoadingDialog(context);
+                            List<String> pharmIds = [];
+                            for (Drug drug in cart.value.keys) {
+                              if (!pharmIds.contains(drug.pharmacyId)) {
+                                pharmIds.add(drug.pharmacyId!);
+                              }
+                            }
                             db.instance
                                 .collection('prescriptions')
                                 .doc(widget.appointmentId)
                                 .set(Prescription(
+                                  pharmacyIds: pharmIds,
                                   cart: cart.value.map(
                                       (key, value) => MapEntry(key.id!, value)),
                                   totalPrice: calculateTotalPrice(),

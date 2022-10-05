@@ -46,6 +46,7 @@ dependencies:
   cached_network_image: ^3.2.1
   flutter_slidable: ^2.0.0
   font_awesome_flutter: ^10.2.1
+  fl_chart: ^0.55.2
 
 dev_dependencies:
   flutter_test:

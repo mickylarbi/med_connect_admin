@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:med_connect_admin/screens/home/doctor/doctor_tab_view.dart';
 import 'package:med_connect_admin/screens/home/pharmacy/drugs/drugs_list_page.dart';
 import 'package:med_connect_admin/screens/home/pharmacy/orders/orders_list_page.dart';
+import 'package:med_connect_admin/screens/home/pharmacy/reports/reports_page.dart';
 
 class PharmacyTabView extends StatefulWidget {
   const PharmacyTabView({Key? key}) : super(key: key);
@@ -25,6 +26,7 @@ class _DoctorTabViewState extends State<PharmacyTabView> {
             children: const [
               KeepAlivePage(child: OrdersListPage()),
               KeepAlivePage(child: DrugsListPage()),
+              KeepAlivePage(child: ReportsPage()),
             ]),
       ),
       bottomNavigationBar: ValueListenableBuilder<int>(
@@ -46,6 +48,7 @@ class _DoctorTabViewState extends State<PharmacyTabView> {
                     label: ''),
                 BottomNavigationBarItem(
                     icon: Icon(Icons.medication_rounded), label: ''),
+                BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: ''),
               ],
             );
           }),
