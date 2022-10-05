@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:med_connect_admin/screens/home/doctor/appointments/appointment_list_page.dart';
 import 'package:med_connect_admin/screens/home/doctor/doctor_home_page/doctor_home_page.dart';
+import 'package:med_connect_admin/screens/home/doctor/reports/reports_page.dart';
 
 class DoctorTabView extends StatefulWidget {
   const DoctorTabView({
@@ -25,7 +26,7 @@ class _DoctorTabViewState extends State<DoctorTabView> {
             children: const [
               KeepAlivePage(child: DoctorHomePage()),
               KeepAlivePage(child: AppointmentsListPage()),
-              KeepAlivePage(child: AppointmentsListPage()),
+              KeepAlivePage(child: DoctorReportPage()),
             ]),
       ),
       bottomNavigationBar: ValueListenableBuilder<int>(
@@ -45,7 +46,7 @@ class _DoctorTabViewState extends State<DoctorTabView> {
                 BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
                 BottomNavigationBarItem(
                     icon: Icon(Icons.calendar_month), label: ''),
-                BottomNavigationBarItem(icon: Icon(Icons.report), label: ''),
+                BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: ''),
               ],
             );
           }),

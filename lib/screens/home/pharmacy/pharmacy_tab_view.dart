@@ -26,7 +26,7 @@ class _DoctorTabViewState extends State<PharmacyTabView> {
             children: const [
               KeepAlivePage(child: OrdersListPage()),
               KeepAlivePage(child: DrugsListPage()),
-              KeepAlivePage(child: ReportsPage()),
+              KeepAlivePage(child: PharmacyReportsPage()),
             ]),
       ),
       bottomNavigationBar: ValueListenableBuilder<int>(

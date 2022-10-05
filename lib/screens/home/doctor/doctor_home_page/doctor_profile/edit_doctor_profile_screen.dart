@@ -98,6 +98,7 @@ class _EditDoctorProfileScreenState extends State<EditDoctorProfileScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        //TODO: remove review things from here
                         const SizedBox(height: 12),
                         FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
                             future: db.instance
@@ -603,7 +604,7 @@ class _EditDoctorProfileScreenState extends State<EditDoctorProfileScreen> {
                         } else if (newDoctor.phone!.trim().isEmpty) {
                           showAlertDialog(context,
                               message: 'Please enter a phone number');
-                        } else if (newDoctor.phone!.trim().length < 10) {
+                        } else if (newDoctor.phone!.trim().length != 9) {
                           showAlertDialog(context,
                               message: 'Please enter a valid phone number');
                         } else if (newDoctor.mainSpecialty!.trim().isEmpty) {

@@ -19,14 +19,16 @@ class OrdersReportWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //average orders per day
-    int sum = 0;
+    //average appointments per day
     List<DateTime> dates = [];
     for (int i = 0; i < ordersList.length; i++) {
-      if (!dates.contains(ordersList[i].dateTime!)) {
-        ++sum;
+      Iterable results = dates.where((element) =>
+          element.year == ordersList[i].dateTime!.year &&
+          element.month == ordersList[i].dateTime!.month &&
+          element.day == ordersList[i].dateTime!.day);
+      if (results.isEmpty) {
+        dates.add(ordersList[i].dateTime!);
       }
-      dates.add(ordersList[i].dateTime!);
     }
 
     //
@@ -108,7 +110,7 @@ class OrdersReportWidget extends StatelessWidget {
                 style: labelTextStyle,
               ),
               Text(
-                (sum ~/ ordersList.length).toString(),
+                (ordersList.length ~/ dates.length).toString(),
                 style: boldDigitStyle,
               ),
               const SizedBox(height: 30),

@@ -1,20 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:med_connect_admin/firebase_services/auth_service.dart';
 import 'package:med_connect_admin/firebase_services/firestore_service.dart';
-import 'package:med_connect_admin/models/pharmacy/drug.dart';
-import 'package:med_connect_admin/models/pharmacy/order.dart';
-import 'package:med_connect_admin/screens/home/pharmacy/reports/drugs_report_screen.dart';
-import 'package:med_connect_admin/screens/home/pharmacy/reports/orders_report_screen.dart';
+import 'package:med_connect_admin/models/doctor/appointment.dart';
+import 'package:med_connect_admin/models/review.dart';
+import 'package:med_connect_admin/screens/home/doctor/reports/appointments_report_widget.dart';
+import 'package:med_connect_admin/screens/home/doctor/reports/reviews_report_widget.dart';
 import 'package:med_connect_admin/screens/shared/custom_app_bar.dart';
 
-class PharmacyReportsPage extends StatefulWidget {
-  const PharmacyReportsPage({Key? key}) : super(key: key);
+class DoctorReportPage extends StatefulWidget {
+  const DoctorReportPage({super.key});
 
   @override
-  State<PharmacyReportsPage> createState() => _PharmacyReportsPageState();
+  State<DoctorReportPage> createState() => _DoctorReportPageState();
 }
 
-class _PharmacyReportsPageState extends State<PharmacyReportsPage> {
+class _DoctorReportPageState extends State<DoctorReportPage> {
   ScrollController scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
@@ -34,14 +35,14 @@ class _PharmacyReportsPageState extends State<PharmacyReportsPage> {
                   builder: (context, snapshot) {
                     if (snapshot.hasError) {}
                     if (snapshot.connectionState == ConnectionState.done) {
+                      List<Review> reviewsList = snapshot.data![0];
+                      List<Appointment> appointmentsList = snapshot.data![1];
+
                       return Column(
                         children: [
-                          DrugsReportWidget(drugsList: snapshot.data![0]),
+                          ReviewsReportWidget(reviewsList: reviewsList),
                           const Divider(height: 100),
-                          OrdersReportWidget(
-                            drugsList: snapshot.data![0],
-                            ordersList: snapshot.data![1],
-                          )
+                          AppointmentsReportWidget(appointmentsList: appointmentsList),
                         ],
                       );
                     }
@@ -63,25 +64,23 @@ class _PharmacyReportsPageState extends State<PharmacyReportsPage> {
   }
 }
 
-TextStyle get boldDigitStyle => const TextStyle(
-      fontSize: 20,
-      fontWeight: FontWeight.bold,
-    );
-
 Future<List> getData() async {
   FirestoreService db = FirestoreService();
+  AuthService auth = AuthService();
 
-  QuerySnapshot<Map<String, dynamic>> drugsQuerySnapshot =
-      await db.myDrugs.get();
-  QuerySnapshot<Map<String, dynamic>> ordersQuerySnapshot =
-      await db.myOrders.get();
+  QuerySnapshot<Map<String, dynamic>> reviewsQuerySnapshot = await db.instance
+      .collection('doctor_reviews')
+      .where('doctorId', isEqualTo: auth.uid)
+      .get();
+  QuerySnapshot<Map<String, dynamic>> appointmentsQuerySnapshot =
+      await db.myAppointments.get();
 
   return [
-    drugsQuerySnapshot.docs
-        .map((e) => Drug.fromFirestore(e.data(), e.id))
+    reviewsQuerySnapshot.docs
+        .map((e) => Review.fromFirestore(e.data()))
         .toList(),
-    ordersQuerySnapshot.docs
-        .map((e) => Order.fromFirestore(e.data(), e.id))
+    appointmentsQuerySnapshot.docs
+        .map((e) => Appointment.fromFirestore(e.data(), e.id))
         .toList(),
   ];
 }
